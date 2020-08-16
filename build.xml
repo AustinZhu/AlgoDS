@@ -29,6 +29,15 @@
         <jar jarfile="${dist}/lib/AlgoDS-${DSTAMP}.jar" basedir="${build}"/>
     </target>
 
+    <target name="test" depends="compile"
+            description="generate the distribution">
+        <!-- Create the distribution directory -->
+        <mkdir dir="${dist}/lib"/>
+
+        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+        <jar jarfile="${dist}/lib/AlgoDS-${DSTAMP}.jar" basedir="${build}"/>
+    </target>
+
     <target name="clean"
             description="clean up">
         <!-- Delete the ${build} and ${dist} directory trees -->
