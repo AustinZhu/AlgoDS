@@ -4,6 +4,7 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.exception.NoSuchAlgorithmException;
 import io.austinzhu.algo.interfaces.*;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -44,20 +45,6 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
         }
         data[upperBound] = null;
         upperBound--;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void init() {
-        Random random = new Random();
-        int capacity = random.nextInt(20);
-        Integer[] intArr = new Integer[capacity];
-        for (int i = 0; i < capacity; i++) {
-            intArr[i] = random.nextInt(100);
-            upperBound++;
-            updateLength();
-        }
-        data = (T[]) intArr;
     }
 
     @SafeVarargs
@@ -180,10 +167,6 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder().append('[');
-        for (int i = lowerBound; i < upperBound - 1; i++) {
-            stringBuilder.append(data[i]).append(", ");
-        }
-        return stringBuilder.append(data[upperBound - 1]).append(']').toString();
+        return Arrays.toString(data);
     }
 }

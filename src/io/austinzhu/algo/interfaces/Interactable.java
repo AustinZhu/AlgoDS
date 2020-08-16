@@ -6,7 +6,5 @@ public interface Interactable<T> {
 
     void eject() throws io.austinzhu.algo.exception.IndexOutOfBoundsException;
 
-    void init();
-
     void init(T... elements);
 }

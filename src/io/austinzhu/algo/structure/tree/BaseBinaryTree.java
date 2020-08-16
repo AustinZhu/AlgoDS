@@ -1,4 +1,4 @@
-package io.austinzhu.algo.structure.trees;
+package io.austinzhu.algo.structure.tree;
 
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.*;
@@ -13,11 +13,6 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
 
     @Override
     public void eject() throws IndexOutOfBoundsException {
-
-    }
-
-    @Override
-    public void init() {
 
     }
 
