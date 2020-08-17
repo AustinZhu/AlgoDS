@@ -77,7 +77,7 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
     }
 
     @SuppressWarnings("unchecked")
-    public BaseArray<T> join(BaseArray<T> another) {
+    public void join(BaseArray<T> another) {
         int capacity = this.getLength() + another.getLength();
         T[] newArray = (T[]) new Comparable[capacity];
         if (this.getLength() >= 0) {
@@ -85,7 +85,8 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
             System.arraycopy(another.data, lowerBound, newArray, getLength(), another.getLength());
         }
         data = newArray;
-        return this;
+        upperBound = capacity;
+        updateLength();
     }
 
     @Override
@@ -126,9 +127,8 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
         return length;
     }
 
-    public void updateLength() {
+    private void updateLength() {
         this.length = upperBound - lowerBound;
-        ;
     }
 
     public T[] getData() {
@@ -136,7 +136,18 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
     }
 
     public void setData(T[] data) {
-        this.data = data;
+        if (data.length <= this.data.length) {
+            System.arraycopy(data, 0, this.data, lowerBound, data.length);
+        } else {
+            throw new IndexOutOfBoundsException("Data to large for this array");
+        }
+    }
+
+    public void replaceBy(BaseArray<T> source) {
+        data = source.data;
+        lowerBound = source.lowerBound;
+        upperBound = source.upperBound;
+        length = source.length;
     }
 
     public int getUpperBound() {

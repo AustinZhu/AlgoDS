@@ -5,10 +5,13 @@ import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
- * @author austi
+ * Wrapper class for array
+ *
+ * @author Austin Zhu
  */
 public class Array<T extends Comparable<T>> extends BaseArray<T> {
 
@@ -16,6 +19,10 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         super(capacity);
     }
 
+    /**
+     * @return random integer array
+     * @description initialize a random integer array with size less than 20 and max element value less than 100
+     */
     public static Array<Integer> init() {
         Random random = new Random();
         int capacity = random.nextInt(20);
@@ -43,27 +50,30 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
             case QUICK -> quickSort(lower, upper);
             case INSERTION -> insertionSort(lower, upper);
             case SELECTION -> selectionSort(lower, upper);
-            case RADIX -> radixSort();
+            case RADIX -> radixSort(lower, upper, 2);
             case HEAP -> heapSort();
-            case COUNTING -> countingSort();
-            case BUCKET -> bucketSort();
+            case COUNTING -> countingSort(lower, upper, 100);
+            case BUCKET -> bucketSort(lower, upper);
             case SHELL -> shellSort(lower, upper);
             default -> throw new NoSuchAlgorithmException("No such algorithm");
         }
     }
 
     /**
-     * Shell sort is a variant of insertion sort.
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive）
+     * @description Shell sort is a stable, in-place comparison sorting algorithm.
+     * <p>
      * 1. Insertion sort every n element
      * 2. Repeat 1. for next n in the geometric series with ratio 1/2
-     *
-     * @param lower
-     * @param upper
+     * <p>
+     * - performance of shell sort depends on the selection of interval series
      * @bestTime O(n log n)
      * @worstTime O(n ^ 2) (for geometric series with ratio 1/2)
      */
     private void shellSort(int lower, int upper) {
-        for (int interval = (upper - lower) / 2; interval > 0; interval /= 2) {
+        int ratio = 2;
+        for (int interval = (upper - lower) / ratio; interval > 0; interval /= ratio) {
             for (int i = interval; i < upper; i++) {
                 T temp = get(i);
                 int j = i;
@@ -77,22 +87,120 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
 
     }
 
-    private void bucketSort() {
+    /**
+     * @param lower
+     * @param upper
+     * @description Bucket sort is a stable distribution sorting algorithm.
+     * <p>
+     * 1. Create an array of buckets, each bucket holds elements that fall in some continuous, disjoint intervals.
+     * 2. Put elements into their corresponding buckets.
+     * 3. Sort each bucket using some sorting algorithm.
+     * 4. Flatten the sorted bucket array(concat)
+     * <p>
+     * - select a interval so that elements are uniformly distributed to buckets
+     * @avgTime O(n + n ^ 2 / k + k)
+     * @worstTime O(n ^ 2)
+     * @worstSpace O(n * k)
+     */
+    private void bucketSort(int lower, int upper) {
+        if (this.getLength() <= 1) {
+            return;
+        }
+        // size of the interval
+        int size = 10;
+        Array<T>[] buckets = new Array[size];
+        // initialize buckets
+        for (int i = 0; i < size; i++) {
+            buckets[i] = new Array<>(getLength());
+        }
+        // put elements into buckets
+        for (int i = lower; i < upper; i++) {
+            // bucket id is the tens digit here
+            int bucketId = get(i).hashCode() / size;
+            buckets[bucketId].append(get(i));
+        }
+        // flatten the array of buckets
+        Array<T> result = new Array<>(0);
+        for (int i = 0; i < size; i++) {
+            Array<T> bucket = buckets[i];
+            bucket.insertionSort(bucket.getLowerBound(), bucket.getUpperBound());
+            result.join(bucket);
+        }
+        replaceBy(result);
     }
 
-    private void countingSort() {
+    /**
+     * @param lower
+     * @param upper
+     * @param range max element value
+     */
+    @SuppressWarnings("unchecked")
+    public void countingSort(int lower, int upper, int range) {
+        Integer[] output = new Integer[getLength()];
+        int[] counts = new int[range];
+        Arrays.fill(counts, 0);
+        for (int i = lower; i < upper; i++) {
+            counts[get(i).hashCode()]++;
+        }
+        // cumulative counts indicates how many elements before the last occurrence of i in the sorted array
+        for (int i = 1; i < range; i++) {
+            counts[i] += counts[i - 1];
+        }
+        for (int i = upper - 1; i >= lower; i--) {
+            int index = get(i).hashCode();
+            output[counts[index] - 1] = index;
+            counts[index]--;
+        }
+        setData((T[]) output);
     }
 
     private void heapSort() {
     }
 
-    private void radixSort() {
+    @SuppressWarnings("unchecked")
+    private void radixSort(int lower, int upper, int digits) {
+        for (int j = 0; j < digits; j++) {
+            int exp = (int) Math.pow(10, j);
+            Integer[] output = new Integer[getLength()];
+            int[] counts = new int[10];
+            // counting sort
+            for (int i = lower; i < upper; i++) {
+                int index = get(i).hashCode();
+                int valAtDigit = (index / exp) % 10;
+                counts[valAtDigit]++;
+            }
+            for (int i = 1; i < 10; i++) {
+                counts[i] += counts[i - 1];
+            }
+            for (int i = upper - 1; i >= lower; i--) {
+                int index = get(i).hashCode();
+                int valAtDigit = (index / exp) % 10;
+                output[lower + counts[valAtDigit] - 1] = index;
+                counts[valAtDigit]--;
+            }
+            setData((T[]) output);
+        }
     }
 
+    /**
+     * @param lower
+     * @param upper
+     * @description Selection sort is a stable, in-place comparison algorithm.
+     * <p>
+     * 1. Assume the current element is the min element
+     * 2. Find the minimum element in the rest of the unsorted array
+     * 3. Swap the current element with the minimum one
+     * 4. Repeat 1., 2., 3. for n times
+     * <p>
+     * - each iteration puts one element into its correct position, so the first i elements are sorted
+     * @bestTime O(n ^ 2)
+     * @avgTime O(n ^ 2)
+     * @worstTime O(n ^ 2)
+     */
     private void selectionSort(int lower, int upper) {
-        for (int i = lower; i < upper - 1; i++) {
-            T minVal = get(i);
+        for (int i = lower; i < upper; i++) {
             int minPos = i;
+            T minVal = get(i);
             for (int j = i + 1; j < upper; j++) {
                 if (get(j).compareTo(minVal) < 0) {
                     minPos = j;
@@ -107,7 +215,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         for (int i = lower; i < upper; i++) {
             T current = get(i);
             int j = i - 1;
-            while (current.compareTo(get(j)) < 0 && j >= 0) {
+            while (j >= 0 && current.compareTo(get(j)) < 0) {
                 set(j + 1, get(j));
                 j--;
             }
@@ -116,11 +224,13 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * Quick sort is an unstable, comparison-based, in-place sorting algorithm
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
+     * @description Quick sort is an unstable, comparison-based, in-place sorting algorithm.
      * <p>
-     * 1. Initialize left and right pointer, calculate the pivot
-     * 2. Increment left pointer and decrement right pointer to find any inverted pairs, if any, swap them and continue
-     * 3. When they surpass each other, bipartite the array there into [lower, right + 1) and [right, upper)
+     * 1. Initialize left and right pointer, and calculate the pivot
+     * 2. Increment left pointer and decrement right pointer to find any inverted pair, if any, swap them and continue
+     * 3. When two pointers surpass each other, bipartite the array there into [lower, right + 1) and [right, upper)
      * 4. Quick sort the subarray(s) with size larger than 1
      * <p>
      * - lower bound must be smaller than the upper bound
@@ -128,10 +238,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * - if any element equals to the pivot, stop moving pointers and swap
      * - pointers must be updated after a swap, or the loop may never end
      * - check if a subarray has size larger than 1, or empty subarrays will smash your call stack
-     *
-     * @param lower lower bound (inclusive)
-     * @param upper upper bound (exclusive)
      * @bestTime O(n log n)
+     * @avgTime O(n log n)
      * @worstTime O(n ^ 2)
      */
     private void quickSort(int lower, int upper) {
@@ -160,16 +268,22 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * Merge sort is a stable, comparison based sorting algorithm.
+     * @param lower
+     * @param upper
+     * @description Merge sort is a stable, comparison based sorting algorithm.
      * <p>
      * 1. equally bipartite the array into two subarrays
      * 2. repeat 1. until the array is fully divided into singletons
      * 3. copy the sorted subarrays to a left array and a right array
      * 4. merge two sorted arrays
      * 5. repeat 3., 4. on other sorted subarrays
-     *
-     * @param lower
-     * @param upper
+     * <p>
+     * - termination condition: a singleton array or an empty array
+     * - after comparison, there must be one or more elements left in either left or right subarray
+     * @bestTime O(n log n)
+     * @avgTime O(n log n)
+     * @worstTime O(n log n)
+     * @worstSpace O(n)
      */
     @SuppressWarnings("unchecked")
     private void mergeSort(int lower, int upper) {
@@ -182,6 +296,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         mergeSort(lower, mid);
         // sort right subarray
         mergeSort(mid, upper);
+
+        // merge
         int leftLength = mid - lower;
         int rightLength = upper - mid;
         // create temp array for comparison and merge
@@ -194,9 +310,11 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         for (int i = 0; i < rightLength; i++) {
             rightArray[i] = get(mid + i);
         }
-        // merge array
+        // initialize three pointers
         int leftId = 0, rightId = 0, arrayId = lower;
+        // merge left and right array
         while (leftId < leftLength && rightId < rightLength) {
+            // since left and right are sorted, select left element if it's smaller, or select right element
             if (leftArray[leftId].compareTo(rightArray[rightId]) < 0) {
                 set(arrayId, leftArray[leftId]);
                 leftId++;
@@ -206,6 +324,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
             }
             arrayId++;
         }
+        // add the remaining elements in either subarray
         while (leftId < leftLength) {
             set(arrayId, leftArray[leftId]);
             leftId++;
@@ -218,11 +337,30 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         }
     }
 
+    /**
+     * @param lower
+     * @param upper
+     * @description Bubble sort is a stable, in-place comparison sorting algorithm
+     * <p>
+     * 1. compare the current element to the next one, if they are inverted, swap them
+     * 2. repeat 1. for n times
+     * <p>
+     * - each iteration puts one element into its correct position, so the last i elements are sorted
+     * - if in one of the iterations, no element is swapped, then the array is sorted
+     * @bestTime O(n)
+     * @avgTime O(n ^ 2)
+     * @worstTime O(n ^ 2)
+     */
     private void bubbleSort(int lower, int upper) {
-        for (int i = lower; i < upper; i++) {
+        boolean sorted = true;
+        for (int i = lower; i < upper || !sorted; i++) {
+            // assume sorted at the beginning of each iteration
+            sorted = true;
             for (int j = 0; j < upper - i - 1; j++) {
+                // compare with the next element
                 if (getData()[j].compareTo(getData()[j + 1]) > 0) {
                     swap(j, j + 1);
+                    sorted = false;
                 }
             }
         }
