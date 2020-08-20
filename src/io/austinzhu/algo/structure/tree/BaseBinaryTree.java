@@ -58,7 +58,9 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
 
 final class Node<T> {
     private T value;
+
     private Node<T> left;
+
     private Node<T> right;
 
     public T getValue() {

@@ -9,9 +9,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Wrapper class for array
- *
  * @author Austin Zhu
+ * @description Array is a linear data structure containing a collection of elements
  */
 public class Array<T extends Comparable<T>> extends BaseArray<T> {
 
@@ -20,7 +19,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * @return random integer array
+     * @return an array of random integers
      * @description initialize a random integer array with size less than 20 and max element value less than 100
      */
     public static Array<Integer> init() {
@@ -39,6 +38,10 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         return false;
     }
 
+    /**
+     * @param sa name of the sorting algorithm being used
+     * @description Sort the array using the specified sorting algorithm
+     */
     @Override
     @Algorithm("sort")
     public void sort(SortingAlgorithm sa) {
@@ -51,7 +54,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
             case INSERTION -> insertionSort(lower, upper);
             case SELECTION -> selectionSort(lower, upper);
             case RADIX -> radixSort(lower, upper, 2);
-            case HEAP -> heapSort();
+            case HEAP -> heapSort(lower, upper);
             case COUNTING -> countingSort(lower, upper, 100);
             case BUCKET -> bucketSort(lower, upper);
             case SHELL -> shellSort(lower, upper);
@@ -61,10 +64,10 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
 
     /**
      * @param lower lower bound (inclusive)
-     * @param upper upper bound (exclusive）
+     * @param upper upper bound (exclusive)
      * @description Shell sort is a stable, in-place comparison sorting algorithm.
      * <p>
-     * 1. Insertion sort every n element
+     * 1. Insertion sort every n elements
      * 2. Repeat 1. for next n in the geometric series with ratio 1/2
      * <p>
      * - performance of shell sort depends on the selection of interval series
@@ -73,7 +76,9 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      */
     private void shellSort(int lower, int upper) {
         int ratio = 2;
+        // initial interval = len / 2
         for (int interval = (upper - lower) / ratio; interval > 0; interval /= ratio) {
+            // insertion sort each n elements,
             for (int i = interval; i < upper; i++) {
                 T temp = get(i);
                 int j = i;
@@ -88,8 +93,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * @param lower
-     * @param upper
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
      * @description Bucket sort is a stable distribution sorting algorithm.
      * <p>
      * 1. Create an array of buckets, each bucket holds elements that fall in some continuous, disjoint intervals.
@@ -130,15 +135,24 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * @param lower
-     * @param upper
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
      * @param range max element value
+     * @description Counting sort is a stable, distribution sorting algorithm.
+     * <p>
+     * 1. Determine the range of values, initialize an array to count the frequency of each elements
+     * 2. Traverse the array, add 1 to the counter of the element in the counting array
+     * 3. Calculate the cumulative counts, this helps to build the sorted array
+     * 4. Build the sorted array
+     * <p>
+     * - uses extra space to achieve lower time complexity
+     * - element values are used as index in counting
+     * - cumulative counts transform the frequency information to position information
      */
     @SuppressWarnings("unchecked")
     public void countingSort(int lower, int upper, int range) {
         Integer[] output = new Integer[getLength()];
         int[] counts = new int[range];
-        Arrays.fill(counts, 0);
         for (int i = lower; i < upper; i++) {
             counts[get(i).hashCode()]++;
         }
@@ -154,7 +168,28 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         setData((T[]) output);
     }
 
-    private void heapSort() {
+    /**
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
+     * @description Heap sort is an unstable, in-place comparison sorting algorithm
+     * <p>
+     * 1. Build a max heap out of the array
+     * 2. Swap the first element(max) with the last element
+     * 3. adjust the heap for previous len - i elements
+     * 4. repeat 2., 3. until no elements left to be heapified
+     * <p>
+     * - each iteration puts one element into its correct position, so the last i elements are sorted
+     * @bestTime O(n log n)
+     * @worstTime O(n log n)
+     */
+    private void heapSort(int lower, int upper) {
+        for (int i = (lower + upper) / 2 - 1; i >= lower; i--) {
+            heapify(getLength(), i);
+        }
+        for (int i = upper - 1; i > lower; i--) {
+            swap(lower, i);
+            heapify(i - lower, 0);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -268,8 +303,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * @param lower
-     * @param upper
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
      * @description Merge sort is a stable, comparison based sorting algorithm.
      * <p>
      * 1. equally bipartite the array into two subarrays
@@ -338,8 +373,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * @param lower
-     * @param upper
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
      * @description Bubble sort is a stable, in-place comparison sorting algorithm
      * <p>
      * 1. compare the current element to the next one, if they are inverted, swap them
@@ -363,6 +398,23 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
                     sorted = false;
                 }
             }
+        }
+    }
+
+    private void heapify(int len, int rootId) {
+        int max = rootId;
+        int leftId = 2 * rootId + 1;
+        int rightId = 2 * rootId + 2;
+        if (leftId < len && get(max).compareTo(get(leftId)) < 0) {
+            max = leftId;
+        }
+        if (rightId < len && get(max).compareTo(get(rightId)) < 0) {
+            max = rightId;
+        }
+        // if max == root, loops forever
+        if (max != rootId) {
+            swap(rootId, max);
+            heapify(len, max);
         }
     }
 
