@@ -89,7 +89,8 @@ public class Menu {
         Method selectedMethod = methods[thirdSelection - 1];
         if ("search".equals(selectedMethod.getName())) {
             int element = scanner.nextInt();
-            selectedMethod.invoke(dataStructure, element, SearchingAlgorithm.BINARY);
+            Object result = selectedMethod.invoke(dataStructure, element, SearchingAlgorithm.BINARY);
+            System.out.println("Element at position: " + result.toString());
         }
         if ("sort".equals(selectedMethod.getName())) {
             SortingAlgorithm algorithm = menu.sortSelection(scanner);

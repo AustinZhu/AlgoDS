@@ -52,6 +52,16 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     public int binarySearch(int lower, int upper, T element) {
+        if (lower <= upper) {
+            int mid = (lower + upper) / 2;
+            if (get(mid).equals(element)) {
+                return mid;
+            }
+            if (get(mid).compareTo(element) > 0) {
+                return binarySearch(lower, mid, element);
+            }
+            return binarySearch(mid + 1, upper, element);
+        }
         return -1;
     }
 
