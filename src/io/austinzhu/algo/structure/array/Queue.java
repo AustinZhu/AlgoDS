@@ -11,19 +11,32 @@ public class Queue<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     @Override
+    public void append(T element) throws IndexOutOfBoundsException {
+        if (getLowerBound() + getLength() > getUpperBound()) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        int upperBound = getUpperBound();
+        setUpperBound(++upperBound);
+        set(upperBound - 1, element);
+    }
+
+    @Override
     public void eject() throws IndexOutOfBoundsException {
         if (getUpperBound() - getLowerBound() <= 0) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         int lowerBound = getLowerBound();
         set(lowerBound, null);
-        lowerBound++;
-        setLowerBound(lowerBound);
+        setLowerBound(++lowerBound);
+    }
+
+    public T get() {
+        return get(getLowerBound());
     }
 
     @Override
-    public boolean search(T element, SearchingAlgorithm sa) {
-        return false;
+    public int search(T element, SearchingAlgorithm sa) {
+        return -1;
     }
 
     @Override

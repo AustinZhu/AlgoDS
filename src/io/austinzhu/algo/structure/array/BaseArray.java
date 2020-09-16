@@ -45,6 +45,7 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
         }
         data[upperBound] = null;
         upperBound--;
+        updateLength();
     }
 
     @SafeVarargs
@@ -98,11 +99,11 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
     }
 
     @Override
-    public abstract boolean search(T element, SearchingAlgorithm sa);
+    public abstract int search(T element, SearchingAlgorithm sa);
 
     @Override
     public boolean exist(T element) {
-        return search(element, SearchingAlgorithm.BINARY);
+        return search(element, SearchingAlgorithm.BINARY) >= 0;
     }
 
     @Override
@@ -156,6 +157,7 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
 
     public void setUpperBound(int upperBound) {
         this.upperBound = upperBound;
+        updateLength();
     }
 
     public int getLowerBound() {
@@ -164,6 +166,7 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
 
     public void setLowerBound(int lowerBound) {
         this.lowerBound = lowerBound;
+        updateLength();
     }
 
     @Override

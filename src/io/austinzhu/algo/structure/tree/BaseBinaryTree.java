@@ -37,8 +37,8 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
     }
 
     @Override
-    public boolean search(T element, SearchingAlgorithm sa) {
-        return false;
+    public int search(T element, SearchingAlgorithm sa) {
+        return -1;
     }
 
     @Override
@@ -53,6 +53,10 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
 
     public void balance() {
 
+    }
+
+    public int getHeight() {
+        return 0;
     }
 }
 

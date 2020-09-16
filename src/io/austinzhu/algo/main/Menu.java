@@ -5,8 +5,6 @@ import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.text.Annotation;
 import java.util.*;
 
 public class Menu {
@@ -14,7 +12,9 @@ public class Menu {
     private static final String[] CATEGORIES = new String[]{"Array", "Heap", "List", "Tree", "Network"};
 
     private static final HashMap<String, String[]> DATA_STRUCTURE_MAP =
-            new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix", "Queue", "Stack", "String"}));
+            new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix", "Queue", "Stack", "String"},
+                    "Heap", new String[]{"Beap", "BinaryHeap", "BinomialHeap", "FibonacciHeap", "Treap"},
+                    "List", new String[]{"ArrayList", "DoublyLinkedList", "LinkedList", "Queue", "Stack", "UnrolledLinkedList"}));
 
     private void printCategory() {
         StringBuilder builder = new StringBuilder("1. Choose the category: ");
@@ -34,15 +34,13 @@ public class Menu {
     }
 
     private Object dataStructureFactory(String category, String name) throws Exception {
-        String className = new StringBuilder()
-                .append("io.austinzhu.algo.structure.")
-                .append(category.toLowerCase()).append(".")
-                .append(name)
-                .toString();
+        String className = "io.austinzhu.algo.structure." +
+                category.toLowerCase() + "." +
+                name;
         Class<?> clazz = Class.forName(className);
         Object dataStructure = clazz.getDeclaredMethod("init").invoke(null);
         System.out.println(
-                new StringBuilder("This is your ").append(name).append(": \n").append(dataStructure)
+                "This is your " + name + ": \n" + dataStructure
         );
         return dataStructure;
     }

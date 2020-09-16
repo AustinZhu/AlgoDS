@@ -13,8 +13,8 @@ public class Matrix<T extends GenericArrayType & Comparable<T>> extends BaseArra
     }
 
     @Override
-    public boolean search(T element, SearchingAlgorithm sa) {
-        return false;
+    public int search(T element, SearchingAlgorithm sa) {
+        return -1;
     }
 
     @Override

@@ -34,8 +34,38 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
 
     @Override
     @Algorithm("search")
-    public boolean search(T element, SearchingAlgorithm sa) {
-        return false;
+    public int search(T element, SearchingAlgorithm sa) {
+        int lower = getLowerBound();
+        int upper = getUpperBound();
+        switch (sa) {
+            case BINARY -> {
+                return binarySearch(lower, upper, element);
+            }
+            case LINEAR -> {
+                return linearSearch(lower, upper, element);
+            }
+            case JUMP -> {
+                return jumpSearch(lower, upper, element);
+            }
+            default -> throw new NoSuchAlgorithmException("No such algorithm");
+        }
+    }
+
+    public int binarySearch(int lower, int upper, T element) {
+        return -1;
+    }
+
+    public int linearSearch(int lower, int upper, T element) {
+        for (int i = lower; i < upper; i++) {
+            if (get(i).equals(element)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int jumpSearch(int lower, int upper, T element) {
+        return -1;
     }
 
     /**
@@ -194,8 +224,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     }
 
     /**
-     * @param lower lower bound (inclusive)
-     * @param upper upper bound (exclusive)
+     * @param lower  lower bound (inclusive)
+     * @param upper  upper bound (exclusive)
      * @param digits maximum digits among the elements
      * @description Radix Sort is a stable, distribution sorting algorithm
      * <p>
@@ -262,11 +292,11 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
      * @description Insertion sort is a stable, in-place comparison soring algorithm.
-     *
+     * <p>
      * 1. Get the next element
      * 2. Find the place to insert it by comparing to and moving the previous sorted elements one by one
      * 3. Insert the element and repeat 1., 2. for n times.
-     *
+     * <p>
      * - each iteration puts one element into its correct position, so the first i elements are sorted
      */
     private void insertionSort(int lower, int upper) {
