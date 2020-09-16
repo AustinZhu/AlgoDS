@@ -95,7 +95,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     /**
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
-     * @description Bucket sort is a stable distribution sorting algorithm.
+     * @description Bucket sort is a stable, distribution sorting algorithm.
      * <p>
      * 1. Create an array of buckets, each bucket holds elements that fall in some continuous, disjoint intervals.
      * 2. Put elements into their corresponding buckets.
@@ -147,7 +147,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * <p>
      * - uses extra space to achieve lower time complexity
      * - element values are used as index in counting
-     * - cumulative counts transform the frequency information to position information
+     * - cumulative counts transform the frequency information to position information (costs k time)
+     * @worstTime O(n + k)
      */
     @SuppressWarnings("unchecked")
     public void countingSort(int lower, int upper, int range) {
@@ -192,6 +193,17 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         }
     }
 
+    /**
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
+     * @param digits maximum digits among the elements
+     * @description Radix Sort is a stable, distribution sorting algorithm
+     * <p>
+     * 1. For each digits, perform a counting sort
+     * <p>
+     * - value at digit n of integer a is calculated by $$\frac{a}{10^n} \mod 10$$
+     * @worstTime O(w * n)
+     */
     @SuppressWarnings("unchecked")
     private void radixSort(int lower, int upper, int digits) {
         for (int j = 0; j < digits; j++) {
@@ -220,7 +232,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     /**
      * @param lower
      * @param upper
-     * @description Selection sort is a stable, in-place comparison algorithm.
+     * @description Selection sort is a stable, in-place comparison sorting algorithm.
      * <p>
      * 1. Assume the current element is the min element
      * 2. Find the minimum element in the rest of the unsorted array
@@ -246,11 +258,24 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         }
     }
 
+    /**
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
+     * @description Insertion sort is a stable, in-place comparison soring algorithm.
+     *
+     * 1. Get the next element
+     * 2. Find the place to insert it by comparing to and moving the previous sorted elements one by one
+     * 3. Insert the element and repeat 1., 2. for n times.
+     *
+     * - each iteration puts one element into its correct position, so the first i elements are sorted
+     */
     private void insertionSort(int lower, int upper) {
         for (int i = lower; i < upper; i++) {
             T current = get(i);
             int j = i - 1;
-            while (j >= 0 && current.compareTo(get(j)) < 0) {
+            // if the element is smaller than the previous one(s)
+            while (j >= lower && current.compareTo(get(j)) < 0) {
+                // move to reserve a spare position for the coming element
                 set(j + 1, get(j));
                 j--;
             }
@@ -261,9 +286,9 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     /**
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
-     * @description Quick sort is an unstable, comparison-based, in-place sorting algorithm.
+     * @description Quick sort is an unstable, in-place comparison sorting algorithm.
      * <p>
-     * 1. Initialize left and right pointer, and calculate the pivot
+     * 1. Initialize left and right pointers, and calculate the pivot
      * 2. Increment left pointer and decrement right pointer to find any inverted pair, if any, swap them and continue
      * 3. When two pointers surpass each other, bipartite the array there into [lower, right + 1) and [right, upper)
      * 4. Quick sort the subarray(s) with size larger than 1
@@ -278,22 +303,29 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * @worstTime O(n ^ 2)
      */
     private void quickSort(int lower, int upper) {
+        // initialize left and right pointers
         int leftPointer = lower;
         int rightPointer = upper - 1;
+        // select a random pivot
         T pivot = get(new Random().nextInt(upper - lower) + lower);
+        // find the partition point
         while (leftPointer <= rightPointer) {
+            // find any element from left that is larger than the pivot
             while (get(leftPointer).compareTo(pivot) < 0) {
                 leftPointer++;
             }
+            // find any element from right that is smaller than the pivot
             while (get(rightPointer).compareTo(pivot) > 0) {
                 rightPointer--;
             }
+            // swap the inverted pair and increment the pointers to continue
             if (leftPointer <= rightPointer) {
                 swap(leftPointer, rightPointer);
                 leftPointer++;
                 rightPointer--;
             }
         }
+        // check if pointers are equal to or out of the bounds (when the subarray has 2 or 1 elements)
         if (lower < rightPointer) {
             quickSort(lower, rightPointer + 1);
         }
@@ -381,7 +413,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * 2. repeat 1. for n times
      * <p>
      * - each iteration puts one element into its correct position, so the last i elements are sorted
-     * - if in one of the iterations, no element is swapped, then the array is sorted
+     * - if in some iteration no element is swapped, then the array is sorted
      * @bestTime O(n)
      * @avgTime O(n ^ 2)
      * @worstTime O(n ^ 2)
