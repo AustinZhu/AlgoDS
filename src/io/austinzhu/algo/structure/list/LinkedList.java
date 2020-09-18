@@ -27,7 +27,7 @@ public class LinkedList<T> implements List<T>{
 
     @Override
     public String toString() {
-        if (root == null) {
+        if (isEmpty()) {
             return "";
         }
         Node<T> iterator = root;
@@ -43,7 +43,7 @@ public class LinkedList<T> implements List<T>{
     @Override
     public void append(T element) throws IndexOutOfBoundsException {
         Node<T> newNode = new Node<>(element);
-        if (root == null) {
+        if (isEmpty()) {
             root = newNode;
             return;
         }
@@ -56,7 +56,7 @@ public class LinkedList<T> implements List<T>{
 
     @Override
     public void eject() throws IndexOutOfBoundsException {
-        if (root == null) {
+        if (isEmpty()) {
             throw new IndexOutOfBoundsException("Null Head");
         }
         if (!root.hasNextNode()) {
@@ -77,7 +77,7 @@ public class LinkedList<T> implements List<T>{
 
     @Override
     public void set(int id, T object) throws IndexOutOfBoundsException {
-        if (root == null) {
+        if (isEmpty()) {
             throw new IndexOutOfBoundsException("Null Head");
         }
         Node<T> iterator = root;
@@ -92,7 +92,7 @@ public class LinkedList<T> implements List<T>{
 
     @Override
     public T get(int id) throws IndexOutOfBoundsException {
-        if (root == null) {
+        if (isEmpty()) {
             throw new IndexOutOfBoundsException("Null Head");
         }
         Node<T> iterator = root;
@@ -107,7 +107,7 @@ public class LinkedList<T> implements List<T>{
 
     @Override
     public void delete(int id) throws IndexOutOfBoundsException {
-        if (root == null) {
+        if (isEmpty()) {
             throw new IndexOutOfBoundsException("Null Head");
         }
         if (id == 0) {
@@ -148,6 +148,10 @@ public class LinkedList<T> implements List<T>{
     @Override
     public void travel() {
 
+    }
+
+    public boolean isEmpty() {
+        return root == null;
     }
 }
 

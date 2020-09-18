@@ -5,7 +5,6 @@ import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -53,7 +52,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
 
     public int binarySearch(int lower, int upper, T element) {
         if (lower <= upper) {
-            int mid = (lower + upper) / 2;
+            int mid = getMediumId();
             if (get(mid).equals(element)) {
                 return mid;
             }
@@ -129,7 +128,6 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
                 set(j, temp);
             }
         }
-
     }
 
     /**
@@ -224,7 +222,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * @worstTime O(n log n)
      */
     private void heapSort(int lower, int upper) {
-        for (int i = (lower + upper) / 2 - 1; i >= lower; i--) {
+        for (int i = getMediumId() - 1; i >= lower; i--) {
             heapify(getLength(), i);
         }
         for (int i = upper - 1; i > lower; i--) {
@@ -398,7 +396,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         if (upper - lower <= 1) {
             return;
         }
-        int mid = (lower + upper) / 2;
+        int mid = getMediumId();
         // sort left subarray
         mergeSort(lower, mid);
         // sort right subarray

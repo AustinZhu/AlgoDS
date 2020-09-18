@@ -5,7 +5,6 @@ import io.austinzhu.algo.exception.NoSuchAlgorithmException;
 import io.austinzhu.algo.interfaces.*;
 
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * @author Austin Zhu
@@ -130,6 +129,10 @@ public abstract class BaseArray<T extends Comparable<T>> implements Traversable,
 
     private void updateLength() {
         this.length = upperBound - lowerBound;
+    }
+
+    public int getMediumId() {
+        return (upperBound + lowerBound) / 2;
     }
 
     public T[] getData() {
