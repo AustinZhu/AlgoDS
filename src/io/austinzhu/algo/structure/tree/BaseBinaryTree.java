@@ -1,25 +1,31 @@
 package io.austinzhu.algo.structure.tree;
 
+import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
-import io.austinzhu.algo.interfaces.*;
+import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
 import java.util.*;
 
-public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T>, Searchable<T>, Traversable {
+public abstract class BaseBinaryTree<T> implements Tree<T> {
     private Node<T> root;
 
-    public BaseBinaryTree(T root) {
-        this.root = new Node<>(root);
+    public BaseBinaryTree() {
+        this.root = null;
+    }
+
+    public BaseBinaryTree(Node<T> root) {
+        this.root = root;
     }
 
     @Override
     public void append(T element) {
-        if (root == null) {
-            root = new Node<>(element);
+        if (getRoot() == null) {
+            setRoot(new Node<>(element));
+            return;
         }
         Queue<Node<T>> nodeQueue = new LinkedList<>();
         Node<T> newNode = new Node<>(element);
-        nodeQueue.add(root);
+        nodeQueue.add(getRoot());
         while (!nodeQueue.isEmpty()) {
             Node<T> temp = nodeQueue.remove();
             if (!temp.hasLeft()) {
@@ -39,11 +45,11 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
 
     @Override
     public void eject() throws IndexOutOfBoundsException {
-        if (root == null) {
+        if (getRoot() == null) {
             throw new IndexOutOfBoundsException("Null root");
         }
         Deque<Node<T>> nodeQueue = new ArrayDeque<>();
-        nodeQueue.add(root);
+        nodeQueue.add(getRoot());
         Node<T> parent = null;
         Node<T> last = null;
         while (!nodeQueue.isEmpty()) {
@@ -83,14 +89,35 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
     }
 
     @Override
-    public void set(int id, T object) throws IndexOutOfBoundsException {
-
+    public void set(int id, T object) throws IndexOutOfBoundsException, ElementNotFoundException {
+        if (getRoot() == null) {
+            throw new IndexOutOfBoundsException("Null root");
+        }
+        Queue<Node<T>> nodeQueue = new LinkedList<>();
+        nodeQueue.add(getRoot());
+        while (!nodeQueue.isEmpty()) {
+            Node<T> temp = nodeQueue.remove();
+            if (temp.getKey() == id) {
+                temp.setValue(object);
+                return;
+            }
+            if (temp.hasLeft()) {
+                nodeQueue.add(temp.getLeft());
+            }
+            if (temp.hasRight()) {
+                nodeQueue.add(temp.getRight());
+            }
+        }
+        throw new ElementNotFoundException("Not found");
     }
 
     @Override
-    public T get(int id) throws IndexOutOfBoundsException {
+    public T get(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
+        if (getRoot() == null) {
+            throw new IndexOutOfBoundsException("Null root");
+        }
         Queue<Node<T>> nodeQueue = new LinkedList<>();
-        nodeQueue.add(root);
+        nodeQueue.add(getRoot());
         while (!nodeQueue.isEmpty()) {
             Node<T> temp = nodeQueue.remove();
             if (temp.getKey() == id) {
@@ -103,40 +130,139 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
                 nodeQueue.add(temp.getRight());
             }
         }
-        return null;
+        throw new ElementNotFoundException("Not Found");
     }
 
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException {
-
+    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
+        if (getRoot() == null) {
+            throw new IndexOutOfBoundsException("Null head");
+        }
+        Queue<Node<T>> nodeQueue = new LinkedList<>();
+        nodeQueue.add(getRoot());
+        Node<T> last = null, lastParent = null;
+        Node<T> deleted = null, deletedParent = null;
+        while (!nodeQueue.isEmpty()) {
+            Node<T> iterator = nodeQueue.remove();
+            if (iterator.hasLeft()) {
+                Node<T> left = iterator.getLeft();
+                if (left.getKey() == id) {
+                    deletedParent = iterator;
+                    deleted = left;
+                }
+                if (left.isLeaf()) {
+                    lastParent = iterator;
+                    last = left;
+                }
+                nodeQueue.add(left);
+            }
+            if (iterator.hasRight()) {
+                Node<T> right = iterator.getRight();
+                if (right.getKey() == id) {
+                    deletedParent = iterator;
+                    deleted = right;
+                }
+                if (right.isLeaf()) {
+                    lastParent = iterator;
+                    last = right;
+                }
+                nodeQueue.add(right);
+            }
+        }
+        if (deletedParent != null && lastParent != null) {
+            if (lastParent.hasRight()) {
+                lastParent.setRight(null);
+            } else if (lastParent.hasLeft()) {
+                lastParent.setLeft(null);
+            }
+            last.setLeft(deleted.getLeft());
+            last.setRight(deleted.getRight());
+            if (deletedParent.getLeft().getKey() == id) {
+                deletedParent.setLeft(last);
+                return;
+            }
+            if (deletedParent.getRight().getKey() == id) {
+                deletedParent.setRight(last);
+                return;
+            }
+        }
+        throw new ElementNotFoundException("No such index");
     }
 
     @Override
     public int search(T element, SearchingAlgorithm sa) {
+        if (getRoot() == null) {
+            throw new IndexOutOfBoundsException("Null root");
+        }
+        Queue<Node<T>> nodeQueue = new LinkedList<>();
+        nodeQueue.add(getRoot());
+        while (!nodeQueue.isEmpty()) {
+            Node<T> temp = nodeQueue.remove();
+            if (temp.getValue() == element) {
+                return temp.getKey();
+            }
+            if (temp.hasLeft()) {
+                nodeQueue.add(temp.getLeft());
+            }
+            if (temp.hasRight()) {
+                nodeQueue.add(temp.getRight());
+            }
+        }
         return -1;
     }
 
     @Override
     public boolean exist(T element) {
-        return false;
+        return search(element, SearchingAlgorithm.BFS) != -1;
     }
 
     @Override
     public void travel() {
-
+        Queue<Node<T>> nodeQueue = new LinkedList<>();
+        nodeQueue.add(getRoot());
+        while (!nodeQueue.isEmpty()) {
+            Node<T> temp = nodeQueue.remove();
+            if (temp.hasLeft()) {
+                nodeQueue.add(temp.getLeft());
+            }
+            if (temp.hasRight()) {
+                nodeQueue.add(temp.getRight());
+            }
+        }
     }
 
-    public void balance() {
-
+    public void leftRotate() {
+        if (getRoot() == null) {
+            return;
+        }
+        if (!getRoot().isLeaf()) {
+            Node<T> right = getRoot().getRight();
+            getRoot().setRight(right.getLeft());
+            right.setLeft(getRoot());
+            setRoot(right);
+        }
     }
 
+    public void rightRotate() {
+        if (getRoot() == null) {
+            return;
+        }
+        if (!getRoot().isLeaf()) {
+            Node<T> left = getRoot().getLeft();
+            getRoot().setLeft(left.getRight());
+            left.setRight(getRoot());
+            setRoot(left);
+        }
+    }
+
+    @Override
     public int getHeight() {
-        if (root == null) {
+        if (getRoot() == null) {
             throw new IndexOutOfBoundsException("Null root");
         }
         int height = 0;
         Queue<Node<T>> nodeQueue = new LinkedList<>();
-        nodeQueue.add(root);
+        nodeQueue.add(getRoot());
         int size;
         while (!nodeQueue.isEmpty()) {
             height++;
@@ -158,12 +284,24 @@ public abstract class BaseBinaryTree<T> implements Interactable<T>, Operatable<T
     @Override
     public String toString() {
         TreePrinter<Node<T>> tp = new TreePrinter<>(n -> n.getValue().toString(), Node::getLeft, Node::getRight);
-        tp.printTree(root);
+        tp.printTree(getRoot());
         return tp.toString();
+    }
+
+    public Node<T> getRoot() {
+        return root;
+    }
+
+    public void setRoot(Node<T> root) {
+        this.root = root;
+    }
+
+    public boolean isEmpty() {
+        return getRoot() == null;
     }
 }
 
-final class Node<T> {
+class Node<T> {
     private int key;
 
     private T value;
@@ -173,7 +311,7 @@ final class Node<T> {
     private Node<T> right;
 
     Node(T value) {
-        this.key = this.hashCode();
+        this.key = value.hashCode();
         this.value = value;
         this.left = null;
         this.right = null;
@@ -225,7 +363,7 @@ final class Node<T> {
 
     @Override
     public int hashCode() {
-        int h = value.hashCode();
+        int h = Objects.hashCode(value);
         h = h * 31 + Objects.hashCode(left);
         h = h * 31 + Objects.hashCode(right);
         return h;

@@ -7,7 +7,7 @@ import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
 import java.util.Random;
 
-public class LinkedList<T> implements List<T>{
+public class LinkedList<T extends Comparable<T>> extends List<T>{
 
     private Node<T> root;
 
@@ -33,8 +33,8 @@ public class LinkedList<T> implements List<T>{
         Node<T> iterator = root;
         StringBuilder sb = new StringBuilder();
         sb.append(iterator.getValue());
-        while (iterator.hasNextNode()) {
-            iterator = iterator.getNextNode();
+        while (iterator.hasNext()) {
+            iterator = iterator.getNext();
             sb.append(" -> ").append(iterator.getValue());
         }
         return sb.toString();
@@ -48,10 +48,10 @@ public class LinkedList<T> implements List<T>{
             return;
         }
         Node<T> iterator = root;
-        while (iterator.hasNextNode()) {
-            iterator = iterator.getNextNode();
+        while (iterator.hasNext()) {
+            iterator = iterator.getNext();
         }
-        iterator.setNextNode(newNode);
+        iterator.setNext(newNode);
     }
 
     @Override
@@ -59,15 +59,15 @@ public class LinkedList<T> implements List<T>{
         if (isEmpty()) {
             throw new IndexOutOfBoundsException("Null Head");
         }
-        if (!root.hasNextNode()) {
+        if (!root.hasNext()) {
             root = null;
             return;
         }
         Node<T> iterator = root;
-        while (iterator.getNextNode().hasNextNode()) {
-            iterator = iterator.getNextNode();
+        while (iterator.getNext().hasNext()) {
+            iterator = iterator.getNext();
         }
-        iterator.setNextNode(null);
+        iterator.setNext(null);
     }
 
     @Override
@@ -82,10 +82,10 @@ public class LinkedList<T> implements List<T>{
         }
         Node<T> iterator = root;
         for (int i = 0; i < id; i++) {
-            if (!iterator.hasNextNode()) {
+            if (!iterator.hasNext()) {
                 throw new IndexOutOfBoundsException("Null Head");
             }
-            iterator = iterator.getNextNode();
+            iterator = iterator.getNext();
         }
         iterator.setValue(object);
     }
@@ -97,10 +97,10 @@ public class LinkedList<T> implements List<T>{
         }
         Node<T> iterator = root;
         for (int i = 0; i < id; i++) {
-            if (!iterator.hasNextNode()) {
+            if (!iterator.hasNext()) {
                 throw new IndexOutOfBoundsException("Null Head");
             }
-            iterator = iterator.getNextNode();
+            iterator = iterator.getNext();
         }
         return iterator.getValue();
     }
@@ -111,18 +111,18 @@ public class LinkedList<T> implements List<T>{
             throw new IndexOutOfBoundsException("Null Head");
         }
         if (id == 0) {
-            root = root.getNextNode();
+            root = root.getNext();
             return;
         }
         Node<T> iterator = root;
         for (int i = 0; i < id - 1; i++) {
-            if (!iterator.hasNextNode()) {
-                throw new IndexOutOfBoundsException("Null Head");
+            if (!iterator.hasNext()) {
+                throw new IndexOutOfBoundsException("Id too large");
             }
-            iterator = iterator.getNextNode();
+            iterator = iterator.getNext();
         }
-        Node<T> successor = iterator.getNextNode().getNextNode();
-        iterator.setNextNode(successor);
+        Node<T> successor = iterator.getNext().getNext();
+        iterator.setNext(successor);
     }
 
     @Override
@@ -158,11 +158,11 @@ public class LinkedList<T> implements List<T>{
 final class Node<T> {
     private T value;
 
-    private Node<T> nextNode;
+    private Node<T> next;
 
     Node(T value) {
         this.value = value;
-        this.nextNode = null;
+        this.next = null;
     }
 
     public T getValue() {
@@ -173,15 +173,15 @@ final class Node<T> {
         this.value = value;
     }
 
-    public Node<T> getNextNode() {
-        return nextNode;
+    public Node<T> getNext() {
+        return next;
     }
 
-    public void setNextNode(Node<T> nextNode) {
-        this.nextNode = nextNode;
+    public void setNext(Node<T> next) {
+        this.next = next;
     }
 
-    public boolean hasNextNode() {
-        return getNextNode() != null;
+    public boolean hasNext() {
+        return getNext() != null;
     }
 }

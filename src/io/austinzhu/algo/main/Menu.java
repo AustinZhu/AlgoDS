@@ -12,7 +12,7 @@ public class Menu {
     private static final String[] CATEGORIES = new String[]{"Array", "Heap", "List", "Tree", "Network"};
 
     private static final HashMap<String, String[]> DATA_STRUCTURE_MAP =
-            new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix", "Queue", "Stack", "String"},
+            new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix", "String"},
                     "Heap", new String[]{"Beap", "BinaryHeap", "BinomialHeap", "FibonacciHeap", "Treap"},
                     "List", new String[]{"ArrayList", "DoublyLinkedList", "LinkedList", "Queue", "Stack", "UnrolledLinkedList"},
                     "Network", new String[]{"Graph"},
