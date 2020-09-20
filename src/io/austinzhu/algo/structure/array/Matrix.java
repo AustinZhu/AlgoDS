@@ -4,9 +4,7 @@ import io.austinzhu.algo.exception.NoSuchAlgorithmException;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
-import java.lang.reflect.GenericArrayType;
-
-public class Matrix<T extends GenericArrayType & Comparable<T>> extends BaseArray<T>{
+public class Matrix<T extends Comparable<T>> extends BaseArray<T>{
 
     Matrix (int dimension) {
         super(dimension);
@@ -20,5 +18,10 @@ public class Matrix<T extends GenericArrayType & Comparable<T>> extends BaseArra
     @Override
     public void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException {
 
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

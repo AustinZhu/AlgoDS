@@ -6,7 +6,7 @@ import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
 import java.util.Random;
 
-public class BinarySearchTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
+public class BinarySearchTree<T> extends BaseBinaryTree<T> {
 
     public BinarySearchTree() {
         super();
@@ -16,12 +16,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends BaseBinaryTree<T>
         super(root);
     }
 
-    public static BinarySearchTree<Integer> init() {
+    public static BinarySearchTree<Integer> init(int size, int bound) {
         Random random = new Random();
-        int capacity = random.nextInt(20);
+        int capacity = random.nextInt(size);
         BinarySearchTree<Integer> binaryTree = new BinarySearchTree<>();
         for (int i = 0; i < capacity; i++) {
-            binaryTree.append(random.nextInt(100));
+            binaryTree.append(random.nextInt(bound));
         }
         return binaryTree;
     }
@@ -29,26 +29,25 @@ public class BinarySearchTree<T extends Comparable<T>> extends BaseBinaryTree<T>
     @Override
     public void append(T element) {
         Node<T> newNode = new Node<>(element);
-        if (isEmpty()) {
-            setRoot(newNode);
-            return;
-        }
         Node<T> iterator = getRoot();
         while (iterator != null) {
-            if (newNode.getKey() >= iterator.getKey()) {
+            if (newNode.getKey() < iterator.getKey()){
+                if (!iterator.hasLeft()) {
+                    iterator.setLeft(newNode);
+                    return;
+                }
+                iterator = iterator.getLeft();
+            } else if (newNode.getKey() > iterator.getKey()) {
                 if (!iterator.hasRight()) {
                     iterator.setRight(newNode);
                     return;
                 }
                 iterator = iterator.getRight();
             } else {
-                if (!iterator.hasLeft()) {
-                    iterator.setLeft(newNode);
-                    return;
-                }
-                iterator = iterator.getLeft();
+                return;
             }
         }
+        setRoot(newNode);
     }
 
     @Override
@@ -63,7 +62,75 @@ public class BinarySearchTree<T extends Comparable<T>> extends BaseBinaryTree<T>
 
     @Override
     public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
-        super.delete(id);
+        if (isEmpty()) {
+            throw new IndexOutOfBoundsException("Null Head");
+        }
+        Node<T> parent = null;
+        Node<T> iterator = root;
+        boolean isLeft = false;
+        while (iterator.getKey() != id) {
+            parent = iterator;
+            if (iterator.getKey() > id && iterator.hasLeft()) {
+                iterator = iterator.getLeft();
+                isLeft = true;
+            }
+            if (iterator.getKey() < id && iterator.hasRight()) {
+                iterator = iterator.getRight();
+                isLeft = false;
+            }
+        }
+        boolean isRoot = parent == null;
+        // Case 1: Node to be deleted has no child
+        if (iterator.isLeaf()) {
+            if (isRoot) {
+                setRoot(null);
+                return;
+            }
+            if (isLeft) {
+                parent.setLeft(null);
+            } else {
+                parent.setRight(null);
+            }
+            return;
+        }
+        // Case 2: Node to be deleted has only left child
+        if (iterator.hasLeft() && !iterator.hasRight()) {
+            if (isRoot) {
+                setRoot(iterator.getLeft());
+                return;
+            }
+            if (isLeft) {
+                parent.setLeft(iterator.getLeft());
+            } else {
+                parent.setRight(iterator.getRight());
+            }
+            return;
+        }
+        // Case 3: Node to be deleted has only right child
+        if (iterator.hasRight() && !iterator.hasLeft()) {
+            if (isRoot) {
+                setRoot(iterator.getRight());
+                return;
+            }
+            if (isLeft) {
+                parent.setLeft(iterator.getRight());
+            } else {
+                parent.setRight(iterator.getRight());
+            }
+            return;
+        }
+        // Case 4: Node to be deleted has both children
+        if (iterator.hasLeft() && iterator.hasRight()) {
+            if (isRoot) {
+                setRoot(ejectSuccessor(iterator));
+                return;
+            }
+            if (isLeft) {
+                parent.setLeft(ejectSuccessor(iterator));
+            } else {
+                parent.setRight(ejectSuccessor(iterator));
+            }
+        }
     }
 
     @Override
@@ -74,5 +141,33 @@ public class BinarySearchTree<T extends Comparable<T>> extends BaseBinaryTree<T>
     @Override
     public boolean exist(T element) {
         return super.exist(element);
+    }
+
+    public Node<T> ejectSuccessor(Node<T> node) {
+        Node<T> parent = null;
+        Node<T> successor = node;
+        while (node.hasLeft()) {
+            parent = successor;
+            successor = successor.getLeft();
+        }
+        if (parent == null) {
+            return null;
+        }
+        parent.setLeft(null);
+        return successor;
+    }
+
+    public Node<T> ejectPredecessor(Node<T> node) {
+        Node<T> parent = null;
+        Node<T> successor = node;
+        while (node.hasRight()) {
+            parent = successor;
+            successor = successor.getRight();
+        }
+        if (parent == null) {
+            return null;
+        }
+        parent.setRight(null);
+        return successor;
     }
 }

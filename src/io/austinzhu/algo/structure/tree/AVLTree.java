@@ -8,17 +8,16 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
 
-public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
+public class AVLTree<T> extends BaseBinaryTree<T> {
 
     private Node<T> root;
 
-    public static AVLTree<Integer> init() {
+    public static AVLTree<Integer> init(int size, int bound) {
         Random random = new Random();
-        int capacity = random.nextInt(20);
+        int capacity = random.nextInt(size);
         AVLTree<Integer> avlTree = new AVLTree<>();
         for (int i = 0; i < capacity; i++) {
-            avlTree.append(random.nextInt(100));
-            System.out.println(avlTree.toString());
+            avlTree.append(random.nextInt(bound));
         }
         return avlTree;
     }
@@ -34,20 +33,21 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
         avlNodeDeque.addLast(root);
         Node<T> iterator;
         while (true) {
-            iterator = avlNodeDeque.peekLast();
-            assert iterator != null;
+            iterator = avlNodeDeque.getLast();
             if (newNode.getKey() > iterator.getKey()) {
                 if (!iterator.hasRight()) {
                     iterator.setRight(newNode);
                     break;
                 }
                 iterator = iterator.getRight();
-            } else {
+            } else if (newNode.getKey() < iterator.getKey()){
                 if (!iterator.hasLeft()) {
                     iterator.setLeft(newNode);
                     break;
                 }
                 iterator = iterator.getLeft();
+            } else {
+                return;
             }
             avlNodeDeque.addLast(iterator);
         }
@@ -59,7 +59,8 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
             if (prevParent == null) {
                 isAtRoot = true;
             }
-            if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() >= newNode.getKey()) {
+            // Case 1: caused imbalance on LEFT child's LEFT subtree
+            if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() > newNode.getKey()) {
                 if (isAtRoot) {
                     setRoot(rightRotate(root));
                     return;
@@ -70,6 +71,7 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
                     prevParent.setRight(rightRotate(prev));
                 }
             }
+            // Case 2: caused imbalance on LEFT child's RIGHT subtree
             if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() < newNode.getKey()) {
                 prev.setLeft(leftRotate(prev.getLeft()));
                 if (isAtRoot) {
@@ -82,6 +84,7 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
                     prevParent.setRight(rightRotate(prev));
                 }
             }
+            // Case 3: caused imbalance on RIGHT child's RIGHT subtree
             if (prev.getBalanceFactor() < -1 && prev.getRight().getKey() < newNode.getKey()) {
                 if (isAtRoot) {
                     setRoot(leftRotate(root));
@@ -93,7 +96,8 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
                     prevParent.setRight(leftRotate(prev));
                 }
             }
-            if (prev.getBalanceFactor() < -1 && prev.getRight().getKey() >= newNode.getKey()) {
+            // Case 2: caused imbalance on RIGHT child's LEFT subtree
+            if (prev.getBalanceFactor() < -1 && prev.getRight().getKey() > newNode.getKey()) {
                 prev.setRight(rightRotate(prev.getRight()));
                 if (isAtRoot) {
                     setRoot(leftRotate(root));
@@ -147,6 +151,9 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
 
     private static final class Node<T> extends BaseBinaryTree.Node<T> {
 
+        // 0  : Balanced
+        // >1 : Left heavy
+        // <-1: Right heavy
         private int balanceFactor;
 
         private int height;

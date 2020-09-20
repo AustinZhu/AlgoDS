@@ -40,10 +40,10 @@ public class Menu {
                 category.toLowerCase() + "." +
                 name;
         Class<?> clazz = Class.forName(className);
-        Object dataStructure = clazz.getDeclaredMethod("init").invoke(null);
-        System.out.println(
-                "This is your " + name + ": \n" + dataStructure
-        );
+        int size = 20, bound = 100;
+        Object dataStructure = clazz.getDeclaredMethod("init", Integer.TYPE, Integer.TYPE)
+                .invoke(null, size, bound);
+        System.out.println("This is your " + name + ": \n" + dataStructure);
         return dataStructure;
     }
 

@@ -7,7 +7,7 @@ import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
 import java.util.Random;
 
-public class LinkedList<T extends Comparable<T>> extends List<T>{
+public class LinkedList<T extends Comparable<T>> extends List<T> {
 
     private Node<T> root;
 
@@ -15,12 +15,12 @@ public class LinkedList<T extends Comparable<T>> extends List<T>{
         root = null;
     }
 
-    public static LinkedList<Integer> init() {
+    public static LinkedList<Integer> init(int size, int bound) {
         Random random = new Random();
-        int capacity = random.nextInt(20);
+        int capacity = random.nextInt(size);
         LinkedList<Integer> integerLinkedList = new LinkedList<>();
         for (int i = 0; i < capacity; i++) {
-            integerLinkedList.append(random.nextInt(100));
+            integerLinkedList.append(random.nextInt(bound));
         }
         return integerLinkedList;
     }
@@ -148,35 +148,35 @@ public class LinkedList<T extends Comparable<T>> extends List<T>{
     public boolean isEmpty() {
         return root == null;
     }
-}
 
-final class Node<T> {
-    private T value;
+    private static final class Node<T> {
+        private T value;
 
-    private Node<T> next;
+        private Node<T> next;
 
-    Node(T value) {
-        this.value = value;
-        this.next = null;
-    }
+        Node(T value) {
+            this.value = value;
+            this.next = null;
+        }
 
-    public T getValue() {
-        return value;
-    }
+        public T getValue() {
+            return value;
+        }
 
-    public void setValue(T value) {
-        this.value = value;
-    }
+        public void setValue(T value) {
+            this.value = value;
+        }
 
-    public Node<T> getNext() {
-        return next;
-    }
+        public Node<T> getNext() {
+            return next;
+        }
 
-    public void setNext(Node<T> next) {
-        this.next = next;
-    }
+        public void setNext(Node<T> next) {
+            this.next = next;
+        }
 
-    public boolean hasNext() {
-        return getNext() != null;
+        public boolean hasNext() {
+            return getNext() != null;
+        }
     }
 }

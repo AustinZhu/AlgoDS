@@ -21,12 +21,12 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * @return an array of random integers
      * @description initialize a random integer array with size less than 20 and max element value less than 100
      */
-    public static Array<Integer> init() {
+    public static Array<Integer> init(int size, int bound) {
         Random random = new Random();
-        int capacity = random.nextInt(20);
+        int capacity = random.nextInt(size);
         Array<Integer> integerArray = new Array<>(capacity);
         for (int i = 0; i < capacity; i++) {
-            integerArray.append(random.nextInt(100));
+            integerArray.append(random.nextInt(bound));
         }
         return integerArray;
     }
