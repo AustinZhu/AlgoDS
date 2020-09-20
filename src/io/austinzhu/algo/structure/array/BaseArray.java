@@ -117,22 +117,12 @@ public abstract class BaseArray<T extends Comparable<T>> implements Operatable<T
     @Override
     public abstract void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException;
 
-    @Override
-    public void travel() {
-        for (int i = lowerBound; i < upperBound; i++) {
-        }
-    }
-
     public int getLength() {
         return length;
     }
 
     private void updateLength() {
         this.length = upperBound - lowerBound;
-    }
-
-    public int getMediumId() {
-        return (upperBound + lowerBound) / 2;
     }
 
     public T[] getData() {

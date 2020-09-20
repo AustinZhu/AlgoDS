@@ -2,7 +2,7 @@ package io.austinzhu.algo.interfaces;
 
 import io.austinzhu.algo.exception.NoSuchAlgorithmException;
 
-public interface Sortable extends Traversable {
+public interface Sortable {
 
     void sort();
 

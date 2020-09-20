@@ -12,7 +12,7 @@ public class Menu {
     private static final String[] CATEGORIES = new String[]{"Array", "Heap", "List", "Tree", "Network"};
 
     private static final HashMap<String, String[]> DATA_STRUCTURE_MAP =
-            new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix", "String"},
+            new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix"},
                     "Heap", new String[]{"Beap", "BinaryHeap", "BinomialHeap", "FibonacciHeap", "Treap"},
                     "List", new String[]{"ArrayList", "DoublyLinkedList", "LinkedList", "Queue", "Stack", "UnrolledLinkedList"},
                     "Network", new String[]{"Graph"},
@@ -87,12 +87,18 @@ public class Menu {
         System.out.println("3. Initializing " + name);
         Object dataStructure = menu.dataStructureFactory(category, name);
         Method[] methods = menu.getMethods(dataStructure.getClass());
+        if (methods.length == 0) {
+            return;
+        }
         int thirdSelection = scanner.nextInt();
         Method selectedMethod = methods[thirdSelection - 1];
         if ("search".equals(selectedMethod.getName())) {
             int element = scanner.nextInt();
-            Object result = selectedMethod.invoke(dataStructure, element, SearchingAlgorithm.BINARY);
-            System.out.println("Element at position: " + result.toString());
+            Integer result = (Integer) selectedMethod.invoke(dataStructure, element, SearchingAlgorithm.BINARY);
+            if (result.equals(-1)) {
+                System.out.println("Element not found");
+            }
+            System.out.println("Element at position: " + result);
         }
         if ("sort".equals(selectedMethod.getName())) {
             SortingAlgorithm algorithm = menu.sortSelection(scanner);

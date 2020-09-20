@@ -4,7 +4,7 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.exception.NoSuchAlgorithmException;
 import io.austinzhu.algo.interfaces.*;
 
-public abstract class List<T extends Comparable<T>> implements Traversable, Operatable<T>, Searchable<T>, Sortable, Interactable<T> {
+public abstract class List<T extends Comparable<T>> implements Operatable<T>, Searchable<T>, Sortable, Interactable<T> {
     @Override
     public void append(T element) throws IndexOutOfBoundsException {
 
@@ -55,8 +55,4 @@ public abstract class List<T extends Comparable<T>> implements Traversable, Oper
 
     }
 
-    @Override
-    public void travel() {
-
-    }
 }

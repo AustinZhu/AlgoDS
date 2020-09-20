@@ -145,11 +145,6 @@ public class LinkedList<T extends Comparable<T>> extends List<T>{
 
     }
 
-    @Override
-    public void travel() {
-
-    }
-
     public boolean isEmpty() {
         return root == null;
     }

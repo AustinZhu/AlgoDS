@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
 
-    private AVLNode<T> root;
+    private Node<T> root;
 
     public static AVLTree<Integer> init() {
         Random random = new Random();
@@ -25,14 +25,14 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
 
     @Override
     public void append(T element) {
-        AVLNode<T> newNode = new AVLNode<>(element);
+        Node<T> newNode = new Node<>(element);
         if (root == null) {
             setRoot(newNode);
             return;
         }
-        Deque<AVLNode<T>> avlNodeDeque = new LinkedList<>();
+        Deque<Node<T>> avlNodeDeque = new LinkedList<>();
         avlNodeDeque.addLast(root);
-        AVLNode<T> iterator;
+        Node<T> iterator;
         while (true) {
             iterator = avlNodeDeque.peekLast();
             assert iterator != null;
@@ -53,9 +53,9 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
         }
         boolean isAtRoot = false;
         while (!isAtRoot) {
-            AVLNode<T> prev = avlNodeDeque.removeLast();
+            Node<T> prev = avlNodeDeque.removeLast();
             prev.updateHeight();
-            AVLNode<T> prevParent = avlNodeDeque.peekLast();
+            Node<T> prevParent = avlNodeDeque.peekLast();
             if (prevParent == null) {
                 isAtRoot = true;
             }
@@ -113,31 +113,31 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
         super.delete(id);
     }
 
-    public AVLNode<T> leftRotate(AVLNode<T> root) {
+    public Node<T> leftRotate(Node<T> root) {
         if (root.isLeaf()) {
             return root;
         }
-        AVLNode<T> right = root.getRight();
+        Node<T> right = root.getRight();
         root.setRight(right.getLeft());
         right.setLeft(root);
         return right;
     }
 
-    public AVLNode<T> rightRotate(AVLNode<T> root) {
+    public Node<T> rightRotate(Node<T> root) {
         if (root.isLeaf()) {
             return root;
         }
-        AVLNode<T> left = root.getLeft();
+        Node<T> left = root.getLeft();
         root.setLeft(left.getRight());
         left.setRight(root);
         return left;
     }
 
-    public AVLNode<T> getRoot() {
+    public Node<T> getRoot() {
         return root;
     }
 
-    public void setRoot(AVLNode<T> root) {
+    public void setRoot(Node<T> root) {
         this.root = root;
     }
 
@@ -145,99 +145,92 @@ public class AVLTree<T extends Comparable<T>> extends BaseBinaryTree<T> {
         return root == null;
     }
 
-    @Override
-    public String toString() {
-        TreePrinter<AVLNode<T>> tp = new TreePrinter<>(n -> n.getValue().toString(), AVLNode::getLeft, AVLNode::getRight);
-        tp.printTree(getRoot());
-        return tp.toString();
-    }
-}
+    private static final class Node<T> extends BaseBinaryTree.Node<T> {
 
-final class AVLNode<T> extends Node<T> {
+        private int balanceFactor;
 
-    private int balanceFactor;
+        private int height;
 
-    private int height;
+        private Node<T> left;
 
-    private AVLNode<T> left;
+        private Node<T> right;
 
-    private AVLNode<T> right;
-
-    AVLNode(T value) {
-        super(value);
-        this.height = 1;
-        this.balanceFactor = 0;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void updateHeight() {
-        if (this.isLeaf()) {
+        Node(T value) {
+            super(value);
             this.height = 1;
-        } else if (!this.hasLeft()) {
-            this.height = 1 + getRight().getHeight();
-        } else if (!this.hasRight()) {
-            this.height = 1 + getLeft().getHeight();
-        } else {
-            this.height = 1 + Math.max(getLeft().getHeight(), getRight().getHeight());
-        }
-    }
-
-    public int getBalanceFactor() {
-        updateBalanceFactor();
-        return balanceFactor;
-    }
-
-    public void updateBalanceFactor() {
-        updateHeight();
-        if (isLeaf()) {
             this.balanceFactor = 0;
-        } else if (left == null) {
-            this.balanceFactor = -right.height;
-        } else if (!this.hasRight()) {
-            this.balanceFactor = left.height;
-        } else {
-            this.balanceFactor = left.height - right.height;
         }
-    }
 
-    public AVLNode<T> getLeft() {
-        return left;
-    }
+        public int getHeight() {
+            return height;
+        }
 
-    public void setLeft(AVLNode<T> left) {
-        this.left = left;
-        updateHeight();
-    }
+        public void updateHeight() {
+            if (this.isLeaf()) {
+                this.height = 1;
+            } else if (!this.hasLeft()) {
+                this.height = 1 + getRight().getHeight();
+            } else if (!this.hasRight()) {
+                this.height = 1 + getLeft().getHeight();
+            } else {
+                this.height = 1 + Math.max(getLeft().getHeight(), getRight().getHeight());
+            }
+        }
 
-    public AVLNode<T> getRight() {
-        return right;
-    }
+        public int getBalanceFactor() {
+            updateBalanceFactor();
+            return balanceFactor;
+        }
 
-    public void setRight(AVLNode<T> right) {
-        this.right = right;
-        updateHeight();
-    }
+        public void updateBalanceFactor() {
+            updateHeight();
+            if (isLeaf()) {
+                this.balanceFactor = 0;
+            } else if (left == null) {
+                this.balanceFactor = -right.height;
+            } else if (!this.hasRight()) {
+                this.balanceFactor = left.height;
+            } else {
+                this.balanceFactor = left.height - right.height;
+            }
+        }
 
-    public boolean hasLeft() {
-        return left != null;
-    }
+        public Node<T> getLeft() {
+            return left;
+        }
 
-    public boolean hasRight() {
-        return right != null;
-    }
+        public void setLeft(Node<T> left) {
+            this.left = left;
+            updateHeight();
+        }
 
-    public boolean isLeaf() {
-        return !hasLeft() && !hasRight();
-    }
+        public Node<T> getRight() {
+            return right;
+        }
 
-    @Override
-    public int hashCode() {
-        int h = Objects.hashCode(getValue());
-        h = h * 31 + Objects.hashCode(left);
-        h = h * 31 + Objects.hashCode(right);
-        return h;
+        public void setRight(Node<T> right) {
+            this.right = right;
+            updateHeight();
+        }
+
+        public boolean hasLeft() {
+            return left != null;
+        }
+
+        public boolean hasRight() {
+            return right != null;
+        }
+
+        public boolean isLeaf() {
+            return !hasLeft() && !hasRight();
+        }
+
+        @Override
+        public int hashCode() {
+            int h = Objects.hashCode(getValue());
+            h = h * 31 + Objects.hashCode(left);
+            h = h * 31 + Objects.hashCode(right);
+            return h;
+        }
     }
 }

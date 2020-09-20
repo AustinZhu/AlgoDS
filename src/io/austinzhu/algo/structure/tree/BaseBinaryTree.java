@@ -7,7 +7,7 @@ import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import java.util.*;
 
 public abstract class BaseBinaryTree<T> implements Tree<T> {
-    private Node<T> root;
+    protected Node<T> root;
 
     public BaseBinaryTree() {
         this.root = null;
@@ -216,21 +216,6 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
         return search(element, SearchingAlgorithm.BFS) != -1;
     }
 
-    @Override
-    public void travel() {
-        Queue<Node<T>> nodeQueue = new LinkedList<>();
-        nodeQueue.add(getRoot());
-        while (!nodeQueue.isEmpty()) {
-            Node<T> temp = nodeQueue.remove();
-            if (temp.hasLeft()) {
-                nodeQueue.add(temp.getLeft());
-            }
-            if (temp.hasRight()) {
-                nodeQueue.add(temp.getRight());
-            }
-        }
-    }
-
     public void leftRotate() {
         if (getRoot() == null) {
             return;
@@ -299,73 +284,73 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
     public boolean isEmpty() {
         return getRoot() == null;
     }
-}
 
-class Node<T> {
-    private int key;
+    protected static class Node<T> {
+        private int key;
 
-    private T value;
+        private T value;
 
-    private Node<T> left;
+        private Node<T> left;
 
-    private Node<T> right;
+        private Node<T> right;
 
-    Node(T value) {
-        this.key = value.hashCode();
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+        Node(T value) {
+            this.key = value.hashCode();
+            this.value = value;
+            this.left = null;
+            this.right = null;
+        }
 
-    public int getKey() {
-        return key;
-    }
+        public int getKey() {
+            return key;
+        }
 
-    public void setKey(int key) {
-        this.key = key;
-    }
+        public void setKey(int key) {
+            this.key = key;
+        }
 
-    public T getValue() {
-        return value;
-    }
+        public T getValue() {
+            return value;
+        }
 
-    public void setValue(T value) {
-        this.value = value;
-    }
+        public void setValue(T value) {
+            this.value = value;
+        }
 
-    public Node<T> getLeft() {
-        return left;
-    }
+        public Node<T> getLeft() {
+            return left;
+        }
 
-    public void setLeft(Node<T> left) {
-        this.left = left;
-    }
+        public void setLeft(Node<T> left) {
+            this.left = left;
+        }
 
-    public Node<T> getRight() {
-        return right;
-    }
+        public Node<T> getRight() {
+            return right;
+        }
 
-    public void setRight(Node<T> right) {
-        this.right = right;
-    }
+        public void setRight(Node<T> right) {
+            this.right = right;
+        }
 
-    public boolean hasLeft() {
-        return left != null;
-    }
+        public boolean hasLeft() {
+            return left != null;
+        }
 
-    public boolean hasRight() {
-        return right != null;
-    }
+        public boolean hasRight() {
+            return right != null;
+        }
 
-    public boolean isLeaf() {
-        return !hasLeft() && !hasRight();
-    }
+        public boolean isLeaf() {
+            return !hasLeft() && !hasRight();
+        }
 
-    @Override
-    public int hashCode() {
-        int h = Objects.hashCode(value);
-        h = h * 31 + Objects.hashCode(left);
-        h = h * 31 + Objects.hashCode(right);
-        return h;
+        @Override
+        public int hashCode() {
+            int h = Objects.hashCode(value);
+            h = h * 31 + Objects.hashCode(left);
+            h = h * 31 + Objects.hashCode(right);
+            return h;
+        }
     }
 }
