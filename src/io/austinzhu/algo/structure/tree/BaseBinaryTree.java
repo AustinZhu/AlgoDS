@@ -7,7 +7,7 @@ import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import java.util.*;
 
 public abstract class BaseBinaryTree<T> implements Tree<T> {
-    protected Node<T> root;
+    private Node<T> root;
 
     public BaseBinaryTree() {
         this.root = null;

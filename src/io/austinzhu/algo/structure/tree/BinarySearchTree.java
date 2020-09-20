@@ -66,7 +66,7 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
             throw new IndexOutOfBoundsException("Null Head");
         }
         Node<T> parent = null;
-        Node<T> iterator = root;
+        Node<T> iterator = getRoot();
         boolean isLeft = false;
         while (iterator.getKey() != id) {
             parent = iterator;
