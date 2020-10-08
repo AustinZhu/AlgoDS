@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
 
-public class AVLTree<T> extends BaseBinaryTree<T> {
+public class AVLTree<T> extends BinarySearchTree<T> {
 
     private Node<T> root;
 
@@ -59,6 +59,11 @@ public class AVLTree<T> extends BaseBinaryTree<T> {
             if (prevParent == null) {
                 isAtRoot = true;
             }
+            // Balance Factor:
+            //  0  : Balanced
+            //  >1 : Left heavy
+            //  <-1: Right heavy
+
             // Case 1: caused imbalance on LEFT child's LEFT subtree
             if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() > newNode.getKey()) {
                 if (isAtRoot) {
@@ -149,23 +154,14 @@ public class AVLTree<T> extends BaseBinaryTree<T> {
         return root == null;
     }
 
-    private static final class Node<T> extends BaseBinaryTree.Node<T> {
-
-        // 0  : Balanced
-        // >1 : Left heavy
-        // <-1: Right heavy
-        private int balanceFactor;
+    // Hiding
+    private static final class Node<T> extends BinarySearchTree.Node<T> {
 
         private int height;
-
-        private Node<T> left;
-
-        private Node<T> right;
 
         Node(T value) {
             super(value);
             this.height = 1;
-            this.balanceFactor = 0;
         }
 
         public int getHeight() {
@@ -185,25 +181,21 @@ public class AVLTree<T> extends BaseBinaryTree<T> {
         }
 
         public int getBalanceFactor() {
-            updateBalanceFactor();
-            return balanceFactor;
-        }
-
-        public void updateBalanceFactor() {
             updateHeight();
             if (isLeaf()) {
-                this.balanceFactor = 0;
+                return 0;
             } else if (left == null) {
-                this.balanceFactor = -right.height;
+                return -getRight().height;
             } else if (!this.hasRight()) {
-                this.balanceFactor = left.height;
+                return getLeft().height;
             } else {
-                this.balanceFactor = left.height - right.height;
+                return getLeft().height - getRight().height;
             }
         }
 
+        @Override
         public Node<T> getLeft() {
-            return left;
+            return (Node<T>) left;
         }
 
         public void setLeft(Node<T> left) {
@@ -211,8 +203,9 @@ public class AVLTree<T> extends BaseBinaryTree<T> {
             updateHeight();
         }
 
+        @Override
         public Node<T> getRight() {
-            return right;
+            return (Node<T>) right;
         }
 
         public void setRight(Node<T> right) {
@@ -220,14 +213,17 @@ public class AVLTree<T> extends BaseBinaryTree<T> {
             updateHeight();
         }
 
+        @Override
         public boolean hasLeft() {
             return left != null;
         }
 
+        @Override
         public boolean hasRight() {
             return right != null;
         }
 
+        @Override
         public boolean isLeaf() {
             return !hasLeft() && !hasRight();
         }

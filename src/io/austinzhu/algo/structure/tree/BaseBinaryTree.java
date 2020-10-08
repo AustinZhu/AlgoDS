@@ -286,13 +286,13 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
     }
 
     protected static class Node<T> {
-        private int key;
+        int key;
 
-        private T value;
+        T value;
 
-        private Node<T> left;
+        Node<T> left;
 
-        private Node<T> right;
+        Node<T> right;
 
         Node(T value) {
             this.key = value.hashCode();
