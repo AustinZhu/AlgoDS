@@ -2,6 +2,7 @@ package io.austinzhu.algo.structure.tree;
 
 import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
+import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
 import java.util.*;
@@ -17,6 +18,7 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
         this.root = root;
     }
 
+    @Algorithm
     @Override
     public void append(T element) {
         if (getRoot() == null) {
@@ -133,6 +135,7 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
         throw new ElementNotFoundException("Not Found");
     }
 
+    @Algorithm
     @Override
     public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
         if (getRoot() == null) {
@@ -343,6 +346,42 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
 
         public boolean isLeaf() {
             return !hasLeft() && !hasRight();
+        }
+
+        public Node<T> ejectSuccessor() {
+            if (!this.hasRight()) {
+                return null;
+            }
+            Node<T> parent = this;
+            Node<T> succ = this.getRight();
+            if (!succ.hasLeft()) {
+                parent.setRight(succ.getRight());
+                return succ;
+            }
+            while (succ.hasLeft()) {
+                parent = succ;
+                succ = succ.getLeft();
+            }
+            parent.setLeft(null);
+            return succ;
+        }
+
+        public Node<T> ejectPredecessor() {
+            if (!this.hasLeft()) {
+                return null;
+            }
+            Node<T> parent = this;
+            Node<T> pred = this.getLeft();
+            if (!pred.hasRight()) {
+                parent.setLeft(pred.getLeft());
+                return pred;
+            }
+            while (pred.hasRight()) {
+                parent = pred;
+                pred = pred.getRight();
+            }
+            parent.setRight(null);
+            return pred;
         }
 
         @Override

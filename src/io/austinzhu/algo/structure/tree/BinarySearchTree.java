@@ -2,6 +2,7 @@ package io.austinzhu.algo.structure.tree;
 
 import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
+import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
 import java.util.Random;
@@ -26,6 +27,7 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         return binaryTree;
     }
 
+    @Algorithm
     @Override
     public void append(T element) {
         Node<T> newNode = new Node<>(element);
@@ -60,6 +62,7 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         return super.get(id);
     }
 
+    @Algorithm
     @Override
     public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
         if (isEmpty()) {
@@ -70,11 +73,16 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         boolean isLeft = false;
         while (iterator.getKey() != id) {
             parent = iterator;
-            if (iterator.getKey() > id && iterator.hasLeft()) {
+            if (iterator.getKey() > id) {
+                if (!iterator.hasLeft()) {
+                    throw new ElementNotFoundException("Not found");
+                }
                 iterator = iterator.getLeft();
                 isLeft = true;
-            }
-            if (iterator.getKey() < id && iterator.hasRight()) {
+            } else {
+                if (!iterator.hasRight()) {
+                    throw new ElementNotFoundException("Not found");
+                }
                 iterator = iterator.getRight();
                 isLeft = false;
             }
@@ -121,14 +129,17 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         }
         // Case 4: Node to be deleted has both children
         if (iterator.hasLeft() && iterator.hasRight()) {
+            Node<T> succ = iterator.ejectSuccessor();
+            succ.setLeft(iterator.getLeft());
+            succ.setRight(iterator.getRight());
             if (isRoot) {
-                setRoot(ejectSuccessor(iterator));
+                setRoot(succ);
                 return;
             }
             if (isLeft) {
-                parent.setLeft(ejectSuccessor(iterator));
+                parent.setLeft(succ);
             } else {
-                parent.setRight(ejectSuccessor(iterator));
+                parent.setRight(succ);
             }
         }
     }
@@ -141,33 +152,5 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
     @Override
     public boolean exist(T element) {
         return super.exist(element);
-    }
-
-    public Node<T> ejectSuccessor(Node<T> node) {
-        Node<T> parent = null;
-        Node<T> successor = node;
-        while (node.hasLeft()) {
-            parent = successor;
-            successor = successor.getLeft();
-        }
-        if (parent == null) {
-            return null;
-        }
-        parent.setLeft(null);
-        return successor;
-    }
-
-    public Node<T> ejectPredecessor(Node<T> node) {
-        Node<T> parent = null;
-        Node<T> successor = node;
-        while (node.hasRight()) {
-            parent = successor;
-            successor = successor.getRight();
-        }
-        if (parent == null) {
-            return null;
-        }
-        parent.setRight(null);
-        return successor;
     }
 }

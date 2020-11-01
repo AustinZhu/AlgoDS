@@ -1,5 +1,6 @@
 package io.austinzhu.algo.main;
 
+import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
@@ -105,6 +106,26 @@ public class Menu {
             selectedMethod.invoke(dataStructure, algorithm);
             System.out.println("After sorting: ");
             System.out.println(dataStructure);
+        }
+        if ("delete".equals(selectedMethod.getName())) {
+            int element = scanner.nextInt();
+            selectedMethod.invoke(dataStructure, element);
+            try {
+                System.out.println("After deletion: ");
+                System.out.println(dataStructure);
+            } catch (ElementNotFoundException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }
+        if ("append".equals(selectedMethod.getName())) {
+            int element = scanner.nextInt();
+            selectedMethod.invoke(dataStructure, element);
+            try {
+                System.out.println("After append: ");
+                System.out.println(dataStructure);
+            } catch (ElementNotFoundException e1) {
+                System.out.println(e1.getMessage());
+            }
         }
     }
 }
