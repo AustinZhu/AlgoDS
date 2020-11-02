@@ -1,8 +1,32 @@
 package io.austinzhu.algo.structure.tree;
 
+import io.austinzhu.algo.exception.ElementNotFoundException;
+import io.austinzhu.algo.exception.IndexOutOfBoundsException;
+
 import java.util.Objects;
+import java.util.Random;
 
 public class RedBlackTree<T> extends BinarySearchTree<T> {
+
+    public static AVLTree<Integer> init(int size, int bound) {
+        Random random = new Random();
+        int capacity = random.nextInt(size);
+        AVLTree<Integer> avlTree = new AVLTree<>();
+        for (int i = 0; i < capacity; i++) {
+            avlTree.append(random.nextInt(bound));
+        }
+        return avlTree;
+    }
+
+    @Override
+    public void append(T element) {
+        super.append(element);
+    }
+
+    @Override
+    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
+        super.delete(id);
+    }
 
     // Hiding
     private static final class Node<T> extends BinarySearchTree.Node<T> {

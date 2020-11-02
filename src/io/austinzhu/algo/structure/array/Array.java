@@ -341,6 +341,9 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * @worstTime O(n ^ 2)
      */
     private void quickSort(int lower, int upper) {
+        if (upper - lower < 2) {
+            return;
+        }
         // initialize left and right pointers
         int leftPointer = lower;
         int rightPointer = upper - 1;
@@ -364,12 +367,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
             }
         }
         // check if pointers are equal to or out of the bounds (when the subarray has 2 or 1 elements)
-        if (lower < rightPointer) {
-            quickSort(lower, rightPointer + 1);
-        }
-        if (upper > leftPointer) {
-            quickSort(leftPointer, upper);
-        }
+        quickSort(lower, leftPointer);
+        quickSort(leftPointer, upper);
     }
 
     /**
