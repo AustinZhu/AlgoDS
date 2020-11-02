@@ -331,16 +331,17 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * 3. When two pointers surpass each other, bipartite the array there into [lower, right + 1) and [right, upper)
      * 4. Quick sort the subarray(s) with size larger than 1
      * <p>
-     * - lower bound must be smaller than the upper bound
-     * - partition finishes when left pointer and right pointer invert
+     * - terminates when subarray has length 1 or 0
+     * - partition finishes when left pointer and right pointer cross
+     * - partition 1. after pointers meet at pivot: [<pivot (pr), pivot,(pl) >pivot] or 2. [<=pivot (pr), (pl) >=pivot]
      * - if any element equals to the pivot, stop moving pointers and swap
      * - pointers must be updated after a swap, or the loop may never end
-     * - check if a subarray has size larger than 1, or empty subarrays will smash your call stack
      * @bestTime O(n log n)
      * @avgTime O(n log n)
      * @worstTime O(n ^ 2)
      */
     private void quickSort(int lower, int upper) {
+        // termination condition
         if (upper - lower < 2) {
             return;
         }
@@ -366,7 +367,6 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
                 rightPointer--;
             }
         }
-        // check if pointers are equal to or out of the bounds (when the subarray has 2 or 1 elements)
         quickSort(lower, leftPointer);
         quickSort(leftPointer, upper);
     }

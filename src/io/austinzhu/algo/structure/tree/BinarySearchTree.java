@@ -27,6 +27,18 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         return binaryTree;
     }
 
+//    public T[] inOrder() {
+//
+//    }
+//
+//    public T[] preorder() {
+//
+//    }
+//
+//    public T[] postOrder() {
+//
+//    }
+
     @Algorithm
     @Override
     public void append(T element) {
