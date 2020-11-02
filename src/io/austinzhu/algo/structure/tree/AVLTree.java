@@ -74,10 +74,11 @@ public class AVLTree<T> extends BinarySearchTree<T> {
                 return node.getRight();
             }
             if (node.hasLeft() && node.hasRight()) {
-                Node<T> succ = node.ejectSuccessor();
-                succ.setLeft(node.getLeft());
-                succ.setRight(node.getRight());
-                return succ;
+                Node<T> succ = node.getSuccessor();
+                node.setRight(deleteRecursive(node.getRight(), succ.getValue()));
+                node.setKey(succ.getKey());
+                node.setValue(succ.getValue());
+                return node;
             }
         }
         if (node.getBalanceFactor() > 1 && element.hashCode() < node.getLeft().getKey()) {
@@ -173,41 +174,31 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             }
         }
 
-        @Override
-        public Node<T> ejectSuccessor() {
+        public Node<T> getSuccessor() {
             if (!this.hasRight()) {
                 return null;
             }
-            Node<T> parent = this;
             Node<T> succ = this.getRight();
             if (!succ.hasLeft()) {
-                parent.setRight(succ.getRight());
                 return succ;
             }
             while (succ.hasLeft()) {
-                parent = succ;
                 succ = succ.getLeft();
             }
-            parent.setLeft(null);
             return succ;
         }
 
-        @Override
-        public Node<T> ejectPredecessor() {
+        public Node<T> getPredecessor() {
             if (!this.hasLeft()) {
                 return null;
             }
-            Node<T> parent = this;
             Node<T> pred = this.getLeft();
             if (!pred.hasRight()) {
-                parent.setLeft(pred.getLeft());
                 return pred;
             }
             while (pred.hasRight()) {
-                parent = pred;
                 pred = pred.getRight();
             }
-            parent.setRight(null);
             return pred;
         }
 
