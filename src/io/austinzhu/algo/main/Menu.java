@@ -17,7 +17,7 @@ public class Menu {
                     "Heap", new String[]{"Beap", "BinaryHeap", "BinomialHeap", "FibonacciHeap", "Treap"},
                     "List", new String[]{"ArrayList", "DoublyLinkedList", "LinkedList", "Queue", "Stack", "UnrolledLinkedList"},
                     "Network", new String[]{"Graph"},
-                    "Tree", new String[]{"AVLTree", "BinarySearchTree", "BinaryTree"}));
+                    "Tree", new String[]{"AVLTree", "BinarySearchTree", "BinaryTree", "RedBlackTree"}));
 
     private void printCategory() {
         StringBuilder builder = new StringBuilder("1. Choose the category: ");
