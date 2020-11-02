@@ -66,80 +66,71 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
     @Override
     public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
         if (isEmpty()) {
-            throw new IndexOutOfBoundsException("Null Head");
+            throw new ElementNotFoundException("Empty root");
         }
-        Node<T> parent = null;
-        Node<T> iterator = getRoot();
+        Node<T> iterator = getRoot(), deleted = getRoot();
         boolean isLeft = false;
         while (iterator.getKey() != id) {
-            parent = iterator;
-            if (iterator.getKey() > id) {
+            if (id < iterator.getKey()) {
                 if (!iterator.hasLeft()) {
                     throw new ElementNotFoundException("Not found");
                 }
+                if (id == iterator.getLeft().getKey()) {
+                    deleted = iterator.getLeft();
+                    isLeft = true;
+                    break;
+                }
                 iterator = iterator.getLeft();
-                isLeft = true;
             } else {
                 if (!iterator.hasRight()) {
                     throw new ElementNotFoundException("Not found");
                 }
+                if (id == iterator.getRight().getKey()) {
+                    deleted = iterator.getRight();
+                    isLeft = false;
+                    break;
+                }
                 iterator = iterator.getRight();
-                isLeft = false;
             }
         }
-        boolean isRoot = parent == null;
-        // Case 1: Node to be deleted has no child
-        if (iterator.isLeaf()) {
+        boolean isRoot = deleted.getKey() == getRoot().getKey();
+        if (deleted.isLeaf()) {
             if (isRoot) {
                 setRoot(null);
-                return;
-            }
-            if (isLeft) {
-                parent.setLeft(null);
+            } else if (isLeft) {
+                iterator.setLeft(null);
             } else {
-                parent.setRight(null);
+                iterator.setRight(null);
             }
-            return;
         }
-        // Case 2: Node to be deleted has only left child
-        if (iterator.hasLeft() && !iterator.hasRight()) {
+        if (deleted.hasLeft() && !deleted.hasRight()) {
             if (isRoot) {
-                setRoot(iterator.getLeft());
-                return;
-            }
-            if (isLeft) {
-                parent.setLeft(iterator.getLeft());
+                setRoot(deleted.getLeft());
+            } else if (isLeft) {
+                iterator.setLeft(deleted.getLeft());
             } else {
-                parent.setRight(iterator.getRight());
+                iterator.setRight(deleted.getLeft());
             }
-            return;
         }
-        // Case 3: Node to be deleted has only right child
-        if (iterator.hasRight() && !iterator.hasLeft()) {
+        if (deleted.hasRight() && !deleted.hasLeft()) {
             if (isRoot) {
-                setRoot(iterator.getRight());
-                return;
-            }
-            if (isLeft) {
-                parent.setLeft(iterator.getRight());
+                setRoot(deleted.getRight());
+            } else if (isLeft) {
+                iterator.setLeft(deleted.getRight());
             } else {
-                parent.setRight(iterator.getRight());
+                iterator.setRight(deleted.getRight());
             }
-            return;
         }
-        // Case 4: Node to be deleted has both children
-        if (iterator.hasLeft() && iterator.hasRight()) {
-            Node<T> succ = iterator.ejectSuccessor();
-            succ.setLeft(iterator.getLeft());
-            succ.setRight(iterator.getRight());
+        if (deleted.hasLeft() && deleted.hasRight()) {
+            Node<T> succ = deleted.ejectSuccessor();
+            succ.setLeft(deleted.getLeft());
+            succ.setRight(deleted.getRight());
             if (isRoot) {
                 setRoot(succ);
-                return;
-            }
-            if (isLeft) {
-                parent.setLeft(succ);
+            } else if (isLeft) {
+                iterator.setLeft(succ);
             } else {
-                parent.setRight(succ);
+                iterator.setRight(succ);
             }
         }
     }

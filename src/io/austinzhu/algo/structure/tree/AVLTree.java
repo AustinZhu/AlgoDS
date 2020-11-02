@@ -4,8 +4,6 @@ import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -23,229 +21,85 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return avlTree;
     }
 
-    @Algorithm
-    @Override
-    public void append(T element) {
-        Node<T> newNode = new Node<>(element);
-        if (root == null) {
-            setRoot(newNode);
-            return;
+    private Node<T> appendRecursive(Node<T> node, T element) {
+        if (node == null) {
+            return new Node<>(element);
         }
-        Deque<Node<T>> avlNodeDeque = new LinkedList<>();
-        Node<T> iterator = root;
-        // DFS Search for insertion position
-        while (true) {
-            avlNodeDeque.addLast(iterator);
-            if (newNode.getKey() > iterator.getKey()) {
-                if (!iterator.hasRight()) {
-                    iterator.setRight(newNode);
-                    break;
-                }
-                iterator = iterator.getRight();
-            } else if (newNode.getKey() < iterator.getKey()){
-                if (!iterator.hasLeft()) {
-                    iterator.setLeft(newNode);
-                    break;
-                }
-                iterator = iterator.getLeft();
-            } else {
-                return;
-            }
+        if (element.hashCode() < node.getKey()) {
+            node.setLeft(appendRecursive(node.getLeft(), element));
+        } else if (element.hashCode() > node.getKey()) {
+            node.setRight(appendRecursive(node.getRight(), element));
+        } else {
+            return node;
         }
-        boolean isAtRoot = false;
-        while (!isAtRoot) {
-            Node<T> prev = avlNodeDeque.removeLast();
-            prev.updateHeight();
-            Node<T> prevParent = avlNodeDeque.peekLast();
-            if (prevParent == null) {
-                isAtRoot = true;
-            }
-            // Balance Factor:
-            //  0  : Balanced
-            //  >1 : Left heavy
-            //  <-1: Right heavy
-
-            // Case 1: caused imbalance on LEFT child's LEFT subtree
-            if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() > newNode.getKey()) {
-                if (isAtRoot) {
-                    setRoot(rightRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(rightRotate(prev));
-                } else {
-                    prevParent.setRight(rightRotate(prev));
-                }
-            }
-            // Case 2: caused imbalance on LEFT child's RIGHT subtree
-            if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() < newNode.getKey()) {
-                prev.setLeft(leftRotate(prev.getLeft()));
-                if (isAtRoot) {
-                    setRoot(rightRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(rightRotate(prev));
-                } else {
-                    prevParent.setRight(rightRotate(prev));
-                }
-            }
-            // Case 3: caused imbalance on RIGHT child's RIGHT subtree
-            if (prev.getBalanceFactor() < -1 && prev.getRight().getKey() < newNode.getKey()) {
-                if (isAtRoot) {
-                    setRoot(leftRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(leftRotate(prev));
-                } else {
-                    prevParent.setRight(leftRotate(prev));
-                }
-            }
-            // Case 2: caused imbalance on RIGHT child's LEFT subtree
-            if (prev.getBalanceFactor() < -1 && prev.getRight().getKey() > newNode.getKey()) {
-                prev.setRight(rightRotate(prev.getRight()));
-                if (isAtRoot) {
-                    setRoot(leftRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(leftRotate(prev));
-                } else {
-                    prevParent.setRight(leftRotate(prev));
-                }
-            }
+        if (node.getBalanceFactor() > 1 && element.hashCode() < node.getLeft().getKey()) {
+            return rightRotate(node);
         }
+        if (node.getBalanceFactor() > 1 && element.hashCode() > node.getLeft().getKey()) {
+            node.setLeft(leftRotate(node.getLeft()));
+            return rightRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && element.hashCode() > node.getRight().getKey()) {
+            return leftRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && element.hashCode() < node.getRight().getKey()) {
+            node.setRight(rightRotate(node.getRight()));
+            return leftRotate(node);
+        }
+        return node;
     }
 
     @Algorithm
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
-        if (root == null) {
-            throw new ElementNotFoundException("Empty root");
-        }
-        Deque<Node<T>> avlNodeDeque = new LinkedList<>();
-        Node<T> iterator = root, deleted = root;
-        boolean isLeft = false;
-        while (iterator.getKey() != id) {
-            avlNodeDeque.addLast(iterator);
-            if (id < iterator.getKey()) {
-                if (!iterator.hasLeft()) {
-                    throw new ElementNotFoundException("Not found");
-                }
-                if (id == iterator.getLeft().getKey()) {
-                    deleted = iterator.getLeft();
-                    isLeft = true;
-                    break;
-                }
-                iterator = iterator.getLeft();
-            } else {
-                if (!iterator.hasRight()) {
-                    throw new ElementNotFoundException("Not found");
-                }
-                if (id == iterator.getRight().getKey()) {
-                    deleted = iterator.getRight();
-                    isLeft = false;
-                    break;
-                }
-                iterator = iterator.getRight();
-            }
-        }
-        if (deleted.isLeaf()) {
-            if (isLeft) {
-                iterator.setLeft(null);
-            } else {
-                iterator.setRight(null);
-            }
-        }
-        if (deleted.hasLeft() && !deleted.hasRight()) {
-            if (isLeft) {
-                iterator.setLeft(deleted.getLeft());
-            } else {
-                iterator.setRight(deleted.getLeft());
-            }
-        }
-        if (deleted.hasRight() && !deleted.hasLeft()) {
-            if (isLeft) {
-                iterator.setLeft(deleted.getRight());
-            } else {
-                iterator.setRight(deleted.getRight());
-            }
-        }
-        if (deleted.hasLeft() && deleted.hasRight()) {
-            Node<T> succ = deleted.ejectSuccessor();
-            succ.setLeft(deleted.getLeft());
-            succ.setRight(deleted.getRight());
-            if (isLeft) {
-                iterator.setLeft(succ);
-            } else {
-                iterator.setRight(succ);
-            }
-        }
-        boolean isAtRoot = false;
-        while (!isAtRoot) {
-            Node<T> prev = avlNodeDeque.removeLast();
-            prev.updateHeight();
-            Node<T> prevParent = avlNodeDeque.peekLast();
-            if (prevParent == null) {
-                isAtRoot = true;
-            }
-            // Balance Factor:
-            //  0  : Balanced
-            //  >1 : Left heavy
-            //  <-1: Right heavy
+    public void append(T element) {
+        setRoot(appendRecursive(root, element));
+    }
 
-            // Case 1: caused imbalance on LEFT child's LEFT subtree
-            if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() > id) {
-                if (isAtRoot) {
-                    setRoot(rightRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(rightRotate(prev));
-                } else {
-                    prevParent.setRight(rightRotate(prev));
-                }
+    private Node<T> deleteRecursive(Node<T> node, T element) {
+        if (node == null) {
+            throw new ElementNotFoundException("Element not found");
+        }
+        if (element.hashCode() < node.getKey()) {
+            node.setLeft(deleteRecursive(node.getLeft(), element));
+        } else if (element.hashCode() > node.getKey()) {
+            node.setRight(deleteRecursive(node.getRight(), element));
+        } else {
+            if (node.isLeaf()) {
+                return null;
             }
-            // Case 2: caused imbalance on LEFT child's RIGHT subtree
-            if (prev.getBalanceFactor() > 1 && prev.getLeft().getKey() < id) {
-                prev.setLeft(leftRotate(prev.getLeft()));
-                if (isAtRoot) {
-                    setRoot(rightRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(rightRotate(prev));
-                } else {
-                    prevParent.setRight(rightRotate(prev));
-                }
+            if (node.hasLeft() && !node.hasRight()) {
+                return node.getLeft();
             }
-            // Case 3: caused imbalance on RIGHT child's RIGHT subtree
-            if (prev.getBalanceFactor() < -1 && prev.getRight().getKey() < id) {
-                if (isAtRoot) {
-                    setRoot(leftRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(leftRotate(prev));
-                } else {
-                    prevParent.setRight(leftRotate(prev));
-                }
+            if (node.hasRight() && !node.hasLeft()) {
+                return node.getRight();
             }
-            // Case 2: caused imbalance on RIGHT child's LEFT subtree
-            if (prev.getBalanceFactor() < -1 && prev.getRight().getKey() > id) {
-                prev.setRight(rightRotate(prev.getRight()));
-                if (isAtRoot) {
-                    setRoot(leftRotate(root));
-                    return;
-                }
-                if (prevParent.getLeft().equals(prev)) {
-                    prevParent.setLeft(leftRotate(prev));
-                } else {
-                    prevParent.setRight(leftRotate(prev));
-                }
+            if (node.hasLeft() && node.hasRight()) {
+                Node<T> succ = node.ejectSuccessor();
+                succ.setLeft(node.getLeft());
+                succ.setRight(node.getRight());
+                return succ;
             }
         }
+        if (node.getBalanceFactor() > 1 && element.hashCode() < node.getLeft().getKey()) {
+            return rightRotate(node);
+        }
+        if (node.getBalanceFactor() > 1 && element.hashCode() > node.getLeft().getKey()) {
+            node.setLeft(leftRotate(node.getLeft()));
+            return rightRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && element.hashCode() > node.getRight().getKey()) {
+            return leftRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && element.hashCode() < node.getRight().getKey()) {
+            node.setRight(rightRotate(node.getRight()));
+            return leftRotate(node);
+        }
+        return node;
+    }
+
+    @Algorithm
+    public void delete(T element) throws IndexOutOfBoundsException, ElementNotFoundException {
+        setRoot(deleteRecursive(root, element));
     }
 
     public Node<T> leftRotate(Node<T> root) {
@@ -319,6 +173,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             }
         }
 
+        @Override
         public Node<T> ejectSuccessor() {
             if (!this.hasRight()) {
                 return null;
@@ -337,6 +192,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             return succ;
         }
 
+        @Override
         public Node<T> ejectPredecessor() {
             if (!this.hasLeft()) {
                 return null;
