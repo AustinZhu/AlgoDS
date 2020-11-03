@@ -5,6 +5,9 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class BinarySearchTree<T> extends BaseBinaryTree<T> {
@@ -27,37 +30,66 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         return binaryTree;
     }
 
-//    public T[] inOrder() {
-//
-//    }
-//
-//    public T[] preorder() {
-//
-//    }
-//
-//    public T[] postOrder() {
-//
-//    }
-//
-//    public T[] levelOrder() {
-//
-//    }
+    public Integer[] inOrder() {
+        ArrayList<Integer> list = new ArrayList<>();
+        inOrderRecursive(getRoot(), list);
+        return (Integer[]) list.toArray();
+    }
+
+    public Integer[] preOrder() {
+        ArrayList<Integer> list = new ArrayList<>();
+        preOrderRecursive(getRoot(), list);
+        return (Integer[]) list.toArray();
+    }
+
+    public Integer[] postOrder() {
+        ArrayList<Integer> list = new ArrayList<>();
+        postOrderRecursive(getRoot(), list);
+        return (Integer[]) list.toArray();
+    }
+
+    public Integer[] levelOrder() {
+        if (isEmpty()) {
+            return new Integer[]{};
+        }
+        ArrayList<Integer> list = new ArrayList<>();
+        Deque<Node<T>> nodeDeque = new LinkedList<>();
+        nodeDeque.addLast(getRoot());
+        while (!nodeDeque.isEmpty()) {
+            Node<T> tmp = nodeDeque.removeFirst();
+            list.add(tmp.key);
+            if (tmp.hasLeft()) {
+                nodeDeque.addLast(tmp.getLeft());
+            }
+            if (tmp.hasRight()) {
+                nodeDeque.addLast(tmp.getRight());
+            }
+        }
+        return (Integer[]) list.toArray();
+    }
 
     @Algorithm
     @Override
     public void append(T element) {
         Node<T> newNode = new Node<>(element);
+        if (isEmpty()) {
+            setRoot(newNode);
+            size++;
+            return;
+        }
         Node<T> iterator = getRoot();
         while (iterator != null) {
             if (newNode.getKey() < iterator.getKey()){
                 if (!iterator.hasLeft()) {
                     iterator.setLeft(newNode);
+                    size++;
                     return;
                 }
                 iterator = iterator.getLeft();
             } else if (newNode.getKey() > iterator.getKey()) {
                 if (!iterator.hasRight()) {
                     iterator.setRight(newNode);
+                    size++;
                     return;
                 }
                 iterator = iterator.getRight();
@@ -65,7 +97,6 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
                 return;
             }
         }
-        setRoot(newNode);
     }
 
     @Override
@@ -159,5 +190,32 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
     @Override
     public boolean exist(T element) {
         return super.exist(element);
+    }
+
+    private void preOrderRecursive(Node<T> node, ArrayList<Integer> list) {
+        if (node == null) {
+            return;
+        }
+        list.add(node.key);
+        preOrderRecursive(node.getLeft(), list);
+        preOrderRecursive(node.getRight(), list);
+    }
+
+    private void inOrderRecursive(Node<T> node, ArrayList<Integer> list) {
+        if (node == null) {
+            return;
+        }
+        inOrderRecursive(node.getLeft(), list);
+        list.add(node.key);
+        inOrderRecursive(node.getRight(), list);
+    }
+
+    private void postOrderRecursive(Node<T> node, ArrayList<Integer> list) {
+        if (node == null) {
+            return;
+        }
+        postOrderRecursive(node.getLeft(), list);
+        postOrderRecursive(node.getRight(), list);
+        list.add(node.key);
     }
 }

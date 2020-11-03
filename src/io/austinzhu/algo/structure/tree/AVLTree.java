@@ -21,86 +21,16 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return avlTree;
     }
 
-    private Node<T> appendRecursive(Node<T> node, T element) {
-        if (node == null) {
-            return new Node<>(element);
-        }
-        if (element.hashCode() < node.getKey()) {
-            node.setLeft(appendRecursive(node.getLeft(), element));
-        } else if (element.hashCode() > node.getKey()) {
-            node.setRight(appendRecursive(node.getRight(), element));
-        } else {
-            return node;
-        }
-        if (node.getBalanceFactor() > 1 && element.hashCode() < node.getLeft().getKey()) {
-            return rightRotate(node);
-        }
-        if (node.getBalanceFactor() > 1 && element.hashCode() > node.getLeft().getKey()) {
-            node.setLeft(leftRotate(node.getLeft()));
-            return rightRotate(node);
-        }
-        if (node.getBalanceFactor() < -1 && element.hashCode() > node.getRight().getKey()) {
-            return leftRotate(node);
-        }
-        if (node.getBalanceFactor() < -1 && element.hashCode() < node.getRight().getKey()) {
-            node.setRight(rightRotate(node.getRight()));
-            return leftRotate(node);
-        }
-        return node;
-    }
-
     @Algorithm
     @Override
     public void append(T element) {
         setRoot(appendRecursive(root, element));
     }
 
-    private Node<T> deleteRecursive(Node<T> node, T element) {
-        if (node == null) {
-            throw new ElementNotFoundException("Element not found");
-        }
-        if (element.hashCode() < node.getKey()) {
-            node.setLeft(deleteRecursive(node.getLeft(), element));
-        } else if (element.hashCode() > node.getKey()) {
-            node.setRight(deleteRecursive(node.getRight(), element));
-        } else {
-            if (node.isLeaf()) {
-                return null;
-            }
-            if (node.hasLeft() && !node.hasRight()) {
-                return node.getLeft();
-            }
-            if (node.hasRight() && !node.hasLeft()) {
-                return node.getRight();
-            }
-            if (node.hasLeft() && node.hasRight()) {
-                Node<T> succ = node.getSuccessor();
-                node.setRight(deleteRecursive(node.getRight(), succ.getValue()));
-                node.setKey(succ.getKey());
-                node.setValue(succ.getValue());
-                return node;
-            }
-        }
-        if (node.getBalanceFactor() > 1 && element.hashCode() < node.getLeft().getKey()) {
-            return rightRotate(node);
-        }
-        if (node.getBalanceFactor() > 1 && element.hashCode() > node.getLeft().getKey()) {
-            node.setLeft(leftRotate(node.getLeft()));
-            return rightRotate(node);
-        }
-        if (node.getBalanceFactor() < -1 && element.hashCode() > node.getRight().getKey()) {
-            return leftRotate(node);
-        }
-        if (node.getBalanceFactor() < -1 && element.hashCode() < node.getRight().getKey()) {
-            node.setRight(rightRotate(node.getRight()));
-            return leftRotate(node);
-        }
-        return node;
-    }
-
     @Algorithm
-    public void delete(T element) throws IndexOutOfBoundsException, ElementNotFoundException {
-        setRoot(deleteRecursive(root, element));
+    @Override
+    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
+        setRoot(deleteRecursive(root, id));
     }
 
     public Node<T> leftRotate(Node<T> root) {
@@ -135,6 +65,77 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return root == null;
     }
 
+    private Node<T> appendRecursive(Node<T> node, T element) {
+        if (node == null) {
+            return new Node<>(element);
+        }
+        if (element.hashCode() < node.getKey()) {
+            node.setLeft(appendRecursive(node.getLeft(), element));
+        } else if (element.hashCode() > node.getKey()) {
+            node.setRight(appendRecursive(node.getRight(), element));
+        } else {
+            return node;
+        }
+        if (node.getBalanceFactor() > 1 && element.hashCode() < node.getLeft().getKey()) {
+            return rightRotate(node);
+        }
+        if (node.getBalanceFactor() > 1 && element.hashCode() > node.getLeft().getKey()) {
+            node.setLeft(leftRotate(node.getLeft()));
+            return rightRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && element.hashCode() > node.getRight().getKey()) {
+            return leftRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && element.hashCode() < node.getRight().getKey()) {
+            node.setRight(rightRotate(node.getRight()));
+            return leftRotate(node);
+        }
+        return node;
+    }
+
+    private Node<T> deleteRecursive(Node<T> node, int id) {
+        if (node == null) {
+            throw new ElementNotFoundException("Element not found");
+        }
+        if (id < node.getKey()) {
+            node.setLeft(deleteRecursive(node.getLeft(), id));
+        } else if (id > node.getKey()) {
+            node.setRight(deleteRecursive(node.getRight(), id));
+        } else {
+            if (node.isLeaf()) {
+                return null;
+            }
+            if (node.hasLeft() && !node.hasRight()) {
+                return node.getLeft();
+            }
+            if (node.hasRight() && !node.hasLeft()) {
+                return node.getRight();
+            }
+            if (node.hasLeft() && node.hasRight()) {
+                Node<T> succ = node.getSuccessor();
+                node.setRight(deleteRecursive(node.getRight(), succ.getKey()));
+                node.setKey(succ.getKey());
+                node.setValue(succ.getValue());
+                return node;
+            }
+        }
+        if (node.getBalanceFactor() > 1 && id < node.getLeft().getKey()) {
+            return rightRotate(node);
+        }
+        if (node.getBalanceFactor() > 1 && id > node.getLeft().getKey()) {
+            node.setLeft(leftRotate(node.getLeft()));
+            return rightRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && id > node.getRight().getKey()) {
+            return leftRotate(node);
+        }
+        if (node.getBalanceFactor() < -1 && id < node.getRight().getKey()) {
+            node.setRight(rightRotate(node.getRight()));
+            return leftRotate(node);
+        }
+        return node;
+    }
+
     // Hiding
     private static final class Node<T> extends BinarySearchTree.Node<T> {
 
@@ -165,7 +166,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             updateHeight();
             if (isLeaf()) {
                 return 0;
-            } else if (left == null) {
+            } else if (getLeft() == null) {
                 return -getRight().height;
             } else if (!this.hasRight()) {
                 return getLeft().height;

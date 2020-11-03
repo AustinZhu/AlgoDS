@@ -10,8 +10,14 @@ import java.util.*;
 public abstract class BaseBinaryTree<T> implements Tree<T> {
     private Node<T> root;
 
+    protected int height;
+
+    protected int size;
+
     public BaseBinaryTree() {
         this.root = null;
+        this.size = 0;
+        this.height = -1;
     }
 
     public BaseBinaryTree(Node<T> root) {
@@ -32,12 +38,14 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
             Node<T> temp = nodeQueue.remove();
             if (!temp.hasLeft()) {
                 temp.setLeft(newNode);
+                size++;
                 return;
             } else {
                 nodeQueue.add(temp.getLeft());
             }
             if (!temp.hasRight()) {
                 temp.setRight(newNode);
+                size++;
                 return;
             } else {
                 nodeQueue.add(temp.getRight());
@@ -76,8 +84,10 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
         if (last != null) {
             if (parent.hasRight()) {
                 parent.setRight(null);
+                size--;
             } else {
                 parent.setLeft(null);
+                size--;
             }
         }
     }
@@ -175,8 +185,10 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
         if (deletedParent != null && lastParent != null) {
             if (lastParent.hasRight()) {
                 lastParent.setRight(null);
+                size--;
             } else if (lastParent.hasLeft()) {
                 lastParent.setLeft(null);
+                size--;
             }
             last.setLeft(deleted.getLeft());
             last.setRight(deleted.getRight());
@@ -266,6 +278,7 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
                 size--;
             }
         }
+        this.height = height;
         return height;
     }
 
@@ -282,6 +295,10 @@ public abstract class BaseBinaryTree<T> implements Tree<T> {
 
     public void setRoot(Node<T> root) {
         this.root = root;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public boolean isEmpty() {
