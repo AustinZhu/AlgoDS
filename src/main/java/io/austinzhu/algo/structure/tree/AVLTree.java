@@ -53,6 +53,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return left;
     }
 
+    @Override
     public Node<T> getRoot() {
         return root;
     }
@@ -61,6 +62,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         this.root = root;
     }
 
+    @Override
     public boolean isEmpty() {
         return root == null;
     }

@@ -20,7 +20,7 @@ public abstract class BaseArray<T extends Comparable<T>> implements Operatable<T
     private T[] data;
 
     @SuppressWarnings("unchecked")
-    public BaseArray(int capacity) {
+    protected BaseArray(int capacity) {
         this.length = 0;
         this.lowerBound = 0;
         this.upperBound = 0;
@@ -98,9 +98,6 @@ public abstract class BaseArray<T extends Comparable<T>> implements Operatable<T
     }
 
     @Override
-    public abstract int search(T element, SearchingAlgorithm sa);
-
-    @Override
     public boolean exist(T element) {
         return search(element, SearchingAlgorithm.BINARY) >= 0;
     }
@@ -113,9 +110,6 @@ public abstract class BaseArray<T extends Comparable<T>> implements Operatable<T
             e.printStackTrace();
         }
     }
-
-    @Override
-    public abstract void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException;
 
     public int getLength() {
         return length;
