@@ -28,6 +28,10 @@ public class Stack<T extends Comparable<T>> implements Interactable<T> {
         list.eject();
     }
 
+    public T peek() throws IndexOutOfBoundsException {
+        return list.last();
+    }
+
     @Override
     public void init(T... elements) {
 

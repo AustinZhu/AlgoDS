@@ -3,8 +3,6 @@ package io.austinzhu.algo.structure.heap;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 
-import java.util.Random;
-
 public class BinaryHeap<T extends Comparable<T>> extends Heap<T> {
 
     public BinaryHeap(int capacity) {
@@ -12,13 +10,22 @@ public class BinaryHeap<T extends Comparable<T>> extends Heap<T> {
     }
 
     public static BinaryHeap<Integer> init(int size, int bound) {
-        Random random = new Random();
-        int capacity = random.nextInt(size);
-        BinaryHeap<Integer> binaryHeap = new BinaryHeap<>(capacity);
-        for (int i = 0; i < capacity; i++) {
-            binaryHeap.append(random.nextInt(bound));
-        }
+//        Random random = new Random();
+//        int capacity = random.nextInt(size);
+        BinaryHeap<Integer> binaryHeap = new BinaryHeap<>(13);
+//        for (int i = 0; i < capacity; i++) {
+//            binaryHeap.append(random.nextInt(bound));
+//        }
+//        return binaryHeap;
+        binaryHeap.init(99, 94, 96, 52, 78, 57, 12, 1, 19, 73, 78, 8, 0);
         return binaryHeap;
+    }
+
+    @Override
+    public void init(T... elements) {
+        for (T e : elements) {
+            append(e);
+        }
     }
 
     @Algorithm
@@ -56,7 +63,9 @@ public class BinaryHeap<T extends Comparable<T>> extends Heap<T> {
         int parent = 0;
         int child = 1;
         while (child < length) {
-            child = nodes[child].compareTo(nodes[child + 1]) > 0 ? child : child + 1;
+            if (child + 1 < length) {
+                child = nodes[child].compareTo(nodes[child + 1]) > 0 ? child : child + 1;
+            }
             if (nodes[parent].compareTo(nodes[child]) < 0) {
                 T temp = nodes[child];
                 nodes[child] = nodes[parent];

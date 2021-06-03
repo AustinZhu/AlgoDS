@@ -21,11 +21,6 @@ public abstract class Heap<T extends Comparable<T>> implements Interactable<T> {
     }
 
     @Override
-    public void init(T... elements) {
-        return;
-    }
-
-    @Override
     public String toString() {
         return Arrays.toString(nodes);
     }

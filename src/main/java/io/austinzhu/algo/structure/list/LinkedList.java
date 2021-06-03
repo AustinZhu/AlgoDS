@@ -105,6 +105,24 @@ public class LinkedList<T extends Comparable<T>> extends List<T> {
         return iterator.getValue();
     }
 
+    public T head() {
+        if (isEmpty()) {
+            return null;
+        }
+        return root.getValue();
+    }
+
+    public T last() {
+        if (isEmpty()) {
+            return null;
+        }
+        Node<T> iterator = root;
+        while (iterator.hasNext()) {
+            iterator = iterator.getNext();
+        }
+        return iterator.getValue();
+    }
+
     @Override
     public void delete(int id) throws IndexOutOfBoundsException {
         if (isEmpty()) {
@@ -143,6 +161,19 @@ public class LinkedList<T extends Comparable<T>> extends List<T> {
     @Override
     public void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException {
 
+    }
+
+    public int length() {
+        if (root == null) {
+            return 0;
+        }
+        int i = 1;
+        Node<T> iterator = root;
+        while (iterator.hasNext()) {
+            i++;
+            iterator = iterator.next;
+        }
+        return i;
     }
 
     public boolean isEmpty() {

@@ -28,6 +28,10 @@ public class Queue<T extends Comparable<T>> implements Interactable<T> {
         list.delete(0);
     }
 
+    public T peek() throws IndexOutOfBoundsException {
+        return list.get(0);
+    }
+
     @Override
     public void init(T... elements) {
 
