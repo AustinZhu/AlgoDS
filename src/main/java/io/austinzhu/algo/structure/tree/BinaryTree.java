@@ -12,11 +12,10 @@ public class BinaryTree<T> extends BaseBinaryTree<T>{
         super(root);
     }
 
-    public static BinaryTree<Integer> init(int size, int bound) {
-        Random random = new Random();
-        int capacity = random.nextInt(size);
+    public static BinaryTree<Integer> init(int size, int bound, Random random) {
+        var capacity = random.nextInt(size);
         BinaryTree<Integer> binaryTree = new BinaryTree<>();
-        for (int i = 0; i < capacity; i++) {
+        for (var i = 0; i < capacity; i++) {
             binaryTree.append(random.nextInt(bound));
         }
         return binaryTree;

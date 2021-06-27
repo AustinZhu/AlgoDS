@@ -15,11 +15,10 @@ public class LinkedList<T extends Comparable<T>> extends List<T> {
         root = null;
     }
 
-    public static LinkedList<Integer> init(int size, int bound) {
-        Random random = new Random();
-        int capacity = random.nextInt(size);
+    public static LinkedList<Integer> init(int size, int bound, Random random) {
+        var capacity = random.nextInt(size);
         LinkedList<Integer> integerLinkedList = new LinkedList<>();
-        for (int i = 0; i < capacity; i++) {
+        for (var i = 0; i < capacity; i++) {
             integerLinkedList.append(random.nextInt(bound));
         }
         return integerLinkedList;

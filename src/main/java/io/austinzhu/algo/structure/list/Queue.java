@@ -4,6 +4,8 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.Interactable;
 
+import java.util.Random;
+
 public class Queue<T extends Comparable<T>> implements Interactable<T> {
 
     private LinkedList<T> list;
@@ -12,8 +14,8 @@ public class Queue<T extends Comparable<T>> implements Interactable<T> {
         this.list = list;
     }
 
-    public static Queue<Integer> init(int size, int bound) {
-        return new Queue<>(LinkedList.init(size, bound));
+    public static Queue<Integer> init(int size, int bound, Random random) {
+        return new Queue<>(LinkedList.init(size, bound, random));
     }
 
     @Algorithm

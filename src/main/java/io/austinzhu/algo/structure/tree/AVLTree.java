@@ -11,11 +11,10 @@ public class AVLTree<T> extends BinarySearchTree<T> {
 
     private Node<T> root;
 
-    public static AVLTree<Integer> init(int size, int bound) {
-        Random random = new Random();
-        int capacity = random.nextInt(size);
+    public static AVLTree<Integer> init(int size, int bound, Random random) {
+        var capacity = random.nextInt(size);
         AVLTree<Integer> avlTree = new AVLTree<>();
-        for (int i = 0; i < capacity; i++) {
+        for (var i = 0; i < capacity; i++) {
             avlTree.append(random.nextInt(bound));
         }
         return avlTree;

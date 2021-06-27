@@ -20,11 +20,10 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         super(root);
     }
 
-    public static BinarySearchTree<Integer> init(int size, int bound) {
-        Random random = new Random();
-        int capacity = random.nextInt(size);
+    public static BinarySearchTree<Integer> init(int size, int bound, Random random) {
+        var capacity = random.nextInt(size);
         BinarySearchTree<Integer> binaryTree = new BinarySearchTree<>();
-        for (int i = 0; i < capacity; i++) {
+        for (var i = 0; i < capacity; i++) {
             binaryTree.append(random.nextInt(bound));
         }
         return binaryTree;

@@ -36,8 +36,7 @@ public class HashMap<K, V> {
         this.data = (Entry<K, V>[]) Array.newInstance(Entry.class, capacity);
     }
 
-    public static HashMap<String, Integer> init(int size, int bound) {
-        var random = new Random();
+    public static HashMap<String, Integer> init(int size, int bound, Random random) {
         var capacity = random.nextInt(size);
         HashMap<String, Integer> map = new HashMap<>(capacity);
 

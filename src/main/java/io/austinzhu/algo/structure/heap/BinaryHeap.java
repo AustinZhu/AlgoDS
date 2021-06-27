@@ -11,18 +11,18 @@ public class BinaryHeap<T extends Comparable<T>> extends Heap<T> {
         super(capacity);
     }
 
-    public static BinaryHeap<Integer> init(int size, int bound) {
-        Random random = new Random();
-        int capacity = random.nextInt(size);
+    public static BinaryHeap<Integer> init(int size, int bound, Random random) {
+        var capacity = random.nextInt(size);
         BinaryHeap<Integer> binaryHeap = new BinaryHeap<>(13);
-        for (int i = 0; i < capacity; i++) {
+        for (var i = 0; i < capacity; i++) {
             binaryHeap.append(random.nextInt(bound));
         }
         return binaryHeap;
     }
 
+    @SafeVarargs
     @Override
-    public void init(T... elements) {
+    public final void init(T... elements) {
         for (T e : elements) {
             append(e);
         }
@@ -60,14 +60,14 @@ public class BinaryHeap<T extends Comparable<T>> extends Heap<T> {
         length--;
         nodes[0] = nodes[length];
         nodes[length] = null;
-        int parent = 0;
-        int child = 1;
+        var parent = 0;
+        var child = 1;
         while (child < length) {
             if (child + 1 < length && nodes[child].compareTo(nodes[child + 1]) < 0) {
                 child++;
             }
             if (nodes[parent].compareTo(nodes[child]) < 0) {
-                T temp = nodes[child];
+                var temp = nodes[child];
                 nodes[child] = nodes[parent];
                 nodes[parent] = temp;
                 parent = child;
