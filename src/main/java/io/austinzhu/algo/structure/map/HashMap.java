@@ -8,16 +8,14 @@ import java.util.Random;
 
 public class HashMap<K, V> {
 
-    private class Entry<K, V> {
-        int hash;
-        K key;
-        V value;
-        Entry<K, V> next;
+    private static class Entry<K, V> extends Tuple<K, V> {
+        private final int hash;
+
+        private Entry<K, V> next;
 
         Entry(K key, V value) {
+            super(key, value);
             this.hash = key.hashCode();
-            this.key = key;
-            this.value = value;
             this.next = null;
         }
 
@@ -39,12 +37,12 @@ public class HashMap<K, V> {
     }
 
     public static HashMap<String, Integer> init(int size, int bound) {
-        Random random = new Random();
-        int capacity = random.nextInt(size);
+        var random = new Random();
+        var capacity = random.nextInt(size);
         HashMap<String, Integer> map = new HashMap<>(capacity);
 
-        for (int i = 0; i < capacity; i++) {
-            String generatedString = random.ints(48, 123)
+        for (var i = 0; i < capacity; i++) {
+            var generatedString = random.ints(48, 123)
                     .filter(j -> (j <= 57 || j >= 65) && (j <= 90 || j >= 97))
                     .limit(10)
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
@@ -57,7 +55,7 @@ public class HashMap<K, V> {
     @SuppressWarnings("unchecked")
     public K[] keys() {
         K[] keys = (K[]) new Object[data.length];
-        for (int i = 0; i < data.length; ++i) {
+        for (var i = 0; i < data.length; ++i) {
             keys[i] = data[i].key;
         }
         return keys;
@@ -80,7 +78,7 @@ public class HashMap<K, V> {
 
     @Algorithm
     public void delete(K key) {
-        int bucket = Math.abs(key.hashCode()) % data.length;
+        int bucket = Math.abs(key.hashCode() % data.length);
         if (data[bucket] == null) {
             throw new ElementNotFoundException("No such key");
         } else {
@@ -100,7 +98,7 @@ public class HashMap<K, V> {
     }
 
     public V get(K key) {
-        int bucket = Math.abs(key.hashCode()) % data.length;
+        int bucket = Math.abs(key.hashCode() % data.length);
         if (data[bucket] != null) {
             Entry<K, V> cur = data[bucket];
             if (cur.key == key) {
@@ -123,7 +121,7 @@ public class HashMap<K, V> {
         if (data == null) {
             return "null";
         }
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         for (Entry<K,V> e : data) {
             sb.append(e).append('\n');
         }

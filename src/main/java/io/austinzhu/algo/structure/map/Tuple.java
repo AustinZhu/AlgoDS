@@ -1,9 +1,9 @@
 package io.austinzhu.algo.structure.map;
 
 public class Tuple<K, V> {
-    private K key;
+    protected K key;
 
-    private V value;
+    protected V value;
 
     public Tuple(K key, V value) {
         this.key = key;
