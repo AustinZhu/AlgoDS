@@ -1,6 +1,7 @@
 package io.austinzhu.algo.structure.map;
 
 public class Tuple<K, V> {
+
     protected K key;
 
     protected V value;

@@ -33,8 +33,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     @Override
     @Algorithm("search")
     public int search(T element, SearchingAlgorithm sa) {
-        int lower = getLowerBound();
-        int upper = getUpperBound();
+        int lower = lowerBound;
+        int upper = upperBound;
         switch (sa) {
             case BINARY -> {
                 return binarySearch(lower, upper, element);
@@ -49,7 +49,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         }
     }
 
-    public int binarySearch(int lower, int upper, T element) {
+    private int binarySearch(int lower, int upper, T element) {
         if (lower < upper) {
             int mid = (lower + upper) / 2;
             if (get(mid).equals(element)) {
@@ -63,7 +63,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         return -1;
     }
 
-    public int linearSearch(int lower, int upper, T element) {
+    private int linearSearch(int lower, int upper, T element) {
         for (int i = lower; i < upper; i++) {
             if (get(i).equals(element)) {
                 return i;
@@ -72,7 +72,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
         return -1;
     }
 
-    public int jumpSearch(int lower, int upper, T element) {
+    private int jumpSearch(int lower, int upper, T element) {
         return -1;
     }
 
@@ -83,8 +83,8 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
     @Override
     @Algorithm("sort")
     public void sort(SortingAlgorithm sa) {
-        int lower = getLowerBound();
-        int upper = getUpperBound();
+        int lower = lowerBound;
+        int upper = upperBound;
         switch (sa) {
             case BUBBLE -> bubbleSort(lower, upper);
             case MERGE -> mergeSort(lower, upper);
@@ -188,7 +188,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
      * @worstTime O(n + k)
      */
     @SuppressWarnings("unchecked")
-    public void countingSort(int lower, int upper, int range) {
+    private void countingSort(int lower, int upper, int range) {
         Integer[] output = new Integer[getLength()];
         int[] counts = new int[range];
         for (int i = lower; i < upper; i++) {

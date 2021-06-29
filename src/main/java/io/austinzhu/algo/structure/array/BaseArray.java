@@ -11,13 +11,13 @@ import java.util.Arrays;
  */
 public abstract class BaseArray<T extends Comparable<T>> implements Operatable<T>, Searchable<T>, Sortable, Interactable<T> {
 
-    private int length;
+    protected int length;
 
-    private int upperBound;
+    protected int upperBound;
 
-    private int lowerBound;
+    protected int lowerBound;
 
-    private T[] data;
+    protected T[] data;
 
     @SuppressWarnings("unchecked")
     protected BaseArray(int capacity) {
