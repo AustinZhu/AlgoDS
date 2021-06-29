@@ -145,5 +145,14 @@ public class Menu {
                 System.out.println(e1.getMessage());
             }
         }
+        if ("reverse".equals(selectedMethod.getName())) {
+            selectedMethod.invoke(dataStructure);
+            try {
+                System.out.println("After reversing: ");
+                System.out.println(dataStructure);
+            } catch (ElementNotFoundException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }
     }
 }

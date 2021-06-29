@@ -6,6 +6,7 @@ import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Austin Zhu
@@ -96,6 +97,7 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
             case COUNTING -> countingSort(lower, upper, 100);
             case BUCKET -> bucketSort(lower, upper);
             case SHELL -> shellSort(lower, upper);
+            case SLEEP -> sleepSort(lower, upper);
             default -> throw new NoSuchAlgorithmException("No such algorithm");
         }
     }
@@ -461,12 +463,41 @@ public class Array<T extends Comparable<T>> extends BaseArray<T> {
             sorted = true;
             for (int j = 0; j < upper - i - 1; j++) {
                 // compare with the next element
-                if (getData()[j].compareTo(getData()[j + 1]) > 0) {
+                if (data[j].compareTo(data[j + 1]) > 0) {
                     swap(j, j + 1);
                     sorted = false;
                 }
             }
         }
+    }
+
+    private void sleepSort(int lower, int upper) {
+        final var doneSignal = new CountDownLatch(length);
+        Array<T> newArr = new Array<>(data.length);
+        var ts = new Thread[length];
+        for (int i = lower; i < upper; i++) {
+            final T elem = get(i);
+            var t = new Thread(() -> {
+                doneSignal.countDown();
+                try {
+                    doneSignal.await();
+                    Thread.sleep(elem.hashCode() * 500L);
+                    newArr.append(elem);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            });
+            ts[i] = t;
+            t.start();
+        }
+        for (var t: ts) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        replaceBy(newArr);
     }
 
     private void heapify(int len, int rootId) {

@@ -2,6 +2,7 @@ package io.austinzhu.algo.structure.list;
 
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.exception.NoSuchAlgorithmException;
+import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
@@ -173,6 +174,20 @@ public class LinkedList<T extends Comparable<T>> extends List<T> {
             iterator = iterator.next;
         }
         return i;
+    }
+
+    @Algorithm
+    public void reverse() {
+        Node<T> cur = root;
+        Node<T> next, prev = null;
+
+        while (cur != null) {
+            next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        root = prev;
     }
 
     public boolean isEmpty() {

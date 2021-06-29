@@ -111,6 +111,15 @@ public abstract class BaseArray<T extends Comparable<T>> implements Operatable<T
         }
     }
 
+    public BaseArray<T> slice(int init, int end) throws IndexOutOfBoundsException {
+        if (init > upperBound || end < lowerBound || init > end) {
+            throw new IndexOutOfBoundsException("Wrong bound");
+        }
+        setLowerBound(init);
+        setUpperBound(end);
+        return this;
+    }
+
     public int getLength() {
         return length;
     }
