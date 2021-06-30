@@ -24,9 +24,9 @@ public final class RedBlackTree<T> extends BinarySearchTree<T> {
             return new Node<>(element, null);
         }
         if (element.hashCode() < node.key) {
-            node.setLeft(appendRecursive(node.left, element));
+            node.left = appendRecursive(node.left, element);
         } else if (element.hashCode() > node.key) {
-            node.setRight(appendRecursive(node.right, element));
+            node.right = appendRecursive(node.right, element);
         } else {
             return node;
         }

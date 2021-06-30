@@ -128,7 +128,7 @@ public final class AVLTree<T> extends BinarySearchTree<T> {
 
     @Override
     public String toString() {
-        TreePrinter tp = new TreePrinter();
+        var tp = new TreePrinter();
         tp.printTree(root);
         return tp.toString();
     }
