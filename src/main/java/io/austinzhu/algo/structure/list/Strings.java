@@ -1,4 +1,5 @@
 package io.austinzhu.algo.structure.list;
 
-public class Strings {
+public final class Strings extends LinkedList<Character> {
+
 }
