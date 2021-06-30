@@ -206,6 +206,16 @@ public sealed class BinarySearchTree<T>
         }
 
         @Override
+        Node<T> getLeft() {
+            return this.left;
+        }
+
+        @Override
+        Node<T> getRight() {
+            return this.right;
+        }
+
+        @Override
         public boolean hasLeft() {
             return left != null;
         }
