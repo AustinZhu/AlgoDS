@@ -4,10 +4,9 @@ import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 
-import java.util.Objects;
 import java.util.Random;
 
-public class AVLTree<T> extends BinarySearchTree<T> {
+public final class AVLTree<T> extends BinarySearchTree<T> {
 
     private Node<T> root;
 
@@ -36,9 +35,9 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         if (root.isLeaf()) {
             return root;
         }
-        Node<T> right = root.getRight();
-        root.setRight(right.getLeft());
-        right.setLeft(root);
+        Node<T> right = root.right;
+        root.right = right.left;
+        right.left = root;
         return right;
     }
 
@@ -46,49 +45,39 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         if (root.isLeaf()) {
             return root;
         }
-        Node<T> left = root.getLeft();
-        root.setLeft(left.getRight());
-        left.setRight(root);
+        Node<T> left = root.left;
+        root.left = left.right;
+        left.right = root;
         return left;
-    }
-
-    @Override
-    public Node<T> getRoot() {
-        return root;
     }
 
     public void setRoot(Node<T> root) {
         this.root = root;
     }
 
-    @Override
-    public boolean isEmpty() {
-        return root == null;
-    }
-
     private Node<T> appendRecursive(Node<T> node, T element) {
         if (node == null) {
             return new Node<>(element);
         }
-        if (element.hashCode() < node.getKey()) {
-            node.setLeft(appendRecursive(node.getLeft(), element));
-        } else if (element.hashCode() > node.getKey()) {
-            node.setRight(appendRecursive(node.getRight(), element));
+        if (element.hashCode() < node.key) {
+            node.left = appendRecursive(node.left, element);
+        } else if (element.hashCode() > node.key) {
+            node.right = appendRecursive(node.right, element);
         } else {
             return node;
         }
-        if (node.getBalanceFactor() > 1 && element.hashCode() < node.getLeft().getKey()) {
+        if (node.getBalanceFactor() > 1 && element.hashCode() < node.left.key) {
             return rightRotate(node);
         }
-        if (node.getBalanceFactor() > 1 && element.hashCode() > node.getLeft().getKey()) {
-            node.setLeft(leftRotate(node.getLeft()));
+        if (node.getBalanceFactor() > 1 && element.hashCode() > node.left.key) {
+            node.left = leftRotate(node.left);
             return rightRotate(node);
         }
-        if (node.getBalanceFactor() < -1 && element.hashCode() > node.getRight().getKey()) {
+        if (node.getBalanceFactor() < -1 && element.hashCode() > node.right.key) {
             return leftRotate(node);
         }
-        if (node.getBalanceFactor() < -1 && element.hashCode() < node.getRight().getKey()) {
-            node.setRight(rightRotate(node.getRight()));
+        if (node.getBalanceFactor() < -1 && element.hashCode() < node.right.key) {
+            node.right = rightRotate(node.right);
             return leftRotate(node);
         }
         return node;
@@ -98,47 +87,58 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         if (node == null) {
             throw new ElementNotFoundException("Element not found");
         }
-        if (id < node.getKey()) {
-            node.setLeft(deleteRecursive(node.getLeft(), id));
-        } else if (id > node.getKey()) {
-            node.setRight(deleteRecursive(node.getRight(), id));
+        if (id < node.key) {
+            node.left = deleteRecursive(node.left, id);
+        } else if (id > node.key) {
+            node.right = deleteRecursive(node.right, id);
         } else {
             if (node.isLeaf()) {
                 return null;
             }
             if (node.hasLeft() && !node.hasRight()) {
-                return node.getLeft();
+                return node.left;
             }
             if (node.hasRight() && !node.hasLeft()) {
-                return node.getRight();
+                return node.right;
             }
             if (node.hasLeft() && node.hasRight()) {
                 Node<T> succ = node.getSuccessor();
-                node.setRight(deleteRecursive(node.getRight(), succ.getKey()));
-                node.setKey(succ.getKey());
-                node.setValue(succ.getValue());
+                node.right = deleteRecursive(node.right, succ.key);
+                node.key = succ.key;
+                node.value = succ.value;
                 return node;
             }
         }
-        if (node.getBalanceFactor() > 1 && id < node.getLeft().getKey()) {
+        if (node.getBalanceFactor() > 1 && id < node.left.key) {
             return rightRotate(node);
         }
-        if (node.getBalanceFactor() > 1 && id > node.getLeft().getKey()) {
-            node.setLeft(leftRotate(node.getLeft()));
+        if (node.getBalanceFactor() > 1 && id > node.left.key) {
+            node.left = leftRotate(node.left);
             return rightRotate(node);
         }
-        if (node.getBalanceFactor() < -1 && id > node.getRight().getKey()) {
+        if (node.getBalanceFactor() < -1 && id > node.right.key) {
             return leftRotate(node);
         }
-        if (node.getBalanceFactor() < -1 && id < node.getRight().getKey()) {
-            node.setRight(rightRotate(node.getRight()));
+        if (node.getBalanceFactor() < -1 && id < node.right.key) {
+            node.right = rightRotate(node.right);
             return leftRotate(node);
         }
         return node;
     }
 
+    @Override
+    public String toString() {
+        TreePrinter tp = new TreePrinter();
+        tp.printTree(root);
+        return tp.toString();
+    }
+
     // Hiding
-    private static final class Node<T> extends BinarySearchTree.Node<T> {
+    static final class Node<T> extends BinarySearchTree.Node<T> {
+
+        private Node<T> left;
+
+        private Node<T> right;
 
         private int height;
 
@@ -151,15 +151,25 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             return height;
         }
 
+        @Override
+        Node<T> getLeft() {
+            return this.left;
+        }
+
+        @Override
+        Node<T> getRight() {
+            return this.right;
+        }
+
         public void updateHeight() {
             if (this.isLeaf()) {
                 this.height = 1;
             } else if (!this.hasLeft()) {
-                this.height = 1 + getRight().getHeight();
+                this.height = 1 + right.getHeight();
             } else if (!this.hasRight()) {
-                this.height = 1 + getLeft().getHeight();
+                this.height = 1 + left.getHeight();
             } else {
-                this.height = 1 + Math.max(getLeft().getHeight(), getRight().getHeight());
+                this.height = 1 + Math.max(left.getHeight(), right.getHeight());
             }
         }
 
@@ -167,12 +177,12 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             updateHeight();
             if (isLeaf()) {
                 return 0;
-            } else if (getLeft() == null) {
-                return -getRight().height;
+            } else if (left == null) {
+                return -right.height;
             } else if (!this.hasRight()) {
-                return getLeft().height;
+                return left.height;
             } else {
-                return getLeft().height - getRight().height;
+                return left.height - right.height;
             }
         }
 
@@ -180,12 +190,12 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             if (!this.hasRight()) {
                 return null;
             }
-            Node<T> succ = this.getRight();
+            Node<T> succ = this.right;
             if (!succ.hasLeft()) {
                 return succ;
             }
             while (succ.hasLeft()) {
-                succ = succ.getLeft();
+                succ = succ.left;
             }
             return succ;
         }
@@ -194,34 +204,14 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             if (!this.hasLeft()) {
                 return null;
             }
-            Node<T> pred = this.getLeft();
+            Node<T> pred = this.left;
             if (!pred.hasRight()) {
                 return pred;
             }
             while (pred.hasRight()) {
-                pred = pred.getRight();
+                pred = pred.right;
             }
             return pred;
-        }
-
-        @Override
-        public Node<T> getLeft() {
-            return (Node<T>) left;
-        }
-
-        public void setLeft(Node<T> left) {
-            this.left = left;
-            updateHeight();
-        }
-
-        @Override
-        public Node<T> getRight() {
-            return (Node<T>) right;
-        }
-
-        public void setRight(Node<T> right) {
-            this.right = right;
-            updateHeight();
         }
 
         @Override
@@ -237,14 +227,6 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         @Override
         public boolean isLeaf() {
             return !hasLeft() && !hasRight();
-        }
-
-        @Override
-        public int hashCode() {
-            int h = Objects.hashCode(getValue());
-            h = h * 31 + Objects.hashCode(left);
-            h = h * 31 + Objects.hashCode(right);
-            return h;
         }
     }
 }

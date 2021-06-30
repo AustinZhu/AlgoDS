@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class Matrix<T extends Comparable<T>> extends Array<T> {
+public final class Matrix<T extends Comparable<T>> extends Array<T> {
 
     private final int[] dimension;
 

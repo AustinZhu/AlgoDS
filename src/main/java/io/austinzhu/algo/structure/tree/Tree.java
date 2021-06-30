@@ -8,4 +8,5 @@ public interface Tree<T> extends Interactable<T>, Operatable<T>, Searchable<T> {
 
     int getHeight();
 
+    int getSize();
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.CountDownLatch;
  * @author Austin Zhu
  * @description Array is a linear data structure containing a collection of elements
  */
-public class Array<T extends Comparable<T>> extends BaseArray<T> {
+public sealed class Array<T extends Comparable<T>> extends BaseArray<T> permits Matrix {
 
     public Array(int capacity) {
         super(capacity);

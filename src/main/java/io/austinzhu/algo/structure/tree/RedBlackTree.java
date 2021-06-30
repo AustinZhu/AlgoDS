@@ -3,10 +3,9 @@ package io.austinzhu.algo.structure.tree;
 import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 
-import java.util.Objects;
 import java.util.Random;
 
-public class RedBlackTree<T> extends BinarySearchTree<T> {
+public final class RedBlackTree<T> extends BinarySearchTree<T> {
 
     private Node<T> root;
 
@@ -24,10 +23,10 @@ public class RedBlackTree<T> extends BinarySearchTree<T> {
         if (node == null) {
             return new Node<>(element, null);
         }
-        if (element.hashCode() < node.getKey()) {
-            node.setLeft(appendRecursive(node.getLeft(), element));
-        } else if (element.hashCode() > node.getKey()) {
-            node.setRight(appendRecursive(node.getRight(), element));
+        if (element.hashCode() < node.key) {
+            node.setLeft(appendRecursive(node.left, element));
+        } else if (element.hashCode() > node.key) {
+            node.setRight(appendRecursive(node.right, element));
         } else {
             return node;
         }
@@ -66,8 +65,13 @@ public class RedBlackTree<T> extends BinarySearchTree<T> {
     }
 
     // Hiding
-    private static final class Node<T> extends BinarySearchTree.Node<T> {
-        Node<T> parent;
+    static final class Node<T> extends BinarySearchTree.Node<T> {
+
+        Node<T> left;
+
+        Node<T> right;
+
+        RedBlackTree.Node<T> parent;
 
         boolean isBlack;
 
@@ -75,24 +79,6 @@ public class RedBlackTree<T> extends BinarySearchTree<T> {
             super(value);
             isBlack = false;
             parent = node;
-        }
-
-        @Override
-        public Node<T> getLeft() {
-            return (Node<T>) left;
-        }
-
-        public void setLeft(Node<T> left) {
-            this.left = left;
-        }
-
-        @Override
-        public Node<T> getRight() {
-            return (Node<T>) right;
-        }
-
-        public void setRight(Node<T> right) {
-            this.right = right;
         }
 
         @Override
@@ -138,19 +124,11 @@ public class RedBlackTree<T> extends BinarySearchTree<T> {
             if (grandparent == null) {
                 return null;
             }
-            if (grandparent.getLeft().key == parent.key) {
-                return grandparent.getRight();
+            if (grandparent.left.key == parent.key) {
+                return grandparent.right;
             } else {
-                return grandparent.getLeft();
+                return grandparent.left;
             }
-        }
-
-        @Override
-        public int hashCode() {
-            int h = Objects.hashCode(getValue());
-            h = h * 31 + Objects.hashCode(left);
-            h = h * 31 + Objects.hashCode(right);
-            return h;
         }
     }
 }

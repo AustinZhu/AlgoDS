@@ -1,14 +1,23 @@
 package io.austinzhu.algo.structure.heap;
 
+import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
+import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
+import java.util.Arrays;
 import java.util.Random;
 
-public class BinaryHeap<T extends Comparable<T>> extends Heap<T> {
+public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
-    public BinaryHeap(int capacity) {
-        super(capacity);
+    protected final T[] nodes;
+
+    protected int length;
+
+    @SuppressWarnings("unchecked")
+    protected BinaryHeap(int capacity) {
+        this.nodes = (T[]) new Comparable[capacity];
+        this.length = 0;
     }
 
     public static BinaryHeap<Integer> init(int size, int bound, Random random) {
@@ -76,5 +85,39 @@ public class BinaryHeap<T extends Comparable<T>> extends Heap<T> {
                 return;
             }
         }
+    }
+
+    @Override
+    public int search(T element, SearchingAlgorithm sa) {
+        var cur = 0;
+        while (cur < length) {
+            if (nodes[cur].compareTo(element) == 0) {
+                return cur;
+            }
+            if (cur + 1 < length && nodes[cur].compareTo(nodes[cur + 1]) < 0 && element.compareTo(nodes[cur]) > 0) {
+                cur++;
+            }
+            if (element.compareTo(nodes[cur]) < 0) {
+                cur = 2 * cur + 1;
+            } else {
+                throw new ElementNotFoundException("Not Found");
+            }
+        }
+        throw new ElementNotFoundException("Not Found");
+    }
+
+    @Override
+    public boolean exist(T element) {
+        try {
+            search(element, SearchingAlgorithm.BINARY);
+        } catch (ElementNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(nodes);
     }
 }

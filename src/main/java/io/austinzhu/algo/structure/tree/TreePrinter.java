@@ -3,25 +3,14 @@ package io.austinzhu.algo.structure.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
-public class TreePrinter<T> {
-
-    private Function<T, String> getLabel;
-    private Function<T, T> getLeft;
-    private Function<T, T> getRight;
+public class TreePrinter {
 
     private StringBuilder stringBuilder = new StringBuilder();
 
     private boolean squareBranches = false;
     private boolean lrAgnostic = false;
     private int hspace = 2;
-
-    public TreePrinter(Function<T, String> getLabel, Function<T, T> getLeft, Function<T, T> getRight) {
-        this.getLabel = getLabel;
-        this.getLeft = getLeft;
-        this.getRight = getRight;
-    }
 
     public void setHspace(int hspace) { this.hspace = hspace; }
 
@@ -33,7 +22,7 @@ public class TreePrinter<T> {
         Parameter squareBranches, when set to true, results in branches being printed with ASCII box
         drawing characters.
      */
-    public void printTree(T root) {
+    public void printTree(BinaryTree.Node root) {
         List<TreeLine> treeLines = buildTreeLines(root);
         printTreeLines(treeLines);
     }
@@ -50,12 +39,12 @@ public class TreePrinter<T> {
         }
     }
 
-    private List<TreeLine> buildTreeLines(T root) {
+    private List<TreeLine> buildTreeLines(BinaryTree.Node root) {
         if (root == null) return Collections.emptyList();
         else {
-            String rootLabel = getLabel.apply(root);
-            List<TreeLine> leftTreeLines = buildTreeLines(getLeft.apply(root));
-            List<TreeLine> rightTreeLines = buildTreeLines(getRight.apply(root));
+            String rootLabel = root.value.toString();
+            List<TreeLine> leftTreeLines = buildTreeLines(root.getLeft());
+            List<TreeLine> rightTreeLines = buildTreeLines(root.getRight());
 
             int leftCount = leftTreeLines.size();
             int rightCount = rightTreeLines.size();

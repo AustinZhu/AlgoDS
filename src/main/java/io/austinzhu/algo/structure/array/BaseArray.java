@@ -9,7 +9,9 @@ import java.util.Arrays;
 /**
  * @author Austin Zhu
  */
-public abstract class BaseArray<T extends Comparable<T>> implements Operatable<T>, Searchable<T>, Sortable, Interactable<T> {
+public sealed abstract class BaseArray<T extends Comparable<T>>
+        implements Operatable<T>, Searchable<T>, Sortable, Interactable<T>
+        permits Array {
 
     protected int length;
 

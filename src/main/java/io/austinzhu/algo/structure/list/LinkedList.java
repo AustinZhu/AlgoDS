@@ -8,7 +8,7 @@ import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
 import java.util.Random;
 
-public class LinkedList<T extends Comparable<T>> extends List<T> {
+public final class LinkedList<T extends Comparable<T>> implements List<T> {
 
     private Node<T> root;
 
@@ -105,6 +105,7 @@ public class LinkedList<T extends Comparable<T>> extends List<T> {
         return iterator.getValue();
     }
 
+    @Override
     public T head() {
         if (isEmpty()) {
             return null;
@@ -112,6 +113,7 @@ public class LinkedList<T extends Comparable<T>> extends List<T> {
         return root.getValue();
     }
 
+    @Override
     public T last() {
         if (isEmpty()) {
             return null;

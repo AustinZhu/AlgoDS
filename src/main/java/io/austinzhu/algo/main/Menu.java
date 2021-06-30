@@ -18,8 +18,8 @@ public class Menu {
             new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix"},
                     "Heap", new String[]{"Beap", "BinaryHeap", "BinomialHeap", "FibonacciHeap", "Treap"},
                     "List", new String[]{"ArrayList", "DoublyLinkedList", "LinkedList", "Queue", "Stack", "UnrolledLinkedList"},
-                    "Network", new String[]{"Graph"},
-                    "Map", new String[]{"HashMap", "Tuple"},
+                    "Network", new String[]{"MatrixGraph"},
+                    "Map", new String[]{"HashMap"},
                     "Tree", new String[]{"AVLTree", "BinarySearchTree", "BinaryTree", "RedBlackTree"}));
 
     private final Random rand;

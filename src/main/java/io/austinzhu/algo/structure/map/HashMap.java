@@ -3,43 +3,21 @@ package io.austinzhu.algo.structure.map;
 import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.interfaces.Algorithm;
 
-import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
-public class HashMap<K, V> {
-
-    private static class Entry<K, V> extends Tuple<K, V> {
-        private final int hash;
-
-        private Entry<K, V> next;
-
-        Entry(K key, V value) {
-            super(key, value);
-            this.hash = key.hashCode();
-            this.next = null;
-        }
-
-        @Override
-        public String toString() {
-            return "{" +
-                    "key=" + key +
-                    ", value=" + value +
-                    "}" + " -> " +
-                    next;
-        }
-    }
+public final class HashMap<K, V> implements Map<K, V> {
 
     private Entry<K, V>[] data;
 
     @SuppressWarnings("unchecked")
     public HashMap(int capacity) {
-        this.data = (Entry<K, V>[]) Array.newInstance(Entry.class, capacity);
+        this.data = new Entry[capacity];
     }
 
     public static HashMap<String, Integer> init(int size, int bound, Random random) {
         var capacity = random.nextInt(size);
         HashMap<String, Integer> map = new HashMap<>(capacity);
-
         for (var i = 0; i < capacity; i++) {
             var generatedString = random.ints(48, 123)
                     .filter(j -> (j <= 57 || j >= 65) && (j <= 90 || j >= 97))
@@ -51,6 +29,7 @@ public class HashMap<K, V> {
         return map;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public K[] keys() {
         K[] keys = (K[]) new Object[data.length];
@@ -60,6 +39,20 @@ public class HashMap<K, V> {
         return keys;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public V[] values() {
+        ArrayList<V> values = new ArrayList<>();
+        for (Entry<K, V> e : data) {
+            while (e != null) {
+                values.add(e.value);
+                e = e.next;
+            }
+        }
+        return values.toArray((V[]) new Object[0]);
+    }
+
+    @Override
     @Algorithm
     public void insert(K key, V value) {
         Entry<K, V> node = new Entry<>(key, value);
@@ -80,39 +73,45 @@ public class HashMap<K, V> {
         int bucket = Math.abs(key.hashCode() % data.length);
         if (data[bucket] == null) {
             throw new ElementNotFoundException("No such key");
-        } else {
-            Entry<K, V> cur = data[bucket];
-            if (cur.key == key) {
-                data[bucket] = cur.next;
-                return;
-            }
-            while (cur.next != null) {
-                if (cur.next.key == key) {
-                    cur.next = cur.next.next;
-                } else {
-                    cur = cur.next;
-                }
+        }
+        Entry<K, V> cur = data[bucket];
+        if (cur.key == key) {
+            data[bucket] = cur.next;
+            return;
+        }
+        while (cur.next != null) {
+            if (cur.next.key == key) {
+                cur.next = cur.next.next;
+            } else {
+                cur = cur.next;
             }
         }
     }
 
+    @Override
     public V get(K key) {
         int bucket = Math.abs(key.hashCode() % data.length);
-        if (data[bucket] != null) {
-            Entry<K, V> cur = data[bucket];
+        Entry<K, V> cur = data[bucket];
+        while (cur != null) {
             if (cur.key == key) {
-                data[bucket] = cur.next;
                 return cur.value;
             }
-            while (cur.next != null) {
-                if (cur.next.key == key) {
-                    return cur.next.value;
-                } else {
-                    cur = cur.next;
-                }
-            }
+            cur = cur.next;
         }
         throw new ElementNotFoundException("No such key");
+    }
+
+    @Override
+    public void set(K key, V value) {
+        int bucket = Math.abs(key.hashCode() % data.length);
+        Entry<K, V> cur = data[bucket];
+        while (cur != null) {
+            if (cur.key == key) {
+                cur.value = value;
+                return;
+            }
+            cur = cur.next;
+        }
     }
 
     @Override
@@ -121,9 +120,31 @@ public class HashMap<K, V> {
             return "null";
         }
         var sb = new StringBuilder();
-        for (Entry<K,V> e : data) {
+        for (Entry<K, V> e : data) {
             sb.append(e).append('\n');
         }
         return sb.toString();
+    }
+
+    private static class Entry<K, V> extends Tuple<K, V> {
+
+        private final int hash;
+
+        private Entry<K, V> next;
+
+        Entry(K key, V value) {
+            super(key, value);
+            this.hash = key.hashCode();
+            this.next = null;
+        }
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "key=" + key +
+                    ", value=" + value +
+                    "}" + " -> " +
+                    next;
+        }
     }
 }

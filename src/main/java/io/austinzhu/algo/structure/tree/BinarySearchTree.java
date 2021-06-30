@@ -5,20 +5,13 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Random;
 
-public class BinarySearchTree<T> extends BaseBinaryTree<T> {
+public sealed class BinarySearchTree<T>
+        extends BinaryTree<T>
+        permits AVLTree, RedBlackTree {
 
-    public BinarySearchTree() {
-        super();
-    }
-
-    public BinarySearchTree(Node<T> root) {
-        super(root);
-    }
+    private Node<T> root;
 
     public static BinarySearchTree<Integer> init(int size, int bound, Random random) {
         var capacity = random.nextInt(size);
@@ -29,69 +22,31 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         return binaryTree;
     }
 
-    public Integer[] inOrder() {
-        ArrayList<Integer> list = new ArrayList<>();
-        inOrderRecursive(getRoot(), list);
-        return (Integer[]) list.toArray();
-    }
-
-    public Integer[] preOrder() {
-        ArrayList<Integer> list = new ArrayList<>();
-        preOrderRecursive(getRoot(), list);
-        return (Integer[]) list.toArray();
-    }
-
-    public Integer[] postOrder() {
-        ArrayList<Integer> list = new ArrayList<>();
-        postOrderRecursive(getRoot(), list);
-        return (Integer[]) list.toArray();
-    }
-
-    public Integer[] levelOrder() {
-        if (isEmpty()) {
-            return new Integer[]{};
-        }
-        ArrayList<Integer> list = new ArrayList<>();
-        Deque<Node<T>> nodeDeque = new LinkedList<>();
-        nodeDeque.addLast(getRoot());
-        while (!nodeDeque.isEmpty()) {
-            Node<T> tmp = nodeDeque.removeFirst();
-            list.add(tmp.key);
-            if (tmp.hasLeft()) {
-                nodeDeque.addLast(tmp.getLeft());
-            }
-            if (tmp.hasRight()) {
-                nodeDeque.addLast(tmp.getRight());
-            }
-        }
-        return (Integer[]) list.toArray();
-    }
-
     @Algorithm
     @Override
     public void append(T element) {
         Node<T> newNode = new Node<>(element);
-        if (isEmpty()) {
+        if (root == null) {
             setRoot(newNode);
             size++;
             return;
         }
-        Node<T> iterator = getRoot();
+        Node<T> iterator = root;
         while (iterator != null) {
-            if (newNode.getKey() < iterator.getKey()){
+            if (newNode.key < iterator.key) {
                 if (!iterator.hasLeft()) {
-                    iterator.setLeft(newNode);
+                    iterator.left = newNode;
                     size++;
                     return;
                 }
-                iterator = iterator.getLeft();
-            } else if (newNode.getKey() > iterator.getKey()) {
+                iterator = iterator.left;
+            } else if (newNode.key > iterator.key) {
                 if (!iterator.hasRight()) {
-                    iterator.setRight(newNode);
+                    iterator.right = newNode;
                     size++;
                     return;
                 }
-                iterator = iterator.getRight();
+                iterator = iterator.right;
             } else {
                 return;
             }
@@ -111,72 +66,72 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
     @Algorithm
     @Override
     public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
-        if (isEmpty()) {
+        if (root == null) {
             throw new ElementNotFoundException("Empty root");
         }
-        Node<T> iterator = getRoot(), deleted = getRoot();
+        Node<T> iterator = root, deleted = root;
         boolean isLeft = false;
-        while (iterator.getKey() != id) {
-            if (id < iterator.getKey()) {
+        while (iterator.key != id) {
+            if (id < iterator.key) {
                 if (!iterator.hasLeft()) {
                     throw new ElementNotFoundException("Not found");
                 }
-                if (id == iterator.getLeft().getKey()) {
-                    deleted = iterator.getLeft();
+                if (id == iterator.left.key) {
+                    deleted = iterator.left;
                     isLeft = true;
                     break;
                 }
-                iterator = iterator.getLeft();
+                iterator = iterator.left;
             } else {
                 if (!iterator.hasRight()) {
                     throw new ElementNotFoundException("Not found");
                 }
-                if (id == iterator.getRight().getKey()) {
-                    deleted = iterator.getRight();
+                if (id == iterator.right.key) {
+                    deleted = iterator.right;
                     isLeft = false;
                     break;
                 }
-                iterator = iterator.getRight();
+                iterator = iterator.right;
             }
         }
-        boolean isRoot = deleted.getKey() == getRoot().getKey();
+        boolean isRoot = deleted.key == root.key;
         if (deleted.isLeaf()) {
             if (isRoot) {
                 setRoot(null);
             } else if (isLeft) {
-                iterator.setLeft(null);
+                iterator.left = null;
             } else {
-                iterator.setRight(null);
+                iterator.right = null;
             }
         }
         if (deleted.hasLeft() && !deleted.hasRight()) {
             if (isRoot) {
-                setRoot(deleted.getLeft());
+                setRoot(deleted.left);
             } else if (isLeft) {
-                iterator.setLeft(deleted.getLeft());
+                iterator.left = deleted.left;
             } else {
-                iterator.setRight(deleted.getLeft());
+                iterator.right = deleted.left;
             }
         }
         if (deleted.hasRight() && !deleted.hasLeft()) {
             if (isRoot) {
-                setRoot(deleted.getRight());
+                setRoot(deleted.right);
             } else if (isLeft) {
-                iterator.setLeft(deleted.getRight());
+                iterator.left = deleted.right;
             } else {
-                iterator.setRight(deleted.getRight());
+                iterator.right = deleted.right;
             }
         }
         if (deleted.hasLeft() && deleted.hasRight()) {
-            Node<T> succ = deleted.ejectSuccessor();
-            succ.setLeft(deleted.getLeft());
-            succ.setRight(deleted.getRight());
+            Node<T> succ = (Node<T>) ejectSuccessor(deleted);
+            succ.left = deleted.left;
+            succ.right = deleted.right;
             if (isRoot) {
                 setRoot(succ);
             } else if (isLeft) {
-                iterator.setLeft(succ);
+                iterator.left = succ;
             } else {
-                iterator.setRight(succ);
+                iterator.right = succ;
             }
         }
     }
@@ -191,30 +146,47 @@ public class BinarySearchTree<T> extends BaseBinaryTree<T> {
         return super.exist(element);
     }
 
-    private void preOrderRecursive(Node<T> node, ArrayList<Integer> list) {
-        if (node == null) {
-            return;
-        }
-        list.add(node.key);
-        preOrderRecursive(node.getLeft(), list);
-        preOrderRecursive(node.getRight(), list);
+    @Override
+    public String toString() {
+        TreePrinter tp = new TreePrinter();
+        tp.printTree(root);
+        return tp.toString();
     }
 
-    private void inOrderRecursive(Node<T> node, ArrayList<Integer> list) {
-        if (node == null) {
-            return;
-        }
-        inOrderRecursive(node.getLeft(), list);
-        list.add(node.key);
-        inOrderRecursive(node.getRight(), list);
+    public void setRoot(Node<T> root) {
+        this.root = root;
     }
 
-    private void postOrderRecursive(Node<T> node, ArrayList<Integer> list) {
-        if (node == null) {
-            return;
+    sealed static class Node<T>
+            extends BinaryTree.Node<T>
+            permits AVLTree.Node, RedBlackTree.Node {
+
+        private Node<T> left;
+
+        private Node<T> right;
+
+        protected Node(T value) {
+            super(value);
         }
-        postOrderRecursive(node.getLeft(), list);
-        postOrderRecursive(node.getRight(), list);
-        list.add(node.key);
+
+        @Override
+        Node<T> getLeft() {
+            return this.left;
+        }
+
+        @Override
+        Node<T> getRight() {
+            return this.right;
+        }
+
+        @Override
+        public boolean hasLeft() {
+            return left != null;
+        }
+
+        @Override
+        public boolean hasRight() {
+            return right != null;
+        }
     }
 }
