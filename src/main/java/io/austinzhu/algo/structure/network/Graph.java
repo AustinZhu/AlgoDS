@@ -1,6 +1,6 @@
 package io.austinzhu.algo.structure.network;
 
-public interface Graph<T> {
+public sealed interface Graph<T> permits MatrixGraph {
 
     Integer[] getNeighbors(int v);
 

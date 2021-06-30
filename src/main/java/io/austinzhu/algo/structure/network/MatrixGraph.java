@@ -5,11 +5,11 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MatrixGraph<T> implements Graph<T> {
+public final class MatrixGraph<T> implements Graph<T> {
 
-    private boolean[][] adjMat;
+    private final boolean[][] adjMat;
 
-    private T[] vertices;
+    private final T[] vertices;
 
     @SuppressWarnings("unchecked")
     public MatrixGraph(int capacity) {

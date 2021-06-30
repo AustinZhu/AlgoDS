@@ -13,16 +13,16 @@ public sealed abstract class BaseArray<T extends Comparable<T>>
         implements Operatable<T>, Searchable<T>, Sortable, Interactable<T>
         permits Array {
 
-    protected int length;
+    int length;
 
-    protected int upperBound;
+    int upperBound;
 
-    protected int lowerBound;
+    int lowerBound;
 
-    protected T[] data;
+    T[] data;
 
     @SuppressWarnings("unchecked")
-    protected BaseArray(int capacity) {
+    BaseArray(int capacity) {
         this.length = 0;
         this.lowerBound = 0;
         this.upperBound = 0;

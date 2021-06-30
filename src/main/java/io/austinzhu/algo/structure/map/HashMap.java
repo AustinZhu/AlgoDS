@@ -8,7 +8,7 @@ import java.util.Random;
 
 public final class HashMap<K, V> implements Map<K, V> {
 
-    private Entry<K, V>[] data;
+    private final Entry<K, V>[] data;
 
     @SuppressWarnings("unchecked")
     public HashMap(int capacity) {
@@ -126,7 +126,7 @@ public final class HashMap<K, V> implements Map<K, V> {
         return sb.toString();
     }
 
-    private static class Entry<K, V> extends Tuple<K, V> {
+    static final class Entry<K, V> extends Tuple<K, V> {
 
         private final int hash;
 

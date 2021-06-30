@@ -157,7 +157,7 @@ public sealed class BinarySearchTree<T>
         this.root = root;
     }
 
-    sealed static class Node<T>
+    static sealed class Node<T>
             extends BinaryTree.Node<T>
             permits AVLTree.Node, RedBlackTree.Node {
 

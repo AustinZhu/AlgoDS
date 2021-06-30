@@ -13,7 +13,7 @@ public sealed class BinaryTree<T>
 
     private Node<T> root;
 
-    protected int size;
+    int size;
 
     public BinaryTree() {
         this.root = null;
@@ -399,7 +399,7 @@ public sealed class BinaryTree<T>
         return left;
     }
 
-    sealed static class Node<T> permits BinarySearchTree.Node {
+    static sealed class Node<T> permits BinarySearchTree.Node {
 
         int key;
 

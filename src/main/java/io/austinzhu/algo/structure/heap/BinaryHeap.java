@@ -10,12 +10,12 @@ import java.util.Random;
 
 public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
-    protected final T[] nodes;
+    private final T[] nodes;
 
-    protected int length;
+    private int length;
 
     @SuppressWarnings("unchecked")
-    protected BinaryHeap(int capacity) {
+    public BinaryHeap(int capacity) {
         this.nodes = (T[]) new Comparable[capacity];
         this.length = 0;
     }

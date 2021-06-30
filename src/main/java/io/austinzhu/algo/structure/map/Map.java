@@ -12,11 +12,11 @@ public sealed interface Map<K, V> permits HashMap {
 
     void set(K key, V value);
 
-    class Tuple<K, V> {
+    sealed class Tuple<K, V> permits HashMap.Entry {
 
-        protected K key;
+        K key;
 
-        protected V value;
+        V value;
 
         public Tuple(K key, V value) {
             this.key = key;
