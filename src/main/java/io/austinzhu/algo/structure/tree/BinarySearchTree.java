@@ -136,6 +136,42 @@ public sealed class BinarySearchTree<T>
         }
     }
 
+    private Node<T> ejectPredecessor(Node<T> node) {
+        if (!node.hasLeft()) {
+            return null;
+        }
+        Node<T> parent = node;
+        Node<T> pred = node.left;
+        if (!pred.hasRight()) {
+            parent.left = pred.left;
+            return pred;
+        }
+        while (pred.hasRight()) {
+            parent = pred;
+            pred = pred.right;
+        }
+        parent.right = null;
+        return pred;
+    }
+
+    private Node<T> ejectSuccessor(Node<T> node) {
+        if (!node.hasRight()) {
+            return null;
+        }
+        Node<T> parent = node;
+        Node<T> succ = node.right;
+        if (!succ.hasLeft()) {
+            parent.right = succ.right;
+            return succ;
+        }
+        while (succ.hasLeft()) {
+            parent = succ;
+            succ = succ.left;
+        }
+        parent.left = null;
+        return succ;
+    }
+
     @Override
     public int search(T element, SearchingAlgorithm sa) {
         return super.search(element, sa);
@@ -165,7 +201,7 @@ public sealed class BinarySearchTree<T>
 
         private Node<T> right;
 
-        protected Node(T value) {
+        Node(T value) {
             super(value);
         }
 

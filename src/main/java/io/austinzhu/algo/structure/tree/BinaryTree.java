@@ -300,22 +300,6 @@ public sealed class BinaryTree<T>
         return list.toArray(new Integer[0]);
     }
 
-    @Override
-    public String toString() {
-        TreePrinter tp = new TreePrinter();
-        tp.printTree(root);
-        return tp.toString();
-    }
-
-    public void setRoot(Node<T> root) {
-        this.root = root;
-    }
-
-    @Override
-    public int getSize() {
-        return size;
-    }
-
     private void preOrderRecursive(Node<T> node, ArrayList<Integer> list) {
         if (node == null) {
             return;
@@ -343,42 +327,6 @@ public sealed class BinaryTree<T>
         list.add(node.key);
     }
 
-    public Node<T> ejectPredecessor(Node<T> node) {
-        if (!node.hasLeft()) {
-            return null;
-        }
-        Node<T> parent = node;
-        Node<T> pred = node.getLeft();
-        if (!pred.hasRight()) {
-            parent.setLeft(pred.getLeft());
-            return pred;
-        }
-        while (pred.hasRight()) {
-            parent = pred;
-            pred = pred.getRight();
-        }
-        parent.setRight(null);
-        return pred;
-    }
-
-    public Node<T> ejectSuccessor(Node<T> node) {
-        if (!node.hasRight()) {
-            return null;
-        }
-        Node<T> parent = node;
-        Node<T> succ = node.getRight();
-        if (!succ.hasLeft()) {
-            parent.setRight(succ.getRight());
-            return succ;
-        }
-        while (succ.hasLeft()) {
-            parent = succ;
-            succ = succ.getLeft();
-        }
-        parent.setLeft(null);
-        return succ;
-    }
-
     public Node<T> leftRotate(Node<T> root) {
         if (root.isLeaf()) {
             return root;
@@ -397,6 +345,22 @@ public sealed class BinaryTree<T>
         root.left = left.right;
         left.right = root;
         return left;
+    }
+
+    public void setRoot(Node<T> root) {
+        this.root = root;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public String toString() {
+        TreePrinter tp = new TreePrinter();
+        tp.printTree(root);
+        return tp.toString();
     }
 
     static sealed class Node<T> permits BinarySearchTree.Node {

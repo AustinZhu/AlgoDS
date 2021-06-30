@@ -201,7 +201,7 @@ public final class LinkedList<T extends Comparable<T>> implements List<T> {
 
         private Node<T> next;
 
-        Node(T value) {
+        private Node(T value) {
             this.value = value;
             this.next = null;
         }

@@ -132,7 +132,7 @@ public final class HashMap<K, V> implements Map<K, V> {
 
         private Entry<K, V> next;
 
-        Entry(K key, V value) {
+        private Entry(K key, V value) {
             super(key, value);
             this.hash = key.hashCode();
             this.next = null;
