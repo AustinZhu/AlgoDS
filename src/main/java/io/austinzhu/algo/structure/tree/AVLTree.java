@@ -98,7 +98,7 @@ public final class AVLTree<T> extends BinarySearchTree<T> {
             if (node.hasLeft() && !node.hasRight()) {
                 return node.left;
             }
-            if (node.hasRight() && !node.hasLeft()) {
+            if (!node.hasLeft() && node.hasRight()) {
                 return node.right;
             }
             if (node.hasLeft() && node.hasRight()) {
@@ -149,16 +149,6 @@ public final class AVLTree<T> extends BinarySearchTree<T> {
 
         public int getHeight() {
             return height;
-        }
-
-        @Override
-        Node<T> getLeft() {
-            return this.left;
-        }
-
-        @Override
-        Node<T> getRight() {
-            return this.right;
         }
 
         public void updateHeight() {

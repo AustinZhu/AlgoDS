@@ -378,22 +378,6 @@ public sealed class BinaryTree<T>
             this.value = value;
         }
 
-        Node<T> getLeft() {
-            return this.left;
-        }
-
-        Node<T> getRight() {
-            return this.right;
-        }
-
-        void setLeft(Node<T> node) {
-            this.left = node;
-        }
-
-        void setRight(Node<T> node) {
-            this.right = node;
-        }
-
         boolean hasLeft() {
             return left != null;
         }
