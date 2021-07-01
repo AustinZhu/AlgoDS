@@ -17,7 +17,7 @@ public sealed interface List<A extends Type<A>>
         }
     }
 
-    final class Cons<A extends Type<A>> extends B<Unit, Pair<A, List<A>>> implements List<A> {
+    final class Cons<A extends Type<A>> extends Sum.B<Unit, Pair<A, List<A>>> implements List<A> {
 
         public static <A extends Type<A>> List<A> cons(A a, List<A> l) {
             return new Cons<>(Pair.pair(a, l));

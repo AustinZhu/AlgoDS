@@ -19,7 +19,7 @@ public sealed interface Maybe<A extends Type<A>>
         }
     }
 
-    final class Just<A extends Type<A>> extends B<Unit, A> implements Maybe<A> {
+    final class Just<A extends Type<A>> extends Sum.B<Unit, A> implements Maybe<A> {
 
         public static <A extends Type<A>> Maybe<A> just(A a) {
             return new Just<>(a);
