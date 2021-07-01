@@ -3,6 +3,10 @@ package io.austinzhu.type.functor;
 import io.austinzhu.type.Function;
 import io.austinzhu.type.Type;
 
-public interface Functor<A extends Type<A>> {
-    <B extends Type<B>> Functor<B> fmap(Function<A, B> f, Functor<A> F);
+public interface Functor<
+        FA extends Type<FA> & Functor<FA, A>,
+        A extends Type<A>> {
+
+    <B extends Type<B>, FB extends Functor<FB, B> & Type<FB>>
+    FB fmap(Function<A, B> f, FA fa);
 }

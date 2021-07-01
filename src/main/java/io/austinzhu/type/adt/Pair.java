@@ -2,9 +2,15 @@ package io.austinzhu.type.adt;
 
 import io.austinzhu.type.Type;
 
-public class Pair<A extends Type<A>, B extends Type<B>> extends Product<A, B> {
+public final class Pair<A extends Type<A>, B extends Type<B>>
+        extends Product<A, B>
+        implements Type<Pair<A, B>> {
 
-    Pair(Type<A> a, Type<B> b) {
+    public static <A extends Type<A>, B extends Type<B>> Pair<A, B> pair(A a, B b) {
+        return new Pair<>(a, b);
+    }
+
+    private Pair(A a, B b) {
         super(a, b);
     }
 }

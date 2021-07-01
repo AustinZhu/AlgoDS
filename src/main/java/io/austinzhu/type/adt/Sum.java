@@ -4,18 +4,18 @@ import io.austinzhu.type.Type;
 
 public interface Sum<A extends Type<A>, B extends Type<B>> {
 
-    class Left<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
-        Type<A> a;
+    class A<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
+        public A a;
 
-        Left(Type<A> a) {
+        public A(A a) {
             this.a = a;
         }
     }
 
-    class Right<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
-        Type<B> b;
+    class B<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
+        public B b;
 
-        Right(Type<B> b) {
+        public B(B b) {
             this.b = b;
         }
     }

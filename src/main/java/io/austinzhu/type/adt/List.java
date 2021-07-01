@@ -2,21 +2,29 @@ package io.austinzhu.type.adt;
 
 import io.austinzhu.type.Type;
 
-public class List<A extends Type<A>> implements Sum<Unit, Product<A, List<A>>>, Type<List<A>> {
+public sealed interface List<A extends Type<A>>
+        extends Sum<Unit, Pair<A, List<A>>>, Type<List<A>>
+        permits List.Nil, List.Cons {
 
-    class Left implements Sum<Unit, Product<A, List<A>>> {
-        Type<Unit> n;
+    final class Nil<A extends Type<A>> extends Sum.A<Unit, Pair<A, List<A>>> implements List<A> {
 
-        Left(Type<Unit> a) {
-            this.n = a;
+        public static <A extends Type<A>> List<A> nil() {
+            return new Nil<>();
+        }
+
+        private Nil() {
+            super(Unit.unit());
         }
     }
 
-    class Right implements Sum<Unit, Product<A, List<A>>> {
-        Type<Product<A, List<A>>> c;
+    final class Cons<A extends Type<A>> extends B<Unit, Pair<A, List<A>>> implements List<A> {
 
-        Right(Product<A, List<A>> b) {
-            this.c = b;
+        public static <A extends Type<A>> List<A> cons(A a, List<A> l) {
+            return new Cons<>(Pair.pair(a, l));
+        }
+
+        private Cons(Pair<A, List<A>> b) {
+            super(b);
         }
     }
 }

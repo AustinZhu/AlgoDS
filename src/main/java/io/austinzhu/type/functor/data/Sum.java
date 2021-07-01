@@ -3,9 +3,15 @@ package io.austinzhu.type.functor.data;
 import io.austinzhu.type.Type;
 import io.austinzhu.type.functor.Functor;
 
-public interface Sum<F extends Functor<A>, G extends Functor<A>, A extends Type<A>> {
+public interface Sum<
+        F extends Functor<F, A> & Type<F>,
+        G extends Functor<G, A> & Type<G>,
+        A extends Type<A>> {
 
-    class InL<F extends Functor<A>, G extends Functor<A>, A extends Type<A>> implements Sum<F, G, A> {
+    class InL<
+            F extends Functor<F, A> & Type<F>,
+            G extends Functor<G, A> & Type<G>,
+            A extends Type<A>> implements Sum<F, G, A> {
 
         F f;
 
@@ -14,7 +20,10 @@ public interface Sum<F extends Functor<A>, G extends Functor<A>, A extends Type<
         }
     }
 
-    class InR<F extends Functor<A>, G extends Functor<A>, A extends Type<A>> implements Sum<F, G, A> {
+    class InR<
+            F extends Functor<F, A> & Type<F>,
+            G extends Functor<G, A> & Type<G>,
+            A extends Type<A>> implements Sum<F, G, A> {
 
         G g;
 

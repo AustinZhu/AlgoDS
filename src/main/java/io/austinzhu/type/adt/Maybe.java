@@ -1,22 +1,44 @@
 package io.austinzhu.type.adt;
 
+import io.austinzhu.type.Function;
 import io.austinzhu.type.Type;
+import io.austinzhu.type.functor.Functor;
 
-public final class Maybe<A extends Type<A>> implements Sum<Unit, A>, Type<Maybe<A>> {
+public sealed interface Maybe<A extends Type<A>>
+        extends Sum<Unit, A>, Type<Maybe<A>>, Functor<Maybe<A>, A>
+        permits Maybe.Nothing, Maybe.Just {
 
-    class Left implements Sum<Unit, A> {
-        Type<Unit> n;
+    final class Nothing<A extends Type<A>> extends Sum.A<Unit, A> implements Maybe<A> {
 
-        Left(Type<Unit> a) {
-            this.n = a;
+        public static <A extends Type<A>> Maybe<A> nothing() {
+            return new Nothing<>();
+        }
+
+        private Nothing() {
+            super(Unit.unit());
         }
     }
 
-    class Right implements Sum<Unit, A> {
-        Type<A> a;
+    final class Just<A extends Type<A>> extends B<Unit, A> implements Maybe<A> {
 
-        Right(Type<A> b) {
-            this.a = b;
+        public static <A extends Type<A>> Maybe<A> just(A a) {
+            return new Just<>(a);
         }
+
+        private Just(A b) {
+            super(b);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    default <B extends Type<B>, FB extends Functor<FB, B> & Type<FB>> FB fmap(Function<A, B> f, Maybe<A> fa) {
+        if (fa instanceof Nothing) {
+            return (FB) new Nothing<B>();
+        }
+        if (fa instanceof Just<A> j) {
+            return (FB) new Just<>(f.apply(j.b));
+        }
+        throw new ClassCastException();
     }
 }

@@ -3,9 +3,12 @@ package io.austinzhu.type.functor;
 import io.austinzhu.type.Function;
 import io.austinzhu.type.Type;
 
-public interface Applicative<A extends Type<A>> extends Functor<A> {
+public interface Applicative<
+        FA extends Type<FA> & Functor<FA, A> & Applicative<FA, A>,
+        A extends Type<A>> {
 
-    Applicative<A> pure(A a);
+    Applicative<FA, A> pure(A a);
 
-    <B extends Type<B>> Applicative<B> apply(Applicative<Function<A, B>> f, Applicative<A> a);
+    <FB extends Applicative<FB, B> & Type<FB> & Functor<FB, B>, B extends Type<B>>
+    Applicative<FB, B> apply(Applicative<Function<A, B>, B> f, Applicative<FA, A> fa);
 }

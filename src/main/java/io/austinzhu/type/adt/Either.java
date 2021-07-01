@@ -2,21 +2,29 @@ package io.austinzhu.type.adt;
 
 import io.austinzhu.type.Type;
 
-public final class Either<A extends Type<A>, B extends Type<B>> implements Sum<A, B>, Type<Either<A, B>> {
+public sealed interface Either<A extends Type<A>, B extends Type<B>>
+        extends Sum<A, B>, Type<Either<A, B>>
+        permits Either.Left, Either.Right {
 
-    class Left implements Sum<A, B> {
-        Type<Unit> a;
+    final class Left<A extends Type<A>, B extends Type<B>> extends Sum.A<A, B> implements Either<A, B> {
 
-        Left(Type<Unit> a) {
-            this.a = a;
+        public static <A extends Type<A>, B extends Type<B>> Either<A, B> left(A a) {
+            return new Left<>(a);
+        }
+
+        private Left(A a) {
+            super(a);
         }
     }
 
-    class Right implements Sum<A, B> {
-        Type<A> b;
+    final class Right<A extends Type<A>, B extends Type<B>> extends Sum.B<A, B> implements Either<A, B> {
 
-        Right(Type<A> b) {
-            this.b = b;
+        public static <A extends Type<A>, B extends Type<B>> Either<A, B> right(B b) {
+            return new Right<>(b);
+        }
+
+        private Right(B b) {
+            super(b);
         }
     }
 }

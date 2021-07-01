@@ -2,21 +2,27 @@ package io.austinzhu.type.adt;
 
 import io.austinzhu.type.Type;
 
-public final class Bool implements Sum<Unit, Unit>, Type<Bool> {
+public interface Bool extends Sum<Unit, Unit>, Type<Bool> {
 
-    static class Left implements Sum<Unit, Unit> {
-        Type<Unit> t;
+    class True extends A<Unit, Unit> implements Bool {
 
-        Left(Type<Unit> a) {
-            this.t = a;
+        public static Bool true_() {
+            return new True();
+        }
+
+        private True() {
+            super(Unit.unit());
         }
     }
 
-    static class Right implements Sum<Unit, Unit> {
-        Type<Unit> f;
+    class False extends B<Unit, Unit> implements Bool {
 
-        Right(Type<Unit> b) {
-            this.f = b;
+        public static Bool false_() {
+            return new False();
+        }
+
+        private False() {
+            super(Unit.unit());
         }
     }
 }
