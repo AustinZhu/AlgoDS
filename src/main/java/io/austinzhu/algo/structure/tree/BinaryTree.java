@@ -358,7 +358,7 @@ public sealed class BinaryTree<T>
 
     @Override
     public String toString() {
-        TreePrinter tp = new TreePrinter();
+        TreePrinter<Node<T>> tp = new TreePrinter<>(n -> n.value.toString(), Node::getLeft, Node::getRight);
         tp.printTree(root);
         return tp.toString();
     }

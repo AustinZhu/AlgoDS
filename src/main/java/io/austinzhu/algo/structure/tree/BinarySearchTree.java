@@ -182,15 +182,16 @@ public sealed class BinarySearchTree<T>
         return super.exist(element);
     }
 
-    @Override
-    public String toString() {
-        TreePrinter tp = new TreePrinter();
-        tp.printTree(root);
-        return tp.toString();
-    }
-
     public void setRoot(Node<T> root) {
         this.root = root;
+    }
+
+    @Override
+    public String toString() {
+        TreePrinter<Node<T>> tp = new TreePrinter<>(n -> n.value.toString(), Node::getLeft, Node::getRight);
+        ;
+        tp.printTree(root);
+        return tp.toString();
     }
 
     static sealed class Node<T>
