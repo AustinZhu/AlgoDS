@@ -1,6 +1,5 @@
 package io.austinzhu.algo.structure.array;
 
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -356,7 +355,7 @@ public sealed class Array<T extends Comparable<T>>
     /**
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
-     * @description Shell sort is a stable, in-place comparison sorting algorithm.
+     * Shell sort is a stable, in-place comparison sorting algorithm.
      * <p>
      * 1. Insertion sort every n elements
      * 2. Repeat 1. for next n in the geometric series with ratio 1/2
@@ -531,7 +530,7 @@ public sealed class Array<T extends Comparable<T>>
      * @param lower  lower bound (inclusive)
      * @param upper  upper bound (exclusive)
      * @param digits maximum digits among the elements
-     * @description Radix Sort is a stable, distribution sorting algorithm
+     * Radix Sort is a stable, distribution sorting algorithm
      * <p>
      * 1. For each digits, perform a counting sort
      * <p>

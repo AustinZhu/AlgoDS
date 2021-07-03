@@ -1,6 +1,5 @@
 package io.austinzhu.algo.structure.list;
 
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 
 import java.util.Random;

@@ -1,9 +1,8 @@
 package io.austinzhu.algo.structure.tree;
 
-import io.austinzhu.algo.exception.ElementNotFoundException;
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 public final class AVLTree<T> extends BinarySearchTree<T> {
@@ -27,7 +26,7 @@ public final class AVLTree<T> extends BinarySearchTree<T> {
 
     @Algorithm
     @Override
-    public T delete(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T delete(int idx) {
         setRoot(deleteRecursive(root, idx));
         return null; //fixme
     }
@@ -86,7 +85,7 @@ public final class AVLTree<T> extends BinarySearchTree<T> {
 
     private Node<T> deleteRecursive(Node<T> node, int id) {
         if (node == null) {
-            throw new ElementNotFoundException("Element not found");
+            throw new NoSuchElementException("Element not found");
         }
         if (id < node.key) {
             node.left = deleteRecursive(node.left, id);

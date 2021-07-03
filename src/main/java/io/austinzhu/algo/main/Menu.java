@@ -1,6 +1,5 @@
 package io.austinzhu.algo.main;
 
-import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
@@ -57,18 +56,18 @@ public class Menu {
 
     private Method[] getMethods(Class<?> clazz) {
         Method[] allMethods = clazz.getDeclaredMethods();
-        List<Method> algorithms = new ArrayList<>();
+        Map<String, Method> algorithms = new HashMap<>();
         var builder = new StringBuilder("4. Choose a method: ");
         var i = 1;
         for (Method method : allMethods) {
-            if (method.getAnnotation(Algorithm.class) != null) {
-                algorithms.add(method);
-                builder.append("\n").append("(").append(i).append(") ").append(method.getName());
+            if (method.getAnnotation(Algorithm.class) != null && !algorithms.containsKey(method.getName())) {
+                algorithms.put(method.getName(), method);
+                builder.append("\n(").append(i).append(") ").append(method.getName());
                 i++;
             }
         }
         System.out.println(builder);
-        return algorithms.toArray(new Method[0]);
+        return algorithms.values().toArray(new Method[0]);
     }
 
     private SortingAlgorithm sortSelection(Scanner scanner) {
@@ -121,7 +120,7 @@ public class Menu {
                 try {
                     System.out.println("After deletion: ");
                     System.out.println(dataStructure);
-                } catch (ElementNotFoundException e1) {
+                } catch (NoSuchElementException e1) {
                     System.out.println(e1.getMessage());
                 }
             }
@@ -131,7 +130,7 @@ public class Menu {
                 try {
                     System.out.println("After append: ");
                     System.out.println(dataStructure);
-                } catch (ElementNotFoundException e1) {
+                } catch (NoSuchElementException e1) {
                     System.out.println(e1.getMessage());
                 }
             }
@@ -140,7 +139,7 @@ public class Menu {
                 try {
                     System.out.println("After ejection: ");
                     System.out.println(dataStructure);
-                } catch (ElementNotFoundException e1) {
+                } catch (NoSuchElementException e1) {
                     System.out.println(e1.getMessage());
                 }
             }
@@ -149,7 +148,7 @@ public class Menu {
                 try {
                     System.out.println("After reversing: ");
                     System.out.println(dataStructure);
-                } catch (ElementNotFoundException e1) {
+                } catch (NoSuchElementException e1) {
                     System.out.println(e1.getMessage());
                 }
             }

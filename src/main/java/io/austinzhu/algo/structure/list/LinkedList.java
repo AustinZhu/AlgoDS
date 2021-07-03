@@ -1,6 +1,5 @@
 package io.austinzhu.algo.structure.list;
 
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
@@ -212,6 +211,22 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
             current = current.next;
         }
         return i;
+    }
+
+    public boolean hasCycle() {
+        if (root == null) {
+            return false;
+        }
+        Node<T> walker = root;
+        Node<T> runner = root;
+        while (runner.hasNext() && runner.next.hasNext()) {
+            walker = walker.next;
+            runner = runner.next.next;
+            if (walker.equals(runner)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Algorithm

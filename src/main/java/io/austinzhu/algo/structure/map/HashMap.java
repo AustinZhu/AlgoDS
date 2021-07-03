@@ -1,9 +1,9 @@
 package io.austinzhu.algo.structure.map;
 
-import io.austinzhu.algo.exception.ElementNotFoundException;
 import io.austinzhu.algo.interfaces.Algorithm;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 public final class HashMap<K, V> implements Map<K, V> {
@@ -78,7 +78,7 @@ public final class HashMap<K, V> implements Map<K, V> {
             }
             cur = cur.next;
         }
-        throw new ElementNotFoundException("No such key");
+        throw new NoSuchElementException("No such key");
     }
 
     @Override
@@ -98,7 +98,7 @@ public final class HashMap<K, V> implements Map<K, V> {
     public void delete(K key) {
         int bucket = Math.abs(key.hashCode() % data.length);
         if (data[bucket] == null) {
-            throw new ElementNotFoundException("No such key");
+            throw new NoSuchElementException("No such key");
         }
         Entry<K, V> cur = data[bucket];
         if (cur.key == key) {

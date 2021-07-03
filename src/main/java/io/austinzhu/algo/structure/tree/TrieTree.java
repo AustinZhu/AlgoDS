@@ -1,6 +1,5 @@
 package io.austinzhu.algo.structure.tree;
 
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
 import java.security.NoSuchAlgorithmException;

@@ -1,12 +1,11 @@
 package io.austinzhu.algo.structure.heap;
 
-import io.austinzhu.algo.exception.ElementNotFoundException;
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
@@ -149,10 +148,10 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
             if (element.compareTo(nodes[cur]) < 0) {
                 cur = 2 * cur + 1;
             } else {
-                throw new ElementNotFoundException("Not Found");
+                throw new NoSuchElementException("Not Found");
             }
         }
-        throw new ElementNotFoundException("Not Found");
+        throw new NoSuchElementException("Not Found");
     }
 
     @Override
@@ -164,7 +163,7 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
     public boolean exist(T element) {
         try {
             search(element, SearchingAlgorithm.BINARY);
-        } catch (ElementNotFoundException e) {
+        } catch (NoSuchElementException e) {
             return false;
         }
         return true;

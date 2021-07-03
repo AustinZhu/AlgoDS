@@ -1,10 +1,9 @@
 package io.austinzhu.algo.structure.tree;
 
-import io.austinzhu.algo.exception.ElementNotFoundException;
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 public sealed class BinarySearchTree<T>
@@ -54,27 +53,27 @@ public sealed class BinarySearchTree<T>
     }
 
     @Override
-    public void set(int idx, T object) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public void set(int idx, T object) throws IndexOutOfBoundsException, NoSuchElementException {
         super.set(idx, object);
     }
 
     @Override
-    public T get(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T get(int idx) throws IndexOutOfBoundsException, NoSuchElementException {
         return super.get(idx);
     }
 
     @Algorithm
     @Override
-    public T delete(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T delete(int idx) throws IndexOutOfBoundsException, NoSuchElementException {
         if (root == null) {
-            throw new ElementNotFoundException("Empty root");
+            throw new NoSuchElementException("Empty root");
         }
         Node<T> iterator = root, deleted = root;
         boolean isLeft = false;
         while (iterator.key != idx) {
             if (idx < iterator.key) {
                 if (!iterator.hasLeft()) {
-                    throw new ElementNotFoundException("Not found");
+                    throw new NoSuchElementException("Not found");
                 }
                 if (idx == iterator.left.key) {
                     deleted = iterator.left;
@@ -84,7 +83,7 @@ public sealed class BinarySearchTree<T>
                 iterator = iterator.left;
             } else {
                 if (!iterator.hasRight()) {
-                    throw new ElementNotFoundException("Not found");
+                    throw new NoSuchElementException("Not found");
                 }
                 if (idx == iterator.right.key) {
                     deleted = iterator.right;

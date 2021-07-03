@@ -1,7 +1,5 @@
 package io.austinzhu.algo.structure.network;
 
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
-
 import java.util.ArrayList;
 import java.util.Random;
 

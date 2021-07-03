@@ -1,7 +1,5 @@
 package io.austinzhu.algo.structure.tree;
 
-import io.austinzhu.algo.exception.ElementNotFoundException;
-import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
@@ -125,7 +123,7 @@ public sealed class BinaryTree<T>
     }
 
     @Override
-    public void set(int idx, T object) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public void set(int idx, T object) throws IndexOutOfBoundsException, NoSuchElementException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null root");
         }
@@ -144,11 +142,11 @@ public sealed class BinaryTree<T>
                 nodeQueue.add(temp.right);
             }
         }
-        throw new ElementNotFoundException("Not found");
+        throw new NoSuchElementException("Not found");
     }
 
     @Override
-    public T get(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T get(int idx) throws IndexOutOfBoundsException, NoSuchElementException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null root");
         }
@@ -166,7 +164,7 @@ public sealed class BinaryTree<T>
                 nodeQueue.add(temp.right);
             }
         }
-        throw new ElementNotFoundException("Not Found");
+        throw new NoSuchElementException("Not Found");
     }
 
     @Override
@@ -176,7 +174,7 @@ public sealed class BinaryTree<T>
 
     @Algorithm
     @Override
-    public T delete(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T delete(int idx) throws IndexOutOfBoundsException, NoSuchElementException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null head");
         }
@@ -230,7 +228,7 @@ public sealed class BinaryTree<T>
                 return null; //fixme
             }
         }
-        throw new ElementNotFoundException("No such index");
+        throw new NoSuchElementException("No such index");
     }
 
     @Override
