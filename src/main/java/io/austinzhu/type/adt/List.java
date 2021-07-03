@@ -6,13 +6,13 @@ public sealed interface List<A extends Type<A>>
         extends Sum<Unit, Pair<A, List<A>>>, Type<List<A>>
         permits List.Nil, List.Cons {
 
-    List NIL = new Nil<>();
+    List<?> NIL = new Nil<>();
 
-    static <A extends Type<A>> List<A> cons(A a, List<A> l) {
-        return new Cons<>(new Pair<>(a, l));
+    static <A extends Type<A>> List<A> cons(A x, List<A> xs) {
+        return new Cons<>(new Pair<>(x, xs));
     }
 
-    final class Nil<A extends Type<A>> extends Sum.A<Unit, Pair<A, List<A>>> implements List<A> {
+    final class Nil<A extends Type<A>> extends Sum.Inl<Unit, Pair<A, List<A>>> implements List<A> {
 
         private Nil() {
             super(new Unit());
@@ -24,10 +24,10 @@ public sealed interface List<A extends Type<A>>
         }
     }
 
-    final class Cons<A extends Type<A>> extends Sum.B<Unit, Pair<A, List<A>>> implements List<A> {
+    final class Cons<A extends Type<A>> extends Sum.Inr<Unit, Pair<A, List<A>>> implements List<A> {
 
-        private Cons(Pair<A, List<A>> b) {
-            super(b);
+        private Cons(Pair<A, List<A>> xs) {
+            super(xs);
         }
 
         @Override

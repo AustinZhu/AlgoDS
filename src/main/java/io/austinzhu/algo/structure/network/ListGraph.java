@@ -1,12 +1,28 @@
 package io.austinzhu.algo.structure.network;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public final class ListGraph<T> implements Graph<T> {
 
     private final ArrayList<Integer>[] edges;
 
     private final T[] vertices;
+
+    public static ListGraph<Integer> init(int size, int bound, Random random) {
+        var capacity = random.nextInt(size);
+        ListGraph<Integer> graph = new ListGraph<>(capacity);
+        for (var i = 0; i < capacity; i++) {
+            graph.edges[i] = new ArrayList<>();
+            graph.addVertex(i, random.nextInt(bound));
+        }
+        for (var i = 0; i < capacity; i++) {
+            var v1 = random.nextInt(capacity);
+            var v2 = random.nextInt(capacity);
+            graph.addEdge(v1, v2);
+        }
+        return graph;
+    }
 
     @SuppressWarnings("unchecked")
     public ListGraph(int capacity) {

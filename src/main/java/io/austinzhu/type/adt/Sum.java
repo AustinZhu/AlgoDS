@@ -2,20 +2,24 @@ package io.austinzhu.type.adt;
 
 import io.austinzhu.type.Type;
 
-public interface Sum<A extends Type<A>, B extends Type<B>> {
 
-    class A<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
-        public A a;
+interface Sum<A extends Type<A>, B extends Type<B>> {
 
-        public A(A a) {
+    class Inl<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
+        A a;
+
+        Inl(A a) {
             this.a = a;
         }
     }
 
-    class B<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
-        public B b;
+    class Inr<A extends Type<A>, B extends Type<B>> implements Sum<A, B> {
+        B b;
 
-        public B(B b) {
+        Inr() {
+        }
+
+        Inr(B b) {
             this.b = b;
         }
     }

@@ -2,7 +2,7 @@ package io.austinzhu.type.adt;
 
 import io.austinzhu.type.Type;
 
-public abstract class Product<A extends Type<A>, B extends Type<B>> {
+abstract class Product<A extends Type<A>, B extends Type<B>> {
 
     final A a;
 

@@ -8,7 +8,7 @@ import io.austinzhu.algo.interfaces.SortingAlgorithm;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-public sealed class LinkedList<T extends Comparable<T>> implements List<T> permits Queue, Stack, Strings {
+public sealed class LinkedList<T extends Comparable<T>> implements List<T> permits Queue, Stack {
 
     private Node<T> root;
 
@@ -229,7 +229,7 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
     }
 
     @Override
-    public String toString() {
+    public java.lang.String toString() {
         if (root == null) {
             return "";
         }

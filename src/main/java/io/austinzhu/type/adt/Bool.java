@@ -8,14 +8,14 @@ public interface Bool extends Sum<Unit, Unit>, Type<Bool> {
 
     Bool FALSE = new False();
 
-    class True extends A<Unit, Unit> implements Bool {
+    class True extends Sum.Inl<Unit, Unit> implements Bool {
 
         private True() {
             super(new Unit());
         }
     }
 
-    class False extends B<Unit, Unit> implements Bool {
+    class False extends Sum.Inr<Unit, Unit> implements Bool {
 
         private False() {
             super(new Unit());

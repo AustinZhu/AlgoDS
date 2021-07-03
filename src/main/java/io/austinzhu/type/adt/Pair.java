@@ -9,9 +9,4 @@ public final class Pair<A extends Type<A>, B extends Type<B>>
     public Pair(A a, B b) {
         super(a, b);
     }
-
-    @Override
-    public String toString() {
-        return "(" + a + ", " + b + ")";
-    }
 }

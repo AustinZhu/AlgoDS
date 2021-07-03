@@ -14,14 +14,14 @@ public sealed interface Either<A extends Type<A>, B extends Type<B>>
         return new Right<>(b);
     }
 
-    final class Left<A extends Type<A>, B extends Type<B>> extends Sum.A<A, B> implements Either<A, B> {
+    final class Left<A extends Type<A>, B extends Type<B>> extends Sum.Inl<A, B> implements Either<A, B> {
 
         private Left(A a) {
             super(a);
         }
     }
 
-    final class Right<A extends Type<A>, B extends Type<B>> extends Sum.B<A, B> implements Either<A, B> {
+    final class Right<A extends Type<A>, B extends Type<B>> extends Sum.Inr<A, B> implements Either<A, B> {
 
         private Right(B b) {
             super(b);
