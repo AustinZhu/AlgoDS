@@ -3,6 +3,8 @@ package io.austinzhu.algo.structure.tree;
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
+import java.security.NoSuchAlgorithmException;
+
 public class TrieTree<T> implements Tree<T> {
 
 
@@ -12,32 +14,67 @@ public class TrieTree<T> implements Tree<T> {
     }
 
     @Override
-    public void eject() throws IndexOutOfBoundsException {
-
-    }
-
-    @Override
-    public void init(T... elements) {
-
-    }
-
-    @Override
-    public void set(int id, T object) throws IndexOutOfBoundsException {
-
-    }
-
-    @Override
-    public T get(int id) throws IndexOutOfBoundsException {
+    public T eject() throws IndexOutOfBoundsException {
         return null;
     }
 
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException {
+    public void prepend(T element) throws IndexOutOfBoundsException {
 
     }
 
     @Override
+    public T pop() throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public void fill(T... elements) {
+
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public void set(int idx, T object) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T get(int idx) throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public void insert(int idx, T object) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T delete(int idx) throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public int search(T element) {
+        return 0;
+    }
+
+    @Override
+    public int search(T element, int start, int end) {
+        return 0;
+    }
+
+    @Override
     public int search(T element, SearchingAlgorithm sa) {
+        return 0;
+    }
+
+    @Override
+    public int search(T element, int start, int end, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
         return 0;
     }
 

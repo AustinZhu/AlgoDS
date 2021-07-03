@@ -27,8 +27,9 @@ public final class AVLTree<T> extends BinarySearchTree<T> {
 
     @Algorithm
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
-        setRoot(deleteRecursive(root, id));
+    public T delete(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+        setRoot(deleteRecursive(root, idx));
+        return null; //fixme
     }
 
     public Node<T> leftRotate(Node<T> root) {

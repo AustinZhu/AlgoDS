@@ -1,14 +1,14 @@
 package io.austinzhu.algo.structure.list;
 
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
-import io.austinzhu.algo.exception.NoSuchAlgorithmException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-public sealed class LinkedList<T extends Comparable<T>> implements List<T> permits Strings {
+public sealed class LinkedList<T extends Comparable<T>> implements List<T> permits Queue, Stack, Strings {
 
     private Node<T> root;
 
@@ -39,36 +39,56 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
         current.next = newNode;
     }
 
+
     @Override
-    public void eject() throws IndexOutOfBoundsException {
+    public T eject() throws IndexOutOfBoundsException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null Head");
         }
+        T del;
         if (!root.hasNext()) {
+            del = root.value;
             root = null;
-            return;
+        } else {
+            Node<T> current = root;
+            while (current.next.hasNext()) {
+                current = current.next;
+            }
+            del = current.next.value;
+            current.next = null;
         }
-        Node<T> current = root;
-        while (current.next.hasNext()) {
-            current = current.next;
-        }
-        current.next = null;
+        return del;
     }
 
     @Override
-    public void init(T... elements) {
+    public void prepend(T element) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T pop() throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public void fill(T... elements) {
         for (var elem : elements) {
             append(elem);
         }
     }
 
     @Override
-    public void set(int id, T object) throws IndexOutOfBoundsException {
+    public void clear() {
+
+    }
+
+    @Override
+    public void set(int idx, T object) throws IndexOutOfBoundsException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null Head");
         }
         Node<T> current = root;
-        for (int i = 0; i < id; i++) {
+        for (int i = 0; i < idx; i++) {
             if (!current.hasNext()) {
                 throw new IndexOutOfBoundsException("Null Head");
             }
@@ -78,18 +98,23 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
     }
 
     @Override
-    public T get(int id) throws IndexOutOfBoundsException {
+    public T get(int idx) throws IndexOutOfBoundsException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null Head");
         }
         Node<T> current = root;
-        for (int i = 0; i < id; i++) {
+        for (int i = 0; i < idx; i++) {
             if (!current.hasNext()) {
                 throw new IndexOutOfBoundsException("Null Head");
             }
             current = current.next;
         }
         return current.value;
+    }
+
+    @Override
+    public void insert(int idx, T object) throws IndexOutOfBoundsException {
+
     }
 
     @Override
@@ -113,28 +138,46 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
     }
 
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException {
+    public T delete(int idx) throws IndexOutOfBoundsException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null Head");
         }
-        if (id == 0) {
+        T del;
+        if (idx == 0) {
+            del = root.value;
             root = root.next;
-            return;
+            return del;
         }
         Node<T> current = root;
-        for (int i = 0; i < id - 1; i++) {
+        for (int i = 0; i < idx - 1; i++) {
             if (!current.hasNext()) {
                 throw new IndexOutOfBoundsException("Id too large");
             }
             current = current.next;
         }
-        Node<T> successor = current.next.next;
-        current.next = successor;
+        del = current.next.value;
+        current.next = current.next.next;
+        return del;
+    }
+
+    @Override
+    public int search(T element) {
+        return 0;
+    }
+
+    @Override
+    public int search(T element, int start, int end) {
+        return 0;
     }
 
     @Override
     public int search(T element, SearchingAlgorithm sa) {
         return -1;
+    }
+
+    @Override
+    public int search(T element, int start, int end, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
+        return 0;
     }
 
     @Override
@@ -149,6 +192,16 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
 
     @Override
     public void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException {
+
+    }
+
+    @Override
+    public void sort(int start, int end) {
+
+    }
+
+    @Override
+    public void sort(int start, int end, SortingAlgorithm sa) {
 
     }
 

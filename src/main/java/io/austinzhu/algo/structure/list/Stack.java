@@ -2,11 +2,10 @@ package io.austinzhu.algo.structure.list;
 
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
-import io.austinzhu.algo.interfaces.Interactable;
 
 import java.util.Random;
 
-public class Stack<T extends Comparable<T>> implements Interactable<T> {
+public final class Stack<T extends Comparable<T>> extends LinkedList<T> {
 
     private final LinkedList<T> list;
 
@@ -26,16 +25,16 @@ public class Stack<T extends Comparable<T>> implements Interactable<T> {
 
     @Algorithm
     @Override
-    public void eject() throws IndexOutOfBoundsException {
-        list.eject();
+    public T eject() throws IndexOutOfBoundsException {
+        return list.eject();
     }
 
     public T peek() throws IndexOutOfBoundsException {
-        return list.last();
+        return list.head();
     }
 
     @Override
-    public void init(T... elements) {
+    public void fill(T... elements) {
 
     }
 

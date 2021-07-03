@@ -1,31 +1,50 @@
 package io.austinzhu.algo.structure.array;
 
-import io.austinzhu.algo.exception.NoSuchAlgorithmException;
-import io.austinzhu.algo.interfaces.Algorithm;
-import io.austinzhu.algo.interfaces.SearchingAlgorithm;
-import io.austinzhu.algo.interfaces.SortingAlgorithm;
+import io.austinzhu.algo.exception.IndexOutOfBoundsException;
+import io.austinzhu.algo.interfaces.*;
 
-import java.util.Random;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 /**
+ * StaticArray is a linear data structure containing a collection of elements.
+ *
  * @author Austin Zhu
- * @description Array is a linear data structure containing a collection of elements
  */
 public sealed class Array<T extends Comparable<T>>
-        extends BaseArray<T>
+        implements Operatable<T>, Searchable<T>, Sortable
         permits Matrix {
 
+    final int capacity;
+
+    T[] data;
+
+    int lowerBound;
+
+    int upperBound;
+
+    int length;
+
+    @SuppressWarnings("unchecked")
     public Array(int capacity) {
-        super(capacity);
+        this.length = 0;
+        this.lowerBound = 0;
+        this.upperBound = 0;
+        this.data = (T[]) new Comparable[capacity];
+        this.capacity = capacity;
     }
 
     /**
+     * Initialize a random integer array with size less than 20 and max element value less than 100
+     *
      * @return an array of random integers
-     * @description initialize a random integer array with size less than 20 and max element value less than 100
      */
     public static Array<Integer> init(int size, int bound, Random random) {
-        var capacity = random.nextInt(size);
+        if (size < 0) {
+            throw new IllegalArgumentException("size must be positive");
+        }
+        var capacity = random.nextInt(size + 1);
         Array<Integer> integerArray = new Array<>(capacity);
         for (var i = 0; i < capacity; i++) {
             integerArray.append(random.nextInt(bound));
@@ -33,23 +52,278 @@ public sealed class Array<T extends Comparable<T>>
         return integerArray;
     }
 
+    public static <T extends Comparable<T>> Array<T> merge(Array<T> a, Array<T> b) {
+        int newLength = a.length + b.length;
+        Array<T> newArray = new Array<>(newLength);
+        if (a.length >= 0) {
+            System.arraycopy(a.data, a.lowerBound, newArray.data, 0, a.length);
+            System.arraycopy(b.data, b.lowerBound, newArray.data, a.length, b.length);
+        }
+        newArray.setUpperBound(newLength);
+        return newArray;
+    }
+
+    public static <T extends Comparable<T>> Array<T> fromArray(T[] array) {
+        Array<T> newArray = new Array<>(array.length);
+        System.arraycopy(array, 0, newArray.data, 0, array.length);
+        return newArray;
+    }
+
+    public static <T extends Comparable<T>> Array<T> slice(Array<T> arr, int start, int end) {
+        if (start > arr.upperBound || end < arr.lowerBound || start > end) {
+            throw new IllegalArgumentException("Wrong bound");
+        }
+        int newLength = end - start;
+        Array<T> slice = new Array<>(newLength);
+        System.arraycopy(arr.data, arr.lowerBound + start, slice.data, 0, newLength);
+        slice.setUpperBound(newLength);
+        return slice;
+    }
+
+    @SafeVarargs
+    @Override
+    public final void fill(T... elements) {
+        for (T e : elements) {
+            try {
+                append(e);
+            } catch (IndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void clear() {
+        this.length = 0;
+        this.lowerBound = 0;
+        this.upperBound = 0;
+        this.data = (T[]) new Comparable[capacity];
+    }
+
+    @Override
+    public void set(int idx, T object) throws IndexOutOfBoundsException {
+        if (idx >= 0 && idx < length) {
+            data[lowerBound + idx] = object;
+        } else {
+            throw new IndexOutOfBoundsException("Index out of bound");
+        }
+    }
+
+    @Override
+    public T get(int idx) throws IndexOutOfBoundsException {
+        if (idx >= 0 && idx < length) {
+            return data[lowerBound + idx];
+        }
+        throw new IndexOutOfBoundsException("Index out of bound");
+    }
+
+    @Override
+    public void insert(int idx, T object) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T delete(int idx) throws IndexOutOfBoundsException {
+        if (idx >= lowerBound && idx < upperBound) {
+            T del = get(idx);
+            set(idx, null);
+            return del;
+        }
+        throw new IndexOutOfBoundsException("Index out of bound");
+    }
+
+    @Override
+    public void append(T element) throws IndexOutOfBoundsException {
+        if (upperBound >= capacity) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        setUpperBound(upperBound + 1);
+        set(length - 1, element);
+    }
+
+    @Override
+    public T eject() throws IndexOutOfBoundsException {
+        if (length <= 0) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        T del = get(length - 1);
+        set(length - 1, null);
+        setUpperBound(length - 1);
+        return del;
+    }
+
+    @Override
+    public void prepend(T element) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T pop() throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public void sort() {
+        try {
+            sort(SortingAlgorithm.QUICK);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sort(int start, int end) {
+        if (start < lowerBound || end > upperBound || start > end) {
+            throw new IllegalArgumentException("Wrong bound");
+        }
+        quickSort(start, end);
+    }
+
+    /**
+     * Sort the array using the specified sorting algorithm
+     *
+     * @param sa name of the sorting algorithm being used
+     */
+    @Override
+    @Algorithm("sort")
+    public void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException {
+        sort(lowerBound, upperBound, sa);
+    }
+
+    @Override
+    public void sort(int start, int end, SortingAlgorithm sa) throws NoSuchAlgorithmException {
+        if (start < lowerBound || end > upperBound || start > end) {
+            throw new IllegalArgumentException("Wrong bound");
+        }
+        switch (sa) {
+            case BUBBLE -> bubbleSort(start, end);
+            case MERGE -> mergeSort(start, end);
+            case QUICK -> quickSort(start, end);
+            case INSERTION -> insertionSort(start, end);
+            case SELECTION -> selectionSort(start, end);
+            case RADIX -> radixSort(start, end, 2);
+            case HEAP -> heapSort(start, end);
+            case COUNTING -> countingSort(start, end);
+            case BUCKET -> bucketSort(start, end, 10);
+            case SHELL -> shellSort(start, end);
+            case SLEEP -> sleepSort(start, end);
+            default -> throw new NoSuchAlgorithmException("No such algorithm");
+        }
+    }
+
+    @Override
+    public int search(T element) {
+        try {
+            return search(element, SearchingAlgorithm.LINEAR);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
+    public int search(T element, int start, int end) {
+        try {
+            return search(element, start, end, SearchingAlgorithm.LINEAR);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     @Override
     @Algorithm("search")
-    public int search(T element, SearchingAlgorithm sa) {
-        int lower = lowerBound;
-        int upper = upperBound;
+    public int search(T element, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
+        return search(element, lowerBound, upperBound, sa);
+    }
+
+    @Override
+    public int search(T element, int start, int end, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
+        if (start < lowerBound || end > upperBound || start > end) {
+            throw new IllegalArgumentException("Wrong bound");
+        }
         switch (sa) {
             case BINARY -> {
-                return binarySearch(lower, upper, element);
+                return binarySearch(start, end, element);
             }
             case LINEAR -> {
-                return linearSearch(lower, upper, element);
+                return linearSearch(start, end, element);
             }
             case JUMP -> {
-                return jumpSearch(lower, upper, element);
+                return jumpSearch(start, end, element);
             }
             default -> throw new NoSuchAlgorithmException("No such algorithm");
         }
+    }
+
+    @Override
+    public boolean exist(T element) {
+        try {
+            return search(element, SearchingAlgorithm.BINARY) >= 0;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void slice(int start, int end) {
+        setLowerBound(start);
+        setUpperBound(end);
+    }
+
+    public void reverse() {
+        reverse(0, length);
+    }
+
+    public void reverse(int start, int end) {
+        for (int i = 0; i < (end + start) / 2; i++) {
+            swap(i, (end + start) - i - 1);
+        }
+    }
+
+    public void swap(int i, int j) {
+        T temp = get(i);
+        set(i, get(j));
+        set(j, temp);
+    }
+
+    public int maximum() {
+        return maximum(lowerBound, upperBound);
+    }
+
+    public int maximum(int lower, int upper) {
+        if (lower < lowerBound || upper > upperBound || lower > upper) {
+            throw new IndexOutOfBoundsException("Wrong bound");
+        }
+        int max = lower;
+        for (int i = lower; i < upper; i++) {
+            if (get(i).compareTo(get(max)) > 0) {
+                max = i;
+            }
+        }
+        return max;
+    }
+
+    public int minimum() {
+        return minimum(lowerBound, upperBound);
+    }
+
+    public int minimum(int lower, int upper) {
+        if (lower < lowerBound || upper > upperBound || lower > upper) {
+            throw new IndexOutOfBoundsException("Wrong bound");
+        }
+        int min = lower;
+        for (int i = lower; i < upper; i++) {
+            if (get(i).compareTo(get(min)) < 0) {
+                min = i;
+            }
+        }
+        return min;
+    }
+
+    public T[] toArray() {
+        return Arrays.copyOfRange(data, lowerBound, upperBound);
     }
 
     private int binarySearch(int lower, int upper, T element) {
@@ -80,31 +354,6 @@ public sealed class Array<T extends Comparable<T>>
     }
 
     /**
-     * @param sa name of the sorting algorithm being used
-     * @description Sort the array using the specified sorting algorithm
-     */
-    @Override
-    @Algorithm("sort")
-    public void sort(SortingAlgorithm sa) {
-        int lower = lowerBound;
-        int upper = upperBound;
-        switch (sa) {
-            case BUBBLE -> bubbleSort(lower, upper);
-            case MERGE -> mergeSort(lower, upper);
-            case QUICK -> quickSort(lower, upper);
-            case INSERTION -> insertionSort(lower, upper);
-            case SELECTION -> selectionSort(lower, upper);
-            case RADIX -> radixSort(lower, upper, 2);
-            case HEAP -> heapSort(lower, upper);
-            case COUNTING -> countingSort(lower, upper, 100);
-            case BUCKET -> bucketSort(lower, upper);
-            case SHELL -> shellSort(lower, upper);
-            case SLEEP -> sleepSort(lower, upper);
-            default -> throw new NoSuchAlgorithmException("No such algorithm");
-        }
-    }
-
-    /**
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
      * @description Shell sort is a stable, in-place comparison sorting algorithm.
@@ -113,8 +362,8 @@ public sealed class Array<T extends Comparable<T>>
      * 2. Repeat 1. for next n in the geometric series with ratio 1/2
      * <p>
      * - performance of shell sort depends on the selection of interval series
-     * @bestTime O(n log n)
-     * @worstTime O(n ^ 2) (for geometric series with ratio 1/2)
+     * Best time: O(n log n)
+     * Worst time: O(n ^ 2) (for geometric series with ratio 1/2)
      */
     private void shellSort(int lower, int upper) {
         int ratio = 2;
@@ -134,9 +383,7 @@ public sealed class Array<T extends Comparable<T>>
     }
 
     /**
-     * @param lower lower bound (inclusive)
-     * @param upper upper bound (exclusive)
-     * @description Bucket sort is a stable, distribution sorting algorithm.
+     * Bucket sort is a stable, distribution sorting algorithm.
      * <p>
      * 1. Create an array of buckets, each bucket holds elements that fall in some continuous, disjoint intervals.
      * 2. Put elements into their corresponding buckets.
@@ -144,42 +391,51 @@ public sealed class Array<T extends Comparable<T>>
      * 4. Flatten the sorted bucket array(concat)
      * <p>
      * - select a interval so that elements are uniformly distributed to buckets
-     * @avgTime O(n + n ^ 2 / k + k)
-     * @worstTime O(n ^ 2)
-     * @worstSpace O(n * k)
+     * Average time: O(n + n ^ 2 / k + k)
+     * Best time: O(n ^ 2)
+     * Worsrt time: O(n * k)
+     *
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
      */
-    private void bucketSort(int lower, int upper) {
-        if (this.getLength() <= 1) {
+    @SuppressWarnings("unchecked")
+    private void bucketSort(int lower, int upper, int n) {
+        if (this.length <= 1 || n <= 0) {
             return;
         }
-        // size of the interval
-        int size = 10;
-        Array<T>[] buckets = new Array[size];
-        // initialize buckets
-        for (int i = 0; i < size; i++) {
-            buckets[i] = new Array<>(getLength());
+        double max = get(maximum(lower, upper)).hashCode();
+        double min = get(minimum(lower, upper)).hashCode();
+        int range = (int) Math.ceil((max - min) / n);
+        // all elements are equal
+        if (range == 0) {
+            return;
+        }
+        ArrayList<T>[] buckets = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            buckets[i] = new ArrayList<>();
         }
         // put elements into buckets
         for (int i = lower; i < upper; i++) {
             // bucket id is the tens digit here
-            int bucketId = get(i).hashCode() / size;
-            buckets[bucketId].append(get(i));
+            int bucketId = (int) ((get(i).hashCode() - min) / range);
+            var bucket = buckets[bucketId == 0 ? 0 : bucketId - 1];
+            bucket.add(get(i));
         }
         // flatten the array of buckets
-        Array<T> result = new Array<>(0);
-        for (int i = 0; i < size; i++) {
-            Array<T> bucket = buckets[i];
-            bucket.insertionSort(bucket.getLowerBound(), bucket.getUpperBound());
-            result.join(bucket);
+        int k = lower;
+        for (int i = 0; i < n; i++) {
+            var bucket = buckets[i];
+            Collections.sort(bucket);
+            for (T t : bucket) {
+                set(k, t);
+                k++;
+            }
         }
-        replaceBy(result);
+
     }
 
     /**
-     * @param lower lower bound (inclusive)
-     * @param upper upper bound (exclusive)
-     * @param range max element value
-     * @description Counting sort is a stable, distribution sorting algorithm.
+     * description Counting sort is a stable, distribution sorting algorithm.
      * <p>
      * 1. Determine the range of values, initialize an array to count the frequency of each elements
      * 2. Traverse the array, add 1 to the counter of the element in the counting array
@@ -189,48 +445,85 @@ public sealed class Array<T extends Comparable<T>>
      * - uses extra space to achieve lower time complexity
      * - element values are used as index in counting
      * - cumulative counts transform the frequency information to position information (costs k time)
-     * @worstTime O(n + k)
+     * Worst time: O(n + k)
+     *
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
      */
-    @SuppressWarnings("unchecked")
-    private void countingSort(int lower, int upper, int range) {
-        Integer[] output = new Integer[getLength()];
-        int[] counts = new int[range];
+    private void countingSort(int lower, int upper) {
+        TreeMap<T, Integer> counts = new TreeMap<>();
         for (int i = lower; i < upper; i++) {
-            counts[get(i).hashCode()]++;
+            T key = get(i);
+            if (counts.containsKey(key)) {
+                counts.replace(key, counts.get(key) + 1);
+            } else {
+                counts.put(key, 1);
+            }
         }
-        // cumulative counts indicates how many elements before the last occurrence of i in the sorted array
-        for (int i = 1; i < range; i++) {
-            counts[i] += counts[i - 1];
+        int i = 0;
+        for (Map.Entry<T, Integer> entry : counts.entrySet()) {
+            T key = entry.getKey();
+            Integer currentCount = entry.getValue();
+            for (int j = 0; j < currentCount; j++, i++) {
+                data[i] = key;
+            }
         }
-        for (int i = upper - 1; i >= lower; i--) {
-            int index = get(i).hashCode();
-            output[counts[index] - 1] = index;
-            counts[index]--;
-        }
-        setData((T[]) output);
     }
 
     /**
-     * @param lower lower bound (inclusive)
-     * @param upper upper bound (exclusive)
-     * @description Heap sort is an unstable, in-place comparison sorting algorithm
+     * Heap sort is an unstable, in-place comparison sorting algorithm
      * <p>
-     * 1. Build a max heap out of the array
-     * 2. Swap the first element(max) with the last element
-     * 3. adjust the heap for previous len - i elements
-     * 4. repeat 2., 3. until no elements left to be heapified
+     * 1.[O(n)] Build a min heap out of the array
+     * 2.[O(n log n)] adjust the heap for last len - i elements
+     * 3. repeat 2. until no elements left to be heapified
      * <p>
      * - each iteration puts one element into its correct position, so the last i elements are sorted
-     * @bestTime O(n log n)
-     * @worstTime O(n log n)
+     * Best time: O(n log n)
+     * WorstRime: O(n log n)
+     *
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
      */
     private void heapSort(int lower, int upper) {
-        for (int i = (lower + upper) / 2 - 1; i >= lower; i--) {
-            heapify(getLength(), i);
+        heapify(lower, upper);
+        for (int i = upper - 1; i >= lower; i--) {
+            // swap the max and the last node
+            swap(i, lower);
+            // restore heap property
+            int parent = lower;
+            int child = lower + 1;
+            while (child < i) {
+                if (child + 1 < i && get(child).compareTo(get(child + 1)) < 0) {
+                    child++;
+                }
+                if (get(parent).compareTo(get(child)) < 0) {
+                    swap(parent, child);
+                    parent = child;
+                    child = 2 * child - lower + 1;
+                } else {
+                    break;
+                }
+            }
         }
-        for (int i = upper - 1; i > lower; i--) {
-            swap(lower, i);
-            heapify(i - lower, 0);
+    }
+
+    private void heapify(int lower, int upper) {
+        // build a max-heap for each parent node
+        for (int i = (upper + lower) / 2 - 1; i >= 0; i--) {
+            int parent = i;
+            int child = 2 * i - lower + 1;
+            while (child < upper) {
+                if (child + 1 < upper && get(child).compareTo(get(child + 1)) < 0) {
+                    child++;
+                }
+                if (get(parent).compareTo(get(child)) < 0) {
+                    swap(child, parent);
+                    parent = child;
+                    child = 2 * child - lower + 1;
+                } else {
+                    break;
+                }
+            }
         }
     }
 
@@ -249,7 +542,7 @@ public sealed class Array<T extends Comparable<T>>
     private void radixSort(int lower, int upper, int digits) {
         for (int j = 0; j < digits; j++) {
             int exp = (int) Math.pow(10, j);
-            Integer[] output = new Integer[getLength()];
+            Integer[] output = new Integer[length];
             int[] counts = new int[10];
             // counting sort
             for (int i = lower; i < upper; i++) {
@@ -266,7 +559,7 @@ public sealed class Array<T extends Comparable<T>>
                 output[lower + counts[valAtDigit] - 1] = index;
                 counts[valAtDigit]--;
             }
-            setData((T[]) output);
+            fromArray((T[]) output);
         }
     }
 
@@ -465,7 +758,7 @@ public sealed class Array<T extends Comparable<T>>
             sorted = true;
             for (int j = 0; j < upper - i - 1; j++) {
                 // compare with the next element
-                if (data[j].compareTo(data[j + 1]) > 0) {
+                if (get(j).compareTo(get(j + 1)) > 0) {
                     swap(j, j + 1);
                     sorted = false;
                 }
@@ -492,36 +785,38 @@ public sealed class Array<T extends Comparable<T>>
             ts[i] = t;
             t.start();
         }
-        for (var t: ts) {
+        for (var t : ts) {
             try {
                 t.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        replaceBy(newArr);
+        fromArray(newArr.data);
     }
 
-    private void heapify(int len, int rootId) {
-        int max = rootId;
-        int leftId = 2 * rootId + 1;
-        int rightId = 2 * rootId + 2;
-        if (leftId < len && get(max).compareTo(get(leftId)) < 0) {
-            max = leftId;
-        }
-        if (rightId < len && get(max).compareTo(get(rightId)) < 0) {
-            max = rightId;
-        }
-        // if max == root, loops forever
-        if (max != rootId) {
-            swap(rootId, max);
-            heapify(len, max);
-        }
+    public void setUpperBound(int upperBound) {
+        this.upperBound = upperBound;
+        this.length = upperBound - lowerBound;
     }
 
-    private void swap(int i, int j) {
-        T temp = get(i);
-        set(i, get(j));
-        set(j, temp);
+    public void setLowerBound(int lowerBound) {
+        this.lowerBound = lowerBound;
+        this.length = upperBound - lowerBound;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(data);
     }
 }

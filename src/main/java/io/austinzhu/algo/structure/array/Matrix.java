@@ -1,11 +1,11 @@
 package io.austinzhu.algo.structure.array;
 
 import io.austinzhu.algo.exception.IndexOutOfBoundsException;
-import io.austinzhu.algo.exception.NoSuchAlgorithmException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 import io.austinzhu.algo.interfaces.SortingAlgorithm;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -48,7 +48,7 @@ public final class Matrix<T extends Comparable<T>> extends Array<T> {
 
     @Override
     @Algorithm("search")
-    public int search(T element, SearchingAlgorithm sa) {
+    public int search(T element, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
         return super.search(element, sa);
     }
 

@@ -24,7 +24,7 @@ public class Menu {
 
     private final Random rand;
 
-    public Menu() throws NoSuchAlgorithmException {
+    private Menu() throws NoSuchAlgorithmException {
         this.rand = SecureRandom.getInstanceStrong();
     }
 
@@ -104,7 +104,7 @@ public class Menu {
         var selectedMethod = methods[thirdSelection - 1];
         if ("search".equals(selectedMethod.getName())) {
             var element = scanner.nextInt();
-            Integer result = (Integer) selectedMethod.invoke(dataStructure, element, SearchingAlgorithm.BINARY);
+            Integer result = (Integer) selectedMethod.invoke(dataStructure, element, SearchingAlgorithm.LINEAR);
             if (result.equals(-1)) {
                 System.out.println("Element not found");
             }

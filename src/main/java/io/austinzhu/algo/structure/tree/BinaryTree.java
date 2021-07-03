@@ -5,6 +5,7 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public sealed class BinaryTree<T>
@@ -59,7 +60,7 @@ public sealed class BinaryTree<T>
     }
 
     @Override
-    public void eject() throws IndexOutOfBoundsException {
+    public T eject() throws IndexOutOfBoundsException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null root");
         }
@@ -67,6 +68,7 @@ public sealed class BinaryTree<T>
         nodeQueue.add(root);
         Node<T> parent = null;
         Node<T> last = null;
+        T del = null;
         while (!nodeQueue.isEmpty()) {
             Node<T> temp = nodeQueue.remove();
             if (temp.hasLeft()) {
@@ -87,6 +89,7 @@ public sealed class BinaryTree<T>
             }
         }
         if (last != null) {
+            del = last.value;
             if (parent.hasRight()) {
                 parent.right = null;
                 size--;
@@ -95,18 +98,34 @@ public sealed class BinaryTree<T>
                 size--;
             }
         }
+        return del;
+    }
+
+    @Override
+    public void prepend(T element) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T pop() throws IndexOutOfBoundsException {
+        return null;
     }
 
     @SafeVarargs
     @Override
-    public final void init(T... elements) {
+    public final void fill(T... elements) {
         for (T elem : elements) {
             append(elem);
         }
     }
 
     @Override
-    public void set(int id, T object) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public void clear() {
+
+    }
+
+    @Override
+    public void set(int idx, T object) throws IndexOutOfBoundsException, ElementNotFoundException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null root");
         }
@@ -114,7 +133,7 @@ public sealed class BinaryTree<T>
         nodeQueue.add(root);
         while (!nodeQueue.isEmpty()) {
             Node<T> temp = nodeQueue.remove();
-            if (temp.key == id) {
+            if (temp.key == idx) {
                 temp.value = object;
                 return;
             }
@@ -129,7 +148,7 @@ public sealed class BinaryTree<T>
     }
 
     @Override
-    public T get(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T get(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null root");
         }
@@ -137,7 +156,7 @@ public sealed class BinaryTree<T>
         nodeQueue.add(root);
         while (!nodeQueue.isEmpty()) {
             Node<T> temp = nodeQueue.remove();
-            if (temp.key == id) {
+            if (temp.key == idx) {
                 return temp.value;
             }
             if (temp.hasLeft()) {
@@ -150,9 +169,14 @@ public sealed class BinaryTree<T>
         throw new ElementNotFoundException("Not Found");
     }
 
+    @Override
+    public void insert(int idx, T object) throws IndexOutOfBoundsException {
+
+    }
+
     @Algorithm
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T delete(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null head");
         }
@@ -164,7 +188,7 @@ public sealed class BinaryTree<T>
             Node<T> iterator = nodeQueue.remove();
             if (iterator.hasLeft()) {
                 Node<T> left = iterator.left;
-                if (left.key == id) {
+                if (left.key == idx) {
                     deletedParent = iterator;
                     deleted = left;
                 }
@@ -176,7 +200,7 @@ public sealed class BinaryTree<T>
             }
             if (iterator.hasRight()) {
                 Node<T> right = iterator.right;
-                if (right.key == id) {
+                if (right.key == idx) {
                     deletedParent = iterator;
                     deleted = right;
                 }
@@ -189,24 +213,34 @@ public sealed class BinaryTree<T>
         }
         if (deletedParent != null && lastParent != null) {
             if (lastParent.hasRight()) {
-                lastParent.right = (null);
+                lastParent.right = null;
                 size--;
             } else if (lastParent.hasLeft()) {
-                lastParent.left = (null);
+                lastParent.left = null;
                 size--;
             }
             last.left = (deleted.left);
             last.right = (deleted.right);
-            if (deletedParent.left.key == id) {
-                deletedParent.left = (last);
-                return;
+            if (deletedParent.left.key == idx) {
+                deletedParent.left = last;
+                return null; //fixme
             }
-            if (deletedParent.right.key == id) {
-                deletedParent.right = (last);
-                return;
+            if (deletedParent.right.key == idx) {
+                deletedParent.right = last;
+                return null; //fixme
             }
         }
         throw new ElementNotFoundException("No such index");
+    }
+
+    @Override
+    public int search(T element) {
+        return 0;
+    }
+
+    @Override
+    public int search(T element, int start, int end) {
+        return 0;
     }
 
     @Override
@@ -229,6 +263,11 @@ public sealed class BinaryTree<T>
             }
         }
         return -1;
+    }
+
+    @Override
+    public int search(T element, int start, int end, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
+        return 0;
     }
 
     @Override

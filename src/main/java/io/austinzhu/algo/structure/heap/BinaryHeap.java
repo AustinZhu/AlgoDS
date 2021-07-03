@@ -5,6 +5,7 @@ import io.austinzhu.algo.exception.IndexOutOfBoundsException;
 import io.austinzhu.algo.interfaces.Algorithm;
 import io.austinzhu.algo.interfaces.SearchingAlgorithm;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     public static BinaryHeap<Integer> init(int size, int bound, Random random) {
         var capacity = random.nextInt(size);
-        BinaryHeap<Integer> binaryHeap = new BinaryHeap<>(13);
+        BinaryHeap<Integer> binaryHeap = new BinaryHeap<>(capacity);
         for (var i = 0; i < capacity; i++) {
             binaryHeap.append(random.nextInt(bound));
         }
@@ -31,10 +32,35 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     @SafeVarargs
     @Override
-    public final void init(T... elements) {
+    public final void fill(T... elements) {
         for (T e : elements) {
             append(e);
         }
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public void set(int idx, T object) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T get(int idx) throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public void insert(int idx, T object) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T delete(int idx) throws IndexOutOfBoundsException {
+        return null;
     }
 
     @Algorithm
@@ -49,7 +75,7 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         length++;
         while (parent >= 0) {
             if (nodes[parent].compareTo(nodes[child]) < 0) {
-                T temp = nodes[child];
+                var temp = nodes[child];
                 nodes[child] = nodes[parent];
                 nodes[parent] = temp;
                 child = parent;
@@ -62,7 +88,7 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     @Algorithm
     @Override
-    public void eject() {
+    public T eject() {
         if (length == 0) {
             throw new IndexOutOfBoundsException("Heap is empty");
         }
@@ -82,9 +108,30 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
                 parent = child;
                 child = child * 2 + 1;
             } else {
-                return;
+                return null; //fixme
             }
         }
+        return null; //fixme
+    }
+
+    @Override
+    public void prepend(T element) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T pop() throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public int search(T element) {
+        return 0;
+    }
+
+    @Override
+    public int search(T element, int start, int end) {
+        return 0;
     }
 
     @Override
@@ -104,6 +151,11 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
             }
         }
         throw new ElementNotFoundException("Not Found");
+    }
+
+    @Override
+    public int search(T element, int start, int end, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
+        return 0;
     }
 
     @Override

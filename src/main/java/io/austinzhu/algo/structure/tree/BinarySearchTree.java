@@ -54,29 +54,29 @@ public sealed class BinarySearchTree<T>
     }
 
     @Override
-    public void set(int id, T object) throws IndexOutOfBoundsException, ElementNotFoundException {
-        super.set(id, object);
+    public void set(int idx, T object) throws IndexOutOfBoundsException, ElementNotFoundException {
+        super.set(idx, object);
     }
 
     @Override
-    public T get(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
-        return super.get(id);
+    public T get(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+        return super.get(idx);
     }
 
     @Algorithm
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
+    public T delete(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
         if (root == null) {
             throw new ElementNotFoundException("Empty root");
         }
         Node<T> iterator = root, deleted = root;
         boolean isLeft = false;
-        while (iterator.key != id) {
-            if (id < iterator.key) {
+        while (iterator.key != idx) {
+            if (idx < iterator.key) {
                 if (!iterator.hasLeft()) {
                     throw new ElementNotFoundException("Not found");
                 }
-                if (id == iterator.left.key) {
+                if (idx == iterator.left.key) {
                     deleted = iterator.left;
                     isLeft = true;
                     break;
@@ -86,7 +86,7 @@ public sealed class BinarySearchTree<T>
                 if (!iterator.hasRight()) {
                     throw new ElementNotFoundException("Not found");
                 }
-                if (id == iterator.right.key) {
+                if (idx == iterator.right.key) {
                     deleted = iterator.right;
                     isLeft = false;
                     break;
@@ -134,6 +134,7 @@ public sealed class BinarySearchTree<T>
                 iterator.right = succ;
             }
         }
+        return null; //fixme
     }
 
     private Node<T> ejectPredecessor(Node<T> node) {

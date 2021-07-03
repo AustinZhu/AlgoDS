@@ -56,8 +56,8 @@ public final class RedBlackTree<T> extends BinarySearchTree<T> {
     }
 
     @Override
-    public void delete(int id) throws IndexOutOfBoundsException, ElementNotFoundException {
-        super.delete(id);
+    public T delete(int idx) throws IndexOutOfBoundsException, ElementNotFoundException {
+        return super.delete(idx);
     }
 
     private Node<T> getUncle(Node<T> node) {
