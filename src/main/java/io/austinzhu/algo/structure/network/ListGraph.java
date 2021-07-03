@@ -13,7 +13,6 @@ public final class ListGraph<T> implements Graph<T> {
         var capacity = random.nextInt(size);
         ListGraph<Integer> graph = new ListGraph<>(capacity);
         for (var i = 0; i < capacity; i++) {
-            graph.edges[i] = new ArrayList<>();
             graph.addVertex(i, random.nextInt(bound));
         }
         for (var i = 0; i < capacity; i++) {
@@ -45,6 +44,7 @@ public final class ListGraph<T> implements Graph<T> {
 
     @Override
     public void addVertex(int id, T element) {
+        edges[id] = new ArrayList<>();
         vertices[id] = element;
     }
 

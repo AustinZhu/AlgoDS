@@ -137,11 +137,7 @@ public final class HashMap<K, V> implements Map<K, V> {
 
         @Override
         public String toString() {
-            return "{" +
-                    "key=" + key +
-                    ", value=" + value +
-                    "}" + " -> " +
-                    next;
+            return key + " -> " + next;
         }
     }
 }
