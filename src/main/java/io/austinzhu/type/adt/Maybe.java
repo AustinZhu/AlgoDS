@@ -8,22 +8,20 @@ public sealed interface Maybe<A extends Type<A>>
         extends Sum<Unit, A>, Type<Maybe<A>>, Functor<Maybe<A>, A>
         permits Maybe.Nothing, Maybe.Just {
 
+    Maybe NOTHING = new Nothing<>();
+
+    static <A extends Type<A>> Maybe<A> just(A a) {
+        return new Just<>(a);
+    }
+
     final class Nothing<A extends Type<A>> extends Sum.A<Unit, A> implements Maybe<A> {
 
-        public static <A extends Type<A>> Maybe<A> nothing() {
-            return new Nothing<>();
-        }
-
         private Nothing() {
-            super(Unit.unit());
+            super(new Unit());
         }
     }
 
     final class Just<A extends Type<A>> extends Sum.B<Unit, A> implements Maybe<A> {
-
-        public static <A extends Type<A>> Maybe<A> just(A a) {
-            return new Just<>(a);
-        }
 
         private Just(A b) {
             super(b);

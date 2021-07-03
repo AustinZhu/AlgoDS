@@ -26,51 +26,6 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
     }
 
     @Override
-    public void append(T element) throws IndexOutOfBoundsException {
-        Node<T> newNode = new Node<>(element);
-        if (root == null) {
-            root = newNode;
-            return;
-        }
-        Node<T> current = root;
-        while (current.hasNext()) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-
-    @Override
-    public T eject() throws IndexOutOfBoundsException {
-        if (root == null) {
-            throw new IndexOutOfBoundsException("Null Head");
-        }
-        T del;
-        if (!root.hasNext()) {
-            del = root.value;
-            root = null;
-        } else {
-            Node<T> current = root;
-            while (current.next.hasNext()) {
-                current = current.next;
-            }
-            del = current.next.value;
-            current.next = null;
-        }
-        return del;
-    }
-
-    @Override
-    public void prepend(T element) throws IndexOutOfBoundsException {
-
-    }
-
-    @Override
-    public T pop() throws IndexOutOfBoundsException {
-        return null;
-    }
-
-    @Override
     public void fill(T... elements) {
         for (var elem : elements) {
             append(elem);
@@ -118,26 +73,6 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
     }
 
     @Override
-    public T head() {
-        if (root == null) {
-            return null;
-        }
-        return root.value;
-    }
-
-    @Override
-    public T last() {
-        if (root == null) {
-            return null;
-        }
-        Node<T> current = root;
-        while (current.hasNext()) {
-            current = current.next;
-        }
-        return current.value;
-    }
-
-    @Override
     public T delete(int idx) throws IndexOutOfBoundsException {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null Head");
@@ -158,6 +93,70 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
         del = current.next.value;
         current.next = current.next.next;
         return del;
+    }
+
+    @Override
+    public void append(T element) throws IndexOutOfBoundsException {
+        Node<T> newNode = new Node<>(element);
+        if (root == null) {
+            root = newNode;
+            return;
+        }
+        Node<T> current = root;
+        while (current.hasNext()) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    @Override
+    public T eject() throws IndexOutOfBoundsException {
+        if (root == null) {
+            throw new IndexOutOfBoundsException("Null Head");
+        }
+        T del;
+        if (!root.hasNext()) {
+            del = root.value;
+            root = null;
+        } else {
+            Node<T> current = root;
+            while (current.next.hasNext()) {
+                current = current.next;
+            }
+            del = current.next.value;
+            current.next = null;
+        }
+        return del;
+    }
+
+    @Override
+    public void prepend(T element) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T pop() throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public T head() {
+        if (root == null) {
+            return null;
+        }
+        return root.value;
+    }
+
+    @Override
+    public T last() {
+        if (root == null) {
+            return null;
+        }
+        Node<T> current = root;
+        while (current.hasNext()) {
+            current = current.next;
+        }
+        return current.value;
     }
 
     @Override
@@ -191,12 +190,12 @@ public sealed class LinkedList<T extends Comparable<T>> implements List<T> permi
     }
 
     @Override
-    public void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException {
+    public void sort(int start, int end) {
 
     }
 
     @Override
-    public void sort(int start, int end) {
+    public void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException {
 
     }
 

@@ -4,25 +4,21 @@ import io.austinzhu.type.Type;
 
 public interface Bool extends Sum<Unit, Unit>, Type<Bool> {
 
+    Bool TRUE = new True();
+
+    Bool FALSE = new False();
+
     class True extends A<Unit, Unit> implements Bool {
 
-        public static Bool true_() {
-            return new True();
-        }
-
         private True() {
-            super(Unit.unit());
+            super(new Unit());
         }
     }
 
     class False extends B<Unit, Unit> implements Bool {
 
-        public static Bool false_() {
-            return new False();
-        }
-
         private False() {
-            super(Unit.unit());
+            super(new Unit());
         }
     }
 }

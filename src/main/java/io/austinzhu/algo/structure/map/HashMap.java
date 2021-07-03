@@ -68,26 +68,6 @@ public final class HashMap<K, V> implements Map<K, V> {
         }
     }
 
-    @Algorithm
-    public void delete(K key) {
-        int bucket = Math.abs(key.hashCode() % data.length);
-        if (data[bucket] == null) {
-            throw new ElementNotFoundException("No such key");
-        }
-        Entry<K, V> cur = data[bucket];
-        if (cur.key == key) {
-            data[bucket] = cur.next;
-            return;
-        }
-        while (cur.next != null) {
-            if (cur.next.key == key) {
-                cur.next = cur.next.next;
-            } else {
-                cur = cur.next;
-            }
-        }
-    }
-
     @Override
     public V get(K key) {
         int bucket = Math.abs(key.hashCode() % data.length);
@@ -114,11 +94,28 @@ public final class HashMap<K, V> implements Map<K, V> {
         }
     }
 
+    @Algorithm
+    public void delete(K key) {
+        int bucket = Math.abs(key.hashCode() % data.length);
+        if (data[bucket] == null) {
+            throw new ElementNotFoundException("No such key");
+        }
+        Entry<K, V> cur = data[bucket];
+        if (cur.key == key) {
+            data[bucket] = cur.next;
+            return;
+        }
+        while (cur.next != null) {
+            if (cur.next.key == key) {
+                cur.next = cur.next.next;
+            } else {
+                cur = cur.next;
+            }
+        }
+    }
+
     @Override
     public String toString() {
-        if (data == null) {
-            return "null";
-        }
         var sb = new StringBuilder();
         for (Entry<K, V> e : data) {
             sb.append(e).append('\n');

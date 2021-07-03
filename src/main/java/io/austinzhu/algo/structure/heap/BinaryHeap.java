@@ -89,12 +89,24 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
     @Algorithm
     @Override
     public T eject() {
+        T del = nodes[length - 1];
+        nodes[length - 1] = null;
+        return del;
+    }
+
+    @Override
+    public void prepend(T element) throws IndexOutOfBoundsException {
+
+    }
+
+    @Override
+    public T pop() throws IndexOutOfBoundsException {
         if (length == 0) {
             throw new IndexOutOfBoundsException("Heap is empty");
         }
+        T del = nodes[0];
         length--;
-        nodes[0] = nodes[length];
-        nodes[length] = null;
+        nodes[0] = nodes[length] = null;
         var parent = 0;
         var child = 1;
         while (child < length) {
@@ -108,20 +120,10 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
                 parent = child;
                 child = child * 2 + 1;
             } else {
-                return null; //fixme
+                break;
             }
         }
-        return null; //fixme
-    }
-
-    @Override
-    public void prepend(T element) throws IndexOutOfBoundsException {
-
-    }
-
-    @Override
-    public T pop() throws IndexOutOfBoundsException {
-        return null;
+        return del;
     }
 
     @Override

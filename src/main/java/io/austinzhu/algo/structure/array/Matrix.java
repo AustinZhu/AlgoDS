@@ -14,6 +14,11 @@ public final class Matrix<T extends Comparable<T>> extends Array<T> {
 
     private final int[] dimension;
 
+    public Matrix(int... capacity) {
+        super(Arrays.stream(capacity).reduce(1, ((a, b) -> a * b)));
+        this.dimension = capacity;
+    }
+
     public static Matrix<Integer> init(int size, int bound, Random random) {
         var size1 = random.nextInt(size);
         var size2 = random.nextInt(size);
@@ -23,11 +28,6 @@ public final class Matrix<T extends Comparable<T>> extends Array<T> {
             integerMatrix.append(random.nextInt(bound));
         }
         return integerMatrix;
-    }
-
-    public Matrix(int... capacity) {
-        super(Arrays.stream(capacity).reduce(1, ((a, b) -> a * b)));
-        this.dimension = capacity;
     }
 
     public void set(T object, int... id) throws IndexOutOfBoundsException {
@@ -47,15 +47,15 @@ public final class Matrix<T extends Comparable<T>> extends Array<T> {
     }
 
     @Override
-    @Algorithm("search")
-    public int search(T element, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
-        return super.search(element, sa);
-    }
-
-    @Override
     @Algorithm("sort")
     public void sort(SortingAlgorithm sa) throws NoSuchAlgorithmException {
         super.sort(sa);
+    }
+
+    @Override
+    @Algorithm("search")
+    public int search(T element, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
+        return super.search(element, sa);
     }
 
     @Override

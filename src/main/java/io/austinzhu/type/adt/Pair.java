@@ -6,11 +6,12 @@ public final class Pair<A extends Type<A>, B extends Type<B>>
         extends Product<A, B>
         implements Type<Pair<A, B>> {
 
-    public static <A extends Type<A>, B extends Type<B>> Pair<A, B> pair(A a, B b) {
-        return new Pair<>(a, b);
+    public Pair(A a, B b) {
+        super(a, b);
     }
 
-    private Pair(A a, B b) {
-        super(a, b);
+    @Override
+    public String toString() {
+        return "(" + a + ", " + b + ")";
     }
 }
