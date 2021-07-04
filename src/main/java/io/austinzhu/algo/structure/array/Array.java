@@ -821,6 +821,23 @@ public sealed class Array<T extends Comparable<T>>
 
     @Override
     public String toString() {
-        return Arrays.toString(data);
+        if (data == null) {
+            return "null";
+        }
+
+        int iMax = upperBound - 1;
+        if (iMax == -1) {
+            return "[]";
+        }
+
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = lowerBound; ; i++) {
+            b.append(data[i]);
+            if (i == iMax) {
+                return b.append(']').toString();
+            }
+            b.append(", ");
+        }
     }
 }
