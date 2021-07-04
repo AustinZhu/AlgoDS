@@ -3,7 +3,10 @@ package io.austinzhu.algo.structure.array;
 import io.austinzhu.algo.interfaces.*;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -201,10 +204,10 @@ public sealed class Array<T extends Comparable<T>>
             case QUICK -> quickSort(start, end);
             case INSERTION -> insertionSort(start, end);
             case SELECTION -> selectionSort(start, end);
-            case RADIX -> radixSort(start, end, 2);
+            case RADIX -> radixSort(start, end);
             case HEAP -> heapSort(start, end);
             case COUNTING -> countingSort(start, end);
-            case BUCKET -> bucketSort(start, end, 10);
+            case BUCKET -> bucketSort(start, end);
             case SHELL -> shellSort(start, end);
             case SLEEP -> sleepSort(start, end);
             default -> throw new NoSuchAlgorithmException("No such algorithm");
@@ -355,14 +358,14 @@ public sealed class Array<T extends Comparable<T>>
     /**
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
-     * Shell sort is a stable, in-place comparison sorting algorithm.
-     * <p>
-     * 1. Insertion sort every n elements
-     * 2. Repeat 1. for next n in the geometric series with ratio 1/2
-     * <p>
-     * - performance of shell sort depends on the selection of interval series
-     * Best time: O(n log n)
-     * Worst time: O(n ^ 2) (for geometric series with ratio 1/2)
+     *              Shell sort is a stable, in-place comparison sorting algorithm.
+     *              <p>
+     *              1. Insertion sort every n elements
+     *              2. Repeat 1. for next n in the geometric series with ratio 1/2
+     *              <p>
+     *              - performance of shell sort depends on the selection of interval series
+     *              Best time: O(n log n)
+     *              Worst time: O(n ^ 2) (for geometric series with ratio 1/2)
      */
     private void shellSort(int lower, int upper) {
         int ratio = 2;
@@ -398,12 +401,14 @@ public sealed class Array<T extends Comparable<T>>
      * @param upper upper bound (exclusive)
      */
     @SuppressWarnings("unchecked")
-    private void bucketSort(int lower, int upper, int n) {
+    private void bucketSort(int lower, int upper) {
+        int n = (int) Math.sqrt(length);
         if (this.length <= 1 || n <= 0) {
             return;
         }
         double max = get(maximum(lower, upper)).hashCode();
         double min = get(minimum(lower, upper)).hashCode();
+        // interval range of elements in each bucket
         int range = (int) Math.ceil((max - min) / n);
         // all elements are equal
         if (range == 0) {
@@ -411,11 +416,10 @@ public sealed class Array<T extends Comparable<T>>
         }
         ArrayList<T>[] buckets = new ArrayList[n];
         for (int i = 0; i < n; i++) {
-            buckets[i] = new ArrayList<>();
+            buckets[i] = new ArrayList<>(Math.min(range, upper - lower));
         }
         // put elements into buckets
         for (int i = lower; i < upper; i++) {
-            // bucket id is the tens digit here
             int bucketId = (int) ((get(i).hashCode() - min) / range);
             var bucket = buckets[bucketId == 0 ? 0 : bucketId - 1];
             bucket.add(get(i));
@@ -449,24 +453,26 @@ public sealed class Array<T extends Comparable<T>>
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
      */
+    @SuppressWarnings("unchecked")
     private void countingSort(int lower, int upper) {
-        TreeMap<T, Integer> counts = new TreeMap<>();
+        int max = get(maximum(lower, upper)).hashCode();
+        int min = get(minimum(lower, upper)).hashCode();
+        int[] counts = new int[max - min + 1];
         for (int i = lower; i < upper; i++) {
-            T key = get(i);
-            if (counts.containsKey(key)) {
-                counts.replace(key, counts.get(key) + 1);
-            } else {
-                counts.put(key, 1);
-            }
+            T elem = get(i);
+            counts[elem.hashCode() - min]++;
         }
-        int i = 0;
-        for (Map.Entry<T, Integer> entry : counts.entrySet()) {
-            T key = entry.getKey();
-            Integer currentCount = entry.getValue();
-            for (int j = 0; j < currentCount; j++, i++) {
-                data[i] = key;
-            }
+        for (int i = 1; i < counts.length; i++) {
+            counts[i] += counts[i - 1];
         }
+        T[] temp = (T[]) new Comparable[upper - lower];
+        for (int i = lower; i < upper; i++) {
+            T elem = get(i);
+            var pos = counts[elem.hashCode() - min];
+            temp[pos - 1] = elem;
+            counts[elem.hashCode()]--;
+        }
+        System.arraycopy(temp, 0, data, lower, upper - lower);
     }
 
     /**
@@ -527,38 +533,37 @@ public sealed class Array<T extends Comparable<T>>
     }
 
     /**
-     * @param lower  lower bound (inclusive)
-     * @param upper  upper bound (exclusive)
-     * @param digits maximum digits among the elements
-     * Radix Sort is a stable, distribution sorting algorithm
-     * <p>
-     * 1. For each digits, perform a counting sort
-     * <p>
-     * - value at digit n of integer a is calculated by $$\frac{a}{10^n} \mod 10$$
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
+     *              Radix Sort is a stable, distribution sorting algorithm
+     *              <p>
+     *              1. For each digits, perform a counting sort
+     *              <p>
+     *              - value at digit n of integer a is calculated by $$\frac{a}{10^n} \mod 10$$
      * @worstTime O(w * n)
      */
     @SuppressWarnings("unchecked")
-    private void radixSort(int lower, int upper, int digits) {
+    private void radixSort(int lower, int upper) {
+        int max = get(maximum()).hashCode();
+        int digits = max < 100000 ? max < 100 ? max < 10 ? 1 : 2 : max < 1000 ? 3 : max < 10000 ? 4 : 5 : max < 10000000 ? max < 1000000 ? 6 : 7 : max < 100000000 ? 8 : max < 1000000000 ? 9 : 10;
         for (int j = 0; j < digits; j++) {
             int exp = (int) Math.pow(10, j);
-            Integer[] output = new Integer[length];
             int[] counts = new int[10];
             // counting sort
             for (int i = lower; i < upper; i++) {
-                int index = get(i).hashCode();
-                int valAtDigit = (index / exp) % 10;
-                counts[valAtDigit]++;
+                int jthDigit = (get(i).hashCode() / exp) % 10;
+                counts[jthDigit]++;
             }
             for (int i = 1; i < 10; i++) {
                 counts[i] += counts[i - 1];
             }
+            T[] temp = (T[]) new Comparable[upper - lower];
             for (int i = upper - 1; i >= lower; i--) {
-                int index = get(i).hashCode();
-                int valAtDigit = (index / exp) % 10;
-                output[lower + counts[valAtDigit] - 1] = index;
-                counts[valAtDigit]--;
+                int ithDigit = (get(i).hashCode() / exp) % 10;
+                temp[counts[ithDigit] - 1] = get(i);
+                counts[ithDigit]--;
             }
-            fromArray((T[]) output);
+            System.arraycopy(temp, 0, data, lower, upper - lower);
         }
     }
 
