@@ -1,6 +1,7 @@
 package io.austinzhu.algo.structure.network;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public final class ListGraph<T> implements Graph<T> {
@@ -30,8 +31,8 @@ public final class ListGraph<T> implements Graph<T> {
     }
 
     @Override
-    public Integer[] getNeighbors(int v) {
-        return new Integer[0];
+    public List<Integer> getNeighbors(int v) {
+        return edges[v];
     }
 
     @Override

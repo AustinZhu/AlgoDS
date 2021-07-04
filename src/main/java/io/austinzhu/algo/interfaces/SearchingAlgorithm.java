@@ -4,5 +4,5 @@ public enum SearchingAlgorithm {
     /**
      *
      */
-    LINEAR, BINARY, JUMP, INTERPOLATION, EXPONENTIAL, SUBLIST, FIBONACCI, BFS, DFS
+    LINEAR, BINARY, JUMP, INTERPOLATION, EXPONENTIAL, SUBLIST, FIBONACCI, DFS, BFS, Dijkstra, BellmanFord, AStar, FloydWarshall
 }

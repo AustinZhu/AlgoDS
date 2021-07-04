@@ -152,6 +152,15 @@ public class Menu {
                     System.out.println(e1.getMessage());
                 }
             }
+            case "searchPath" -> {
+                var v1 = scanner.nextInt();
+                var v2 = scanner.nextInt();
+                List<Integer> result = (List<Integer>) selectedMethod.invoke(dataStructure, v1, v2, SearchingAlgorithm.DFS);
+                if (result == null) {
+                    System.out.println("Path not found");
+                }
+                System.out.println("Path: " + result);
+            }
             default -> {
             }
         }

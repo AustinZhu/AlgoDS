@@ -137,7 +137,11 @@ public final class HashMap<K, V> implements Map<K, V> {
 
         @Override
         public String toString() {
-            return key + " -> " + next;
+            if (next == null) {
+                return key.toString();
+            } else {
+                return key + " -> " + next;
+            }
         }
     }
 }
