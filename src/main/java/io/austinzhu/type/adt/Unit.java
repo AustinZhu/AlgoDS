@@ -5,5 +5,6 @@ import io.austinzhu.type.Type;
 public final class Unit implements Type<Unit> {
 
     public Unit() {
+        super();
     }
 }

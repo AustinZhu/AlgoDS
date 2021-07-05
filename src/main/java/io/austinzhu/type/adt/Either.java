@@ -6,11 +6,11 @@ public sealed interface Either<A extends Type<A>, B extends Type<B>>
         extends Sum<A, B>, Type<Either<A, B>>
         permits Either.Left, Either.Right {
 
-    static <A extends Type<A>, B extends Type<B>> Either<A, B> left(A a) {
+    static <A extends Type<A>, B extends Type<B>> Either<A, B> Left(A a) {
         return new Left<>(a);
     }
 
-    static <A extends Type<A>, B extends Type<B>> Either<A, B> right(B b) {
+    static <A extends Type<A>, B extends Type<B>> Either<A, B> Right(B b) {
         return new Right<>(b);
     }
 

@@ -1,5 +1,8 @@
 package io.austinzhu.algo.structure.network;
 
+import io.austinzhu.algo.interfaces.SearchingAlgorithm;
+
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,9 +13,11 @@ public final class ListGraph<T> implements Graph<T> {
 
     private final T[] vertices;
 
+    private final boolean isDirected;
+
     public static ListGraph<Integer> init(int size, int bound, Random random) {
         var capacity = random.nextInt(size);
-        ListGraph<Integer> graph = new ListGraph<>(capacity);
+        ListGraph<Integer> graph = new ListGraph<>(capacity, true);
         for (var i = 0; i < capacity; i++) {
             graph.addVertex(i, random.nextInt(bound));
         }
@@ -25,9 +30,10 @@ public final class ListGraph<T> implements Graph<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public ListGraph(int capacity) {
+    public ListGraph(int capacity, boolean isDirected) {
         this.vertices = (T[]) new Object[capacity];
         this.edges = new ArrayList[capacity];
+        this.isDirected = isDirected;
     }
 
     @Override
@@ -47,6 +53,11 @@ public final class ListGraph<T> implements Graph<T> {
     public void addVertex(int id, T element) {
         edges[id] = new ArrayList<>();
         vertices[id] = element;
+    }
+
+    @Override
+    public List<Integer> searchPath(int v1, int v2, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
+        return null;
     }
 
     @Override

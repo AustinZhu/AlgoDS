@@ -1,13 +1,18 @@
 package io.austinzhu.type;
 
-import io.austinzhu.type.functor.Applicative;
-import io.austinzhu.type.functor.Functor;
+import java.util.Objects;
 
-public interface Function<A extends Type<A>, B extends Type<B>> extends Type<Function<A, B>>, Functor<Function<A, B>, B>, Applicative<Function<A, B>, B> {
+@FunctionalInterface
+public interface Function<A extends Type<A>, B extends Type<B>> extends Type<Function<A, B>> {
 
-    Function<A, A> id();
+    default Function<A, A> id() {
+        return x -> x;
+    }
 
-    <C extends Type<C>> Function<A, C> compose(Function<? super A, ? extends C> g);
+    default <C extends Type<C>> Function<A, C> compose(Function<B, C> f) {
+        Objects.requireNonNull(f);
+        return (A a) -> f.apply(apply(a));
+    }
 
     B apply(A a);
 }

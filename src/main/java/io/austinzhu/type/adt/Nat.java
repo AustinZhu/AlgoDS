@@ -2,11 +2,13 @@ package io.austinzhu.type.adt;
 
 import io.austinzhu.type.Type;
 
-public sealed interface Nat extends Type<Nat>, Sum<Unit, Nat> permits Nat.Zero, Nat.Succ {
+public sealed interface Nat
+        extends Type<Nat>, Sum<Unit, Nat>
+        permits Nat.Zero, Nat.Succ {
 
     Nat ZERO = new Nat.Zero();
 
-    static Nat succ(Nat n) {
+    static Nat Succ(Nat n) {
         return new Nat.Succ(n);
     }
 

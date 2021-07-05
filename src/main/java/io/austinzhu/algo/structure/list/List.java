@@ -6,7 +6,7 @@ import io.austinzhu.algo.interfaces.Sortable;
 
 public sealed interface List<T extends Comparable<T>>
         extends Operatable<T>, Searchable<T>, Sortable
-        permits LinkedList {
+        permits ArrayList, LinkedList {
 
     T head();
 

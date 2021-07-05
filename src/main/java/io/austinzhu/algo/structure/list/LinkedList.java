@@ -7,7 +7,7 @@ import io.austinzhu.algo.interfaces.SortingAlgorithm;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-public sealed class LinkedList<T extends Comparable<T>> implements List<T> permits Queue, Stack {
+public final class LinkedList<T extends Comparable<T>> implements List<T> {
 
     private Node<T> root;
 

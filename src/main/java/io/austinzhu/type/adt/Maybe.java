@@ -3,6 +3,7 @@ package io.austinzhu.type.adt;
 import io.austinzhu.type.Function;
 import io.austinzhu.type.Type;
 import io.austinzhu.type.functor.Functor;
+import jdk.jshell.spi.ExecutionControl.NotImplementedException;
 
 public sealed interface Maybe<A extends Type<A>>
         extends Sum<Unit, A>, Type<Maybe<A>>, Functor<Maybe<A>, A>
@@ -10,8 +11,54 @@ public sealed interface Maybe<A extends Type<A>>
 
     Maybe<?> NOTHING = new Nothing<>();
 
-    static <A extends Type<A>> Maybe<A> just(A a) {
+    static <A extends Type<A>> Maybe<A> Just(A a) {
         return new Just<>(a);
+    }
+
+    default A fromJust(Just<A> x) {
+        return x.b;
+    }
+
+    default A fromMaybe(A a, Maybe<A> x) throws NotImplementedException {
+        if (x instanceof Nothing<A>) {
+            return a;
+        }
+        if (x instanceof Just<A> y) {
+            return y.b;
+        }
+        throw new NotImplementedException("Non-exaustive patterns");
+    }
+
+    default Bool isJust(Maybe<A> x) throws NotImplementedException {
+        if (x instanceof Nothing<A>) {
+            return Bool.FALSE;
+        }
+        if (x instanceof Just<A>) {
+            return Bool.TRUE;
+        }
+        throw new NotImplementedException("Non-exaustive patterns");
+    }
+
+    default Bool isNothing(Maybe<A> x) throws NotImplementedException {
+        if (x instanceof Nothing<A>) {
+            return Bool.TRUE;
+        }
+        if (x instanceof Just<A>) {
+            return Bool.FALSE;
+        }
+        throw new NotImplementedException("Non-exaustive patterns");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    default <B extends Type<B>, FB extends Functor<FB, B> & Type<FB>> FB fmap(Function<A, B> f, Maybe<A> fa) {
+        if (fa instanceof Nothing) {
+            return (FB) new Nothing<B>();
+        }
+        if (fa instanceof Just<A> j) {
+            return (FB) new Just<>(f.apply(j.b));
+        }
+        throw new ClassCastException();
     }
 
     final class Nothing<A extends Type<A>> extends Sum.Inl<Unit, A> implements Maybe<A> {
@@ -26,17 +73,5 @@ public sealed interface Maybe<A extends Type<A>>
         private Just(A x) {
             super(x);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    default <B extends Type<B>, FB extends Functor<FB, B> & Type<FB>> FB fmap(Function<A, B> f, Maybe<A> fa) {
-        if (fa instanceof Nothing) {
-            return (FB) new Nothing<B>();
-        }
-        if (fa instanceof Just<A> j) {
-            return (FB) new Just<>(f.apply(j.b));
-        }
-        throw new ClassCastException();
     }
 }

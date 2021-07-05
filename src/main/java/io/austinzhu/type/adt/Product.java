@@ -12,12 +12,4 @@ abstract class Product<A extends Type<A>, B extends Type<B>> {
         this.a = a;
         this.b = b;
     }
-
-    public A fst() {
-        return a;
-    }
-
-    public B snd() {
-        return b;
-    }
 }

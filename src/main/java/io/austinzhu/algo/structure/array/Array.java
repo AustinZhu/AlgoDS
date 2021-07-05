@@ -18,8 +18,6 @@ public sealed class Array<T extends Comparable<T>>
         implements Operatable<T>, Searchable<T>, Sortable
         permits Matrix {
 
-    final int capacity;
-
     T[] data;
 
     int lowerBound;
@@ -34,7 +32,6 @@ public sealed class Array<T extends Comparable<T>>
         this.lowerBound = 0;
         this.upperBound = 0;
         this.data = (T[]) new Comparable[capacity];
-        this.capacity = capacity;
     }
 
     /**
@@ -100,7 +97,7 @@ public sealed class Array<T extends Comparable<T>>
         this.length = 0;
         this.lowerBound = 0;
         this.upperBound = 0;
-        this.data = (T[]) new Comparable[capacity];
+        this.data = (T[]) new Comparable[data.length];
     }
 
     @Override
@@ -137,7 +134,7 @@ public sealed class Array<T extends Comparable<T>>
 
     @Override
     public void append(T element) throws IndexOutOfBoundsException {
-        if (upperBound >= capacity) {
+        if (upperBound >= data.length) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         setUpperBound(upperBound + 1);
@@ -797,6 +794,14 @@ public sealed class Array<T extends Comparable<T>>
             }
         }
         fromArray(newArr.data);
+    }
+
+    public int length() {
+        return length;
+    }
+
+    public int capacity() {
+        return data.length;
     }
 
     public void setUpperBound(int upperBound) {

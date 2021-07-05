@@ -12,15 +12,18 @@ public final class MatrixGraph<T> implements Graph<T> {
 
     private final T[] vertices;
 
+    private final boolean isDirected;
+
     @SuppressWarnings("unchecked")
-    public MatrixGraph(int capacity) {
+    public MatrixGraph(int capacity, boolean isDirected) {
         this.edges = new int[capacity][capacity];
         this.vertices = (T[]) new Object[capacity];
+        this.isDirected = isDirected;
     }
 
     public static MatrixGraph<Integer> init(int size, int bound, Random random) {
         var capacity = random.nextInt(size);
-        MatrixGraph<Integer> graph = new MatrixGraph<>(capacity);
+        MatrixGraph<Integer> graph = new MatrixGraph<>(capacity, true);
         for (var i = 0; i < capacity; i++) {
             graph.addVertex(i, random.nextInt(bound));
         }
@@ -40,8 +43,16 @@ public final class MatrixGraph<T> implements Graph<T> {
     @Override
     public List<Integer> getNeighbors(int vid) {
         List<Integer> neighbors = new ArrayList<>();
-        for (var i = 0; i < edges.length; i++) {
+        for (var i = 0; i < vertices.length; i++) {
             if (edges[vid][i] != 0) {
+                neighbors.add(i);
+            }
+        }
+        if (isDirected) {
+            return neighbors;
+        }
+        for (var i = 0; i < vertices.length; i++) {
+            if (edges[i][vid] != 0) {
                 neighbors.add(i);
             }
         }
@@ -53,17 +64,18 @@ public final class MatrixGraph<T> implements Graph<T> {
         edges[v1][v2] = 1;
     }
 
+    @Override
     @Algorithm
-    public List<Integer> searchPath(int v1, int v2, SearchingAlgorithm ga) throws NoSuchAlgorithmException {
+    public List<Integer> searchPath(int v1, int v2, SearchingAlgorithm sa) throws NoSuchAlgorithmException {
         if (v1 >= vertices.length || v2 >= vertices.length || v1 < 0 || v2 < 0) {
             throw new IndexOutOfBoundsException();
         }
-        switch (ga) {
+        switch (sa) {
             case BFS -> {
                 return bfs(v1, v2);
             }
             case DFS -> {
-                return dfs(v1, v2);
+                return dfs(v1, v2, new ArrayList<>());
             }
             default -> throw new NoSuchAlgorithmException();
         }
@@ -93,30 +105,26 @@ public final class MatrixGraph<T> implements Graph<T> {
                 }
             }
         }
-        throw new NoSuchElementException("No path found");
+        return new ArrayList<>();
     }
 
-    private List<Integer> dfs(int v1, int v2) {
-        Deque<List<Integer>> queue = new LinkedList<>();
-        List<Integer> path = new ArrayList<>();
+    private List<Integer> dfs(int v1, int v2, List<Integer> path) {
         path.add(v1);
-        queue.push(path);
-        while (!queue.isEmpty()) {
-            path = queue.pop();
-            var last = path.get(path.size() - 1);
-            if (last == v2) {
-                return path;
+        var last = path.get(path.size() - 1);
+        if (last == v2) {
+            return path;
+        }
+        var neighbors = getNeighbors(last);
+        for (var v : neighbors) {
+            if (path.contains(v)) {
+                continue;
             }
-            var neighbors = getNeighbors(last);
-            for (var v : neighbors) {
-                if (!path.contains(v)) {
-                    var newPath = new ArrayList<>(path);
-                    newPath.add(v);
-                    queue.push(newPath);
-                }
+            List<Integer> newPath = dfs(v, v2, path);
+            if (!newPath.isEmpty()) {
+                return newPath;
             }
         }
-        throw new NoSuchElementException("No path found");
+        return new ArrayList<>();
     }
 
     @Override

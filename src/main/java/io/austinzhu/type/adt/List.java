@@ -8,7 +8,7 @@ public sealed interface List<A extends Type<A>>
 
     List<?> NIL = new Nil<>();
 
-    static <A extends Type<A>> List<A> cons(A x, List<A> xs) {
+    static <A extends Type<A>> List<A> Cons(A x, List<A> xs) {
         return new Cons<>(new Pair<>(x, xs));
     }
 
