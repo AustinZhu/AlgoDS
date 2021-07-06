@@ -1,6 +1,6 @@
 package dev.austinzhu.pattern.adt
 
-trait Nat extends Sum[Unit, Nat] {}
+sealed trait Nat extends Sum[Unit, Nat] {}
 
 object Nat {
 

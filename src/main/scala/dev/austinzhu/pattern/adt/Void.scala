@@ -1,3 +1,3 @@
 package dev.austinzhu.pattern.adt
 
-trait Void {}
+sealed trait Void

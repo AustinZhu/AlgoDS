@@ -1,3 +1,3 @@
 package dev.austinzhu.pattern
 
-trait Type {}
+trait Type

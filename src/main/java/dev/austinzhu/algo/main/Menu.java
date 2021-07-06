@@ -11,7 +11,7 @@ import java.util.*;
 
 public class Menu {
 
-    private static final String[] CATEGORIES = new String[]{"Array", "Map", "Heap", "List", "Tree", "Network"};
+    private static final String[] CATEGORIES = new String[]{"Array", "Map", "Heap", "List", "Tree", "Graph"};
 
     private static final HashMap<String, String[]> DATA_STRUCTURE_MAP =
             new HashMap<>(Map.of("Array", new String[]{"Array", "Matrix"},
@@ -56,18 +56,18 @@ public class Menu {
 
     private Method[] getMethods(Class<?> clazz) {
         Method[] allMethods = clazz.getDeclaredMethods();
-        Map<String, Method> algorithms = new HashMap<>();
+        List<Method> algorithms = new ArrayList<>();
         var builder = new StringBuilder("4. Choose a method: ");
         var i = 1;
         for (Method method : allMethods) {
-            if (method.getAnnotation(Algorithm.class) != null && !algorithms.containsKey(method.getName())) {
-                algorithms.put(method.getName(), method);
+            if (method.getAnnotation(Algorithm.class) != null && !algorithms.contains(method.getName())) {
+                algorithms.add(method);
                 builder.append("\n(").append(i).append(") ").append(method.getName());
                 i++;
             }
         }
         System.out.println(builder);
-        return algorithms.values().toArray(new Method[0]);
+        return algorithms.toArray(new Method[0]);
     }
 
     private SortingAlgorithm sortSelection(Scanner scanner) {
