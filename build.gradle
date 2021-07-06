@@ -4,7 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.20'
 }
 
-group 'org.example'
+group 'dev.austinzhu'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -20,23 +20,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs += "--enable-preview"
-}
-
-tasks.withType(Test) {
-    jvmArgs += "--enable-preview"
-}
-
-tasks.withType(JavaExec) {
-    jvmArgs += '--enable-preview'
-}
-
-compileScala.enabled(false) // disable for now
-
-test {
-    useJUnitPlatform()
-}
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
@@ -47,3 +30,20 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+compileJava {
+    options.compilerArgs.add("--enable-preview")
+}
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
+}
+test {
+    useJUnitPlatform()
+}
+
+compileScala {
+    enabled(false)
+} // disable for now

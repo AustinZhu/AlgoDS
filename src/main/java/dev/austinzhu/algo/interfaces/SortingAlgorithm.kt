@@ -1,0 +1,6 @@
+package dev.austinzhu.algo.interfaces
+
+enum class SortingAlgorithm {
+    INSERTION, SELECTION, MERGE, HEAP, QUICK, SHELL, BUBBLE, COUNTING, BUCKET, RADIX, TIM,
+    COMB, PIGEONHOLE, CYCLE, COCKTAIL, STRAND, GNOME, BITONIC, PANCAKE, BOGO, SLEEP
+}

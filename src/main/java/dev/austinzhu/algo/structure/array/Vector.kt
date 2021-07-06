@@ -8,14 +8,18 @@ import kotlin.random.Random
 open class Vector<T : Comparable<T>>(capacity: Int) : Operatable<T>, Searchable<T>, Sortable, Sequence<T> {
 
     @Suppress("UNCHECKED_CAST")
-    val data = arrayOfNulls<Any?>(capacity) as Array<T>
+    val data = arrayOfNulls<Any?>(capacity) as Array<T?>
 
     var lowerBound = 0
+        set(lower) {
+            field = lower
+            length = upperBound - lower
+        }
 
     var upperBound = 0
-        set(upperBound) {
-            field = upperBound
-            this.length = upperBound - lowerBound
+        set(upper) {
+            field = upper
+            length = upper - lowerBound
         }
 
     var length = 0
@@ -27,7 +31,7 @@ open class Vector<T : Comparable<T>>(capacity: Int) : Operatable<T>, Searchable<
             }
             val capacity = random.nextInt(size + 1)
             val intVector = Vector<Int>(capacity)
-            for (i in 0..capacity) {
+            for (i in 0 until capacity) {
                 intVector.append(random.nextInt(bound))
             }
             return intVector
@@ -36,45 +40,64 @@ open class Vector<T : Comparable<T>>(capacity: Int) : Operatable<T>, Searchable<
         fun <T : Comparable<T>> merge(a: Vector<T>, b: Vector<T>): Vector<T> {
             val newLength = a.length + b.length
             val newVector = Vector<T>(newLength)
-            if (a.length >= 0) {
-                a.data.copyInto(newVector.data)
-                b.data.copyInto(newVector.data, a.length)
-            }
+            a.data.copyInto(newVector.data)
+            b.data.copyInto(newVector.data, a.length)
             newVector.upperBound = newLength
             return newVector
         }
     }
 
     override fun fill(vararg elements: T) {
-        TODO("Not yet implemented")
+        for (e in elements) append(e)
     }
 
     override fun clear() {
-        TODO("Not yet implemented")
+        length = 0
+        lowerBound = 0
+        upperBound = 0
+        data.fill(null)
     }
 
-    override fun set(idx: Int, `object`: T) {
-        TODO("Not yet implemented")
+    override fun set(idx: Int, value: T?) {
+        if (idx in 0 until length) {
+            data[lowerBound + idx] = value
+        } else {
+            throw IndexOutOfBoundsException(idx)
+        }
     }
 
     override fun get(idx: Int): T {
-        TODO("Not yet implemented")
+        if (idx in 0 until length) {
+            return data[lowerBound + idx]!!
+        }
+        throw IndexOutOfBoundsException(idx)
     }
 
-    override fun insert(idx: Int, `object`: T) {
+    override fun insert(idx: Int, value: T) {
         TODO("Not yet implemented")
     }
 
     override fun delete(idx: Int): T {
-        TODO("Not yet implemented")
+        if (idx in lowerBound until upperBound) {
+            val del = get(idx)
+            set(idx, null)
+            return del
+        }
+        throw IndexOutOfBoundsException(idx)
     }
 
     override fun append(element: T) {
-        TODO("Not yet implemented")
+        if (upperBound >= data.size) throw IndexOutOfBoundsException("Vector is full")
+        upperBound++
+        set(length - 1, element)
     }
 
     override fun eject(): T {
-        TODO("Not yet implemented")
+        if (length <= 0) throw IndexOutOfBoundsException("Nothing to eject")
+        val del = get(length - 1)
+        set(length - 1, null)
+        upperBound = length - 1
+        return del
     }
 
     override fun prepend(element: T) {
@@ -113,23 +136,23 @@ open class Vector<T : Comparable<T>>(capacity: Int) : Operatable<T>, Searchable<
         TODO("Not yet implemented")
     }
 
-    override fun sort(sa: SortingAlgorithm?) {
+    override fun sort(sa: SortingAlgorithm) {
         TODO("Not yet implemented")
     }
 
-    override fun sort(start: Int, end: Int, sa: SortingAlgorithm?) {
+    override fun sort(start: Int, end: Int, sa: SortingAlgorithm) {
         TODO("Not yet implemented")
     }
 
     override fun length(): Int {
-        TODO("Not yet implemented")
+        return length
     }
 
     override fun head(): T {
-        TODO("Not yet implemented")
+        return data[lowerBound]!!
     }
 
     override fun last(): T {
-        TODO("Not yet implemented")
+        return data[upperBound - 1]!!
     }
 }
