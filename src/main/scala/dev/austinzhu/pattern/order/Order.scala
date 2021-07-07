@@ -1,9 +1,8 @@
 package dev.austinzhu.pattern.order
 
-type.adt.Bool
+import dev.austinzhu.pattern.adt.Bool
 
-type.Type
+trait Order[A <: Preorder[A] with Equality[A]] {
 
-trait Order[A <: Preorder[A] with Equality[A] with Type] {
-  def leq(a: A, b: A)
+  def <=(a: A, b: A): Bool
 }

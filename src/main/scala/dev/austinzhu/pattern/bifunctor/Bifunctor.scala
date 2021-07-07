@@ -1,9 +1,10 @@
 package dev.austinzhu.pattern.bifunctor
 
-trait Bifunctor[F <: Bifunctor[F, A, B], A, B] {
-  def bimap[G <: Bifunctor[G, A1, B1], A1, B1](f: Nothing, g: Nothing, fab: Bifunctor[F, A, B])
+trait Bifunctor[F[_, _]] {
 
-  def first[G <: Bifunctor[G, A1, B], A1](f: Nothing, fab: Bifunctor[F, A, B])
+  def bimap[A, B, A1, B1](f: A => A1, g: B => B1, fab: F[A, B]): F[A1, B1]
 
-  def second[G <: Bifunctor[G, A, B1], B1](g: Nothing, fab: Bifunctor[F, A, B])
+  def first[A, B, A1](f: A => A1, fab: F[A, B]): F[A1, B]
+
+  def second[A, B, B1](g: B => B1, fab: F[A, B]): F[A, B1]
 }

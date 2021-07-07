@@ -1,9 +1,8 @@
 package dev.austinzhu.pattern.order
 
-type.adt.Bool
+import dev.austinzhu.pattern.adt.Bool
 
-type.Type
+trait Equality[A] {
 
-trait Equality[A <: Type] {
-  def equal(a: A, b: A)
+  def ==(a: A, b: A): Bool
 }

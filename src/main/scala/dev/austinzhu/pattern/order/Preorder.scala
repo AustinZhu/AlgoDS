@@ -1,9 +1,8 @@
 package dev.austinzhu.pattern.order
 
-type.adt.Bool
+import dev.austinzhu.pattern.adt.Bool
 
-type.Type
+trait Preorder[A] {
 
-trait Preorder[A <: Type] {
-  def le(a: A, b: A)
+  def <(a: A, b: A): Bool
 }
