@@ -1,7 +1,5 @@
 package dev.austinzhu.pattern.adt
 
-import dev.austinzhu.pattern.Type
-
 object Maybe {
 
   val NOTHING: Maybe[_] = Maybe.Nothing()
@@ -11,7 +9,7 @@ object Maybe {
   final case class Just[A] private(x: A) extends Id[A] with Maybe[A]
 }
 
-trait Maybe[A] extends Sum[Unit, A] with Type {
+trait Maybe[A] extends Sum[Unit, A] {
 
   def fromJust(x: Maybe[A]): A = x match {
     case Maybe.Just(x) => x

@@ -1,8 +1,6 @@
 package dev.austinzhu.pattern.adt
 
-import dev.austinzhu.pattern.Type
-
-sealed trait Bool extends Sum[Unit, Unit] with Type
+sealed trait Bool extends Sum[Unit, Unit]
 
 object Bool {
 
