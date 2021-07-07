@@ -1,6 +1,8 @@
 package dev.austinzhu.pattern.adt
 
-sealed trait Either[A, B] extends Sum[A, B] {}
+import dev.austinzhu.pattern.Type
+
+sealed trait Either[A, B] extends Sum[A, B] with Type
 
 object Either {
 

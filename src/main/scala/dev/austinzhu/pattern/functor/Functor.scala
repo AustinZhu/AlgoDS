@@ -1,9 +1,8 @@
 package dev.austinzhu.pattern.functor
 
-type.Function
+import dev.austinzhu.pattern.{Function, Type}
 
-type.Type
+trait Functor[F[A <: Type] <: Type] {
 
-@FunctionalInterface trait Functor[F <: Type with Functor[F, _$1], A <: Type] {
-  def fmap[B <: Type](fn: Function[_ >: A, _ <: B], f: F)
+  def fmap[A <: Type, B <: Type](fn: Function[A, B], f: F[A]): F[B]
 }

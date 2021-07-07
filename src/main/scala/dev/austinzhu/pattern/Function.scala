@@ -1,20 +1,17 @@
 package dev.austinzhu.pattern
 
-type.functor.Applicative
+trait Function[A <: Type, B <: Type] extends Type {
+}
 
-type.functor.Functor
+object Function {
 
-import java.util.Objects
+  def id[A <: Type](x: A): _ = x
 
-@FunctionalInterface trait Function[A <: Type, B <: Type] extends Type with Nothing with Nothing {
-  def id = (x: A) => x
-
-  def compose[C <: Type](f: Function[C, A]) = {
-    Objects.requireNonNull(f)
-    (c: C) => apply(f.apply(c))
+  def compose[A <: Type, B <: Type, C <: Type](f: Function[B, C], g: Function[A, B]): Function[A, C] = {
+    (a: A) => apply(f, apply(g, a))
   }
 
-  def apply(a: A)
+  def apply[A <: Type, B <: Type](f: Function[A, B], a: A): B
 
   def fmap[C <: Type](f: Function[_ >: B, _ <: C], g: Function[A, _]) = (a: A) => f.apply(g.apply(a))
 

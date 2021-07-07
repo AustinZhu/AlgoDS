@@ -1,15 +1,14 @@
 package dev.austinzhu.pattern.adt
 
+import dev.austinzhu.pattern.Type
+
 object List {
-  val NIL = new List.Nil[AnyRef]
 
-  def Cons[A](x: A, xs: List[A]) = new List.Cons[A](x, xs)
+  val NIL: List[_] = List.Nil()
 
-  final class Nil[A] private() extends List[A] {
-  }
+  final case class Nil[A] private() extends Unit with List[A]
 
-  final class Cons[A] private(val x: A, val xs: List[A]) extends Pair[A, List[A]](x, xs) with List[A] {
-  }
+  final case class Cons[A] private(x: A, xs: List[A]) extends Pair[A, List[A]](x, xs) with List[A]
 }
 
-trait List[A] extends Sum[Unit, Pair[A, List[A]]] {}
+trait List[A] extends Sum[Unit, Pair[A, List[A]]] with Type

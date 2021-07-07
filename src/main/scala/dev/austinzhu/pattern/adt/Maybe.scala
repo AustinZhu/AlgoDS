@@ -1,41 +1,35 @@
 package dev.austinzhu.pattern.adt
 
-import jdk.jshell.spi.ExecutionControl.NotImplementedException
+import dev.austinzhu.pattern.Type
 
 object Maybe {
-  val NOTHING = new Maybe.Nothing[AnyRef]
 
-  def Just[A](a: A) = new Maybe.Just[A](a)
+  val NOTHING: Maybe[_] = Maybe.Nothing()
 
-  final class Nothing[A] private() extends Maybe[A] {
-  }
+  final case class Nothing private() extends Unit with Maybe[_]
 
-  final class Just[A] private(val x: A) extends Id[A](x) with Maybe[A] {
-  }
+  final case class Just[A] private(x: A) extends Id[A] with Maybe[A]
 }
 
-trait Maybe[A] extends Sum[Unit, A] with Nothing {
-  def fromJust(x: Maybe.Just[A]) = x.v
+trait Maybe[A] extends Sum[Unit, A] with Type {
 
-  @throws[NotImplementedException]
-  def fromMaybe(a: A, x: Maybe[A]): A = {
-    if (x.isInstanceOf[Maybe.Nothing[A]]) return a
-    if (x.isInstanceOf[Maybe.Just[A]]) return y.v
-    throw new ExecutionControl.NotImplementedException("Non-exaustive patterns")
+  def fromJust(x: Maybe[A]): A = x match {
+    case Maybe.Just(x) => x
   }
 
-  @throws[NotImplementedException]
-  def isJust(x: Maybe[A]): Bool = {
-    if (x.isInstanceOf[Maybe.Nothing[A]]) return Bool.FALSE
-    if (x.isInstanceOf[Maybe.Just[A]]) return Bool.TRUE
-    throw new ExecutionControl.NotImplementedException("Non-exaustive patterns")
+  def fromMaybe(a: A, x: Maybe[A]): A = x match {
+    case Maybe.Just(x) => x
+    case Maybe.Nothing() => a
   }
 
-  @throws[NotImplementedException]
-  def isNothing(x: Maybe[A]): Bool = {
-    if (x.isInstanceOf[Maybe.Nothing[A]]) return Bool.TRUE
-    if (x.isInstanceOf[Maybe.Just[A]]) return Bool.FALSE
-    throw new ExecutionControl.NotImplementedException("Non-exaustive patterns")
+  def isJust(x: Maybe[A]): Bool = x match {
+    case _: Maybe.Just[A] => Bool.TRUE
+    case _: Maybe.Nothing => Bool.FALSE
+  }
+
+  def isNothing(x: Maybe[A]): Bool = x match {
+    case _: Maybe.Just[A] => Bool.FALSE
+    case _: Maybe.Nothing => Bool.TRUE
   }
 
   def fmap[B](fn: Nothing, f: Maybe[_]): Maybe[B] = {

@@ -1,3 +1,3 @@
 package dev.austinzhu.pattern.adt
 
-trait String extends List[Char] {}
+trait String extends List[Char]

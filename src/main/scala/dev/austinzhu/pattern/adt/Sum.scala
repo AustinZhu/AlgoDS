@@ -1,5 +1,3 @@
 package dev.austinzhu.pattern.adt
 
-trait Sum[A, B] {
-
-}
+trait Sum[A, B]
