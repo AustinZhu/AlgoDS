@@ -1,9 +1,6 @@
 package dev.austinzhu.pattern.functor
 
-type.Function
+trait Contravariant[F[_]] {
 
-type.Type
-
-trait Contravariant[FA <: Contravariant[FA, A], A <: Type] {
-  def contramap[B <: Type, FB <: Contravariant[FB, B]](f: Function[B, A], fa: Contravariant[FA, A])
+  def contramap[A, B](f: B => A, fa: F[A]): F[B]
 }

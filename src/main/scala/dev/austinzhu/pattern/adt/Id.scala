@@ -1,3 +1,3 @@
 package dev.austinzhu.pattern.adt
 
-trait Id[V]
+class Id[V](val v: V)

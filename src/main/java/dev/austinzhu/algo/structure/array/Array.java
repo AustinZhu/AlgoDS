@@ -127,7 +127,10 @@ public sealed class Array<T extends Comparable<T>>
     public T delete(int idx) throws IndexOutOfBoundsException {
         if (idx >= lowerBound && idx < upperBound) {
             T del = get(idx);
-            set(idx, null);
+            for (int i = idx - 1; i < length - 1; i++) {
+                set(i, get(i + 1));
+            }
+            eject();
             return del;
         }
         throw new IndexOutOfBoundsException("Index out of bound");
@@ -135,7 +138,7 @@ public sealed class Array<T extends Comparable<T>>
 
     @Override
     public void append(T element) throws IndexOutOfBoundsException {
-        if (upperBound >= data.length) {
+        if (upperBound >= data.length && !normalize()) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         setUpperBound(upperBound + 1);
@@ -144,7 +147,7 @@ public sealed class Array<T extends Comparable<T>>
 
     @Override
     public T eject() throws IndexOutOfBoundsException {
-        if (length <= 0) {
+        if (length <= 0 && !normalize()) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         T del = get(length - 1);
@@ -824,6 +827,16 @@ public sealed class Array<T extends Comparable<T>>
     public void setLowerBound(int lowerBound) {
         this.lowerBound = lowerBound;
         this.length = upperBound - lowerBound;
+    }
+
+    private boolean normalize() {
+        if (lowerBound > 0 || upperBound < data.length) {
+            System.arraycopy(data, lowerBound, data, 0, length);
+            lowerBound = 0;
+            upperBound = length;
+            return true;
+        }
+        return false;
     }
 
     @Override

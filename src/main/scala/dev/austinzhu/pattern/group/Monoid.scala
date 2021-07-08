@@ -1,7 +1,6 @@
 package dev.austinzhu.pattern.group
 
-type.Type
+trait Monoid[A] extends SemiGroup[A] {
 
-trait Monoid[A <: SemiGroup[A] with Type] {
-  def unit
+  def unit: A
 }

@@ -1,7 +1,6 @@
 package dev.austinzhu.pattern.group
 
-type.Type
+trait SemiGroup[A] {
 
-trait SemiGroup[A <: Type] {
-  def assoc(a: A, b: A)
+  def assoc(a: A, b: A): A
 }

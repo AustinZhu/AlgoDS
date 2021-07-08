@@ -2,7 +2,7 @@ package dev.austinzhu.pattern.order
 
 import dev.austinzhu.pattern.adt.Bool
 
-trait Preorder[A] {
+trait Preord[A] {
 
   def <(a: A, b: A): Bool
 }
