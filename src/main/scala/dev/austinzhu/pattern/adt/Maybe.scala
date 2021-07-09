@@ -6,7 +6,7 @@ object Maybe {
 
   final case class Nothing private() extends Unit with Maybe[_]
 
-  final case class Just[A] private(x: A) extends Id[A] with Maybe[A]
+  final case class Just[A] private(x: A) extends Id[A](x) with Maybe[A]
 }
 
 trait Maybe[A] extends Sum[Unit, A] {
@@ -30,8 +30,8 @@ trait Maybe[A] extends Sum[Unit, A] {
     case _: Maybe.Nothing => Bool.TRUE
   }
 
-  def fmap[B](fn: Nothing, f: Maybe[_]): Maybe[B] = {
-    if (f.isInstanceOf[Maybe.Nothing[_]]) return Maybe.NOTHING.asInstanceOf[Maybe[B]]
-    null
+  def fmap[B](fn: A => B, f: Maybe[A]): Maybe[B] = f match {
+    case Maybe.Just(x) => Maybe.Just(fn(x))
+    case Maybe.Nothing() => Maybe.Nothing()
   }
 }

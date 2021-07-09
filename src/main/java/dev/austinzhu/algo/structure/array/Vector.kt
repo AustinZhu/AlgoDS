@@ -164,20 +164,35 @@ open class Vector<T : Comparable<T>>(val capacity: Int) : Operatable<T>, Searcha
     }
 
     override fun search(element: T, start: Int, end: Int, sa: SearchingAlgorithm): Int {
-        when (sa) {
-            SearchingAlgorithm.LINEAR -> return linearSearch(element, start, end)
-            SearchingAlgorithm.BINARY -> return binarySearch(element, start, end)
-            SearchingAlgorithm.JUMP -> return jumpSearch(element, start, end)
+        return when (sa) {
+            SearchingAlgorithm.LINEAR -> linearSearch(element, start, end)
+            SearchingAlgorithm.BINARY -> binarySearch(element, start, end)
+            SearchingAlgorithm.JUMP -> jumpSearch(element, start, end)
             else -> throw NoSuchAlgorithmException(sa.name.lowercase() + " search is not supported")
         }
     }
 
     private fun linearSearch(element: T, start: Int, end: Int): Int {
+        for (i in start until end) {
+            if (get(i) == element) {
+                return i
+            }
+        }
         return -1
     }
 
     private fun binarySearch(element: T, start: Int, end: Int): Int {
-        return -1
+        if (start >= end) {
+            return -1
+        }
+        val mid = (start + end) / 2
+        if (get(mid) == element) {
+            return mid
+        }
+        if (get(mid) > element) {
+            return binarySearch(element, start, mid)
+        }
+        return binarySearch(element, mid, end)
     }
 
     private fun jumpSearch(element: T, start: Int, end: Int): Int {
