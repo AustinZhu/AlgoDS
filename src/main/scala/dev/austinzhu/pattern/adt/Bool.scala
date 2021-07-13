@@ -1,6 +1,6 @@
 package dev.austinzhu.pattern.adt
 
-import dev.austinzhu.pattern.adt.Bool.TRUE
+import dev.austinzhu.pattern.adt.Bool.{FALSE, TRUE}
 
 object Bool {
 
@@ -27,8 +27,8 @@ sealed trait Bool extends Sum[Unit, Unit] {
   }
 
   def not(a: Bool): Bool = a match {
-    case Bool.True() => Bool.False()
-    case Bool.False() => Bool.True()
+    case Bool.True() => FALSE
+    case Bool.False() => TRUE
   }
 
   def bool(x: _, y: _, b: Bool): _ = b match {

@@ -15,7 +15,7 @@ import kotlin.random.Random
 open class Vector<T : Comparable<T>>(val capacity: Int) : Operatable<T>, Searchable<T>, Sortable, Sequence<T> {
 
     @Suppress("UNCHECKED_CAST")
-    val data = arrayOfNulls<Any?>(capacity) as Array<T?>
+    val data = arrayOfNulls<Comparable<T>>(capacity) as Array<T?>
 
     var lowerBound = 0
         set(lower) {
@@ -410,6 +410,7 @@ open class Vector<T : Comparable<T>>(val capacity: Int) : Operatable<T>, Searcha
      * @param start start bound (inclusive)
      * @param end end bound (exclusive)
      */
+    @Suppress("UNCHECKED_CAST")
     private fun countingSort(start: Int, end: Int) {
         val max = get(max(start, end)).hashCode()
         val min = get(min(start, end)).hashCode()
@@ -421,14 +422,14 @@ open class Vector<T : Comparable<T>>(val capacity: Int) : Operatable<T>, Searcha
         for (i in 1 until counts.size) {
             counts[i] += counts[i - 1]
         }
-        val temp = arrayOfNulls<Comparable<T>>(end - start)
+        val temp = arrayOfNulls<Comparable<T>>(end - start) as Array<T>
         for (i in start until end) {
             val elem = get(i)
             val pos = counts[elem.hashCode() - min]
             temp[pos - 1] = elem
             counts[elem.hashCode()]--
         }
-        System.arraycopy(temp, 0, data, start, end - start)
+        temp.copyInto(data, start)
     }
 
     /**
@@ -487,10 +488,10 @@ open class Vector<T : Comparable<T>>(val capacity: Int) : Operatable<T>, Searcha
      * - value at digit n of integer a is calculated by $$\frac{a}{10^n} \mod 10$$
      * @worstTime O(w * n)
      */
+    @Suppress("UNCHECKED_CAST")
     private fun radixSort(start: Int, end: Int) {
         val max = get(max()).hashCode()
-        val digits =
-            if (max < 100000) if (max < 100) if (max < 10) 1 else 2 else if (max < 1000) 3 else if (max < 10000) 4 else 5 else if (max < 10000000) if (max < 1000000) 6 else 7 else if (max < 100000000) 8 else if (max < 1000000000) 9 else 10
+        val digits = max.toString().length
         for (j in 0 until digits) {
             val exp = (10.0).pow(j).toInt()
             val counts = IntArray(10)
@@ -502,13 +503,13 @@ open class Vector<T : Comparable<T>>(val capacity: Int) : Operatable<T>, Searcha
             for (i in 1..9) {
                 counts[i] += counts[i - 1]
             }
-            val temp = arrayOfNulls<Comparable<T>>(end - start)
+            val temp = arrayOfNulls<Comparable<T>>(end - start) as Array<T>
             for (i in end - 1 downTo start) {
                 val ithDigit = get(i).hashCode() / exp % 10
                 temp[counts[ithDigit] - 1] = get(i)
                 counts[ithDigit]--
             }
-            System.arraycopy(temp, 0, data, start, end - start)
+            temp.copyInto(data, start)
         }
     }
 
