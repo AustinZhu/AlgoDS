@@ -84,6 +84,26 @@ public class TrieTree<T> implements Tree<T> {
     }
 
     @Override
+    public int max() {
+        return 0;
+    }
+
+    @Override
+    public int max(int start, int end) {
+        return 0;
+    }
+
+    @Override
+    public int min() {
+        return 0;
+    }
+
+    @Override
+    public int min(int start, int end) {
+        return 0;
+    }
+
+    @Override
     public int getHeight() {
         return 0;
     }

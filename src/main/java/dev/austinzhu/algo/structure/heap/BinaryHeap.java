@@ -170,6 +170,26 @@ public final class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
     }
 
     @Override
+    public int max() {
+        return 0;
+    }
+
+    @Override
+    public int max(int start, int end) {
+        return 0;
+    }
+
+    @Override
+    public int min() {
+        return 0;
+    }
+
+    @Override
+    public int min(int start, int end) {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return Arrays.toString(nodes);
     }

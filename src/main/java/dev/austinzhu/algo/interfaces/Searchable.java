@@ -14,5 +14,12 @@ public interface Searchable<T> {
 
     boolean exist(T element);
 
+    int max();
+
+    int max(int start, int end);
+
+    int min();
+
+    int min(int start, int end);
 }
 

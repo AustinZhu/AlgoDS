@@ -2,6 +2,7 @@ package dev.austinzhu.algo.structure.array;
 
 import dev.austinzhu.algo.interfaces.*;
 import dev.austinzhu.algo.structure.Sequence;
+import org.jetbrains.annotations.NotNull;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -270,19 +271,22 @@ public sealed class Array<T extends Comparable<T>>
         return false;
     }
 
-    public void slice(int start, int end) {
-        setLowerBound(start);
-        setUpperBound(end);
-    }
-
+    @Override
     public void reverse() {
         reverse(0, length);
     }
 
+    @Override
     public void reverse(int start, int end) {
         for (int i = 0; i < (end + start) / 2; i++) {
             swap(i, (end + start) - i - 1);
         }
+    }
+
+    @Override
+    public void slice(int start, int end) {
+        setLowerBound(start);
+        setUpperBound(end);
     }
 
     public void swap(int i, int j) {
@@ -291,11 +295,24 @@ public sealed class Array<T extends Comparable<T>>
         set(j, temp);
     }
 
-    public int maximum() {
-        return maximum(lowerBound, upperBound);
+    @Override
+    public T[] toArray() {
+        return Arrays.copyOfRange(data, lowerBound, upperBound);
     }
 
-    public int maximum(int lower, int upper) {
+    @NotNull
+    @Override
+    public T[] toArray(int start, int end) {
+        return null;
+    }
+
+    @Override
+    public int max() {
+        return max(lowerBound, upperBound);
+    }
+
+    @Override
+    public int max(int lower, int upper) {
         if (lower < lowerBound || upper > upperBound || lower > upper) {
             throw new IndexOutOfBoundsException("Wrong bound");
         }
@@ -325,8 +342,9 @@ public sealed class Array<T extends Comparable<T>>
         return min;
     }
 
-    public T[] toArray() {
-        return Arrays.copyOfRange(data, lowerBound, upperBound);
+    @Override
+    public int min() {
+        return 0;
     }
 
     private int binarySearch(int lower, int upper, T element) {
@@ -385,6 +403,11 @@ public sealed class Array<T extends Comparable<T>>
         }
     }
 
+    @Override
+    public int min(int start, int end) {
+        return 0;
+    }
+
     /**
      * Bucket sort is a stable, distribution sorting algorithm.
      * <p>
@@ -407,8 +430,8 @@ public sealed class Array<T extends Comparable<T>>
         if (this.length <= 1 || n <= 0) {
             return;
         }
-        double max = get(maximum(lower, upper)).hashCode();
-        double min = get(minimum(lower, upper)).hashCode();
+        double max = get(max(lower, upper)).hashCode();
+        double min = get(min(lower, upper)).hashCode();
         // interval range of elements in each bucket
         int range = (int) Math.ceil((max - min) / n);
         // all elements are equal
@@ -436,44 +459,6 @@ public sealed class Array<T extends Comparable<T>>
             }
         }
 
-    }
-
-    /**
-     * description Counting sort is a stable, distribution sorting algorithm.
-     * <p>
-     * 1. Determine the range of values, initialize an array to count the frequency of each elements
-     * 2. Traverse the array, add 1 to the counter of the element in the counting array
-     * 3. Calculate the cumulative counts, this helps to build the sorted array
-     * 4. Build the sorted array
-     * <p>
-     * - uses extra space to achieve lower time complexity
-     * - element values are used as index in counting
-     * - cumulative counts transform the frequency information to position information (costs k time)
-     * Worst time: O(n + k)
-     *
-     * @param lower lower bound (inclusive)
-     * @param upper upper bound (exclusive)
-     */
-    @SuppressWarnings("unchecked")
-    private void countingSort(int lower, int upper) {
-        int max = get(maximum(lower, upper)).hashCode();
-        int min = get(minimum(lower, upper)).hashCode();
-        int[] counts = new int[max - min + 1];
-        for (int i = lower; i < upper; i++) {
-            T elem = get(i);
-            counts[elem.hashCode() - min]++;
-        }
-        for (int i = 1; i < counts.length; i++) {
-            counts[i] += counts[i - 1];
-        }
-        T[] temp = (T[]) new Comparable[upper - lower];
-        for (int i = lower; i < upper; i++) {
-            T elem = get(i);
-            var pos = counts[elem.hashCode() - min];
-            temp[pos - 1] = elem;
-            counts[elem.hashCode()]--;
-        }
-        System.arraycopy(temp, 0, data, lower, upper - lower);
     }
 
     /**
@@ -534,38 +519,41 @@ public sealed class Array<T extends Comparable<T>>
     }
 
     /**
+     * description Counting sort is a stable, distribution sorting algorithm.
+     * <p>
+     * 1. Determine the range of values, initialize an array to count the frequency of each elements
+     * 2. Traverse the array, add 1 to the counter of the element in the counting array
+     * 3. Calculate the cumulative counts, this helps to build the sorted array
+     * 4. Build the sorted array
+     * <p>
+     * - uses extra space to achieve lower time complexity
+     * - element values are used as index in counting
+     * - cumulative counts transform the frequency information to position information (costs k time)
+     * Worst time: O(n + k)
+     *
      * @param lower lower bound (inclusive)
      * @param upper upper bound (exclusive)
-     *              Radix Sort is a stable, distribution sorting algorithm
-     *              <p>
-     *              1. For each digits, perform a counting sort
-     *              <p>
-     *              - value at digit n of integer a is calculated by $$\frac{a}{10^n} \mod 10$$
-     * @worstTime O(w * n)
      */
     @SuppressWarnings("unchecked")
-    private void radixSort(int lower, int upper) {
-        int max = get(maximum()).hashCode();
-        int digits = max < 100000 ? max < 100 ? max < 10 ? 1 : 2 : max < 1000 ? 3 : max < 10000 ? 4 : 5 : max < 10000000 ? max < 1000000 ? 6 : 7 : max < 100000000 ? 8 : max < 1000000000 ? 9 : 10;
-        for (int j = 0; j < digits; j++) {
-            int exp = (int) Math.pow(10, j);
-            int[] counts = new int[10];
-            // counting sort
-            for (int i = lower; i < upper; i++) {
-                int jthDigit = (get(i).hashCode() / exp) % 10;
-                counts[jthDigit]++;
-            }
-            for (int i = 1; i < 10; i++) {
-                counts[i] += counts[i - 1];
-            }
-            T[] temp = (T[]) new Comparable[upper - lower];
-            for (int i = upper - 1; i >= lower; i--) {
-                int ithDigit = (get(i).hashCode() / exp) % 10;
-                temp[counts[ithDigit] - 1] = get(i);
-                counts[ithDigit]--;
-            }
-            System.arraycopy(temp, 0, data, lower, upper - lower);
+    private void countingSort(int lower, int upper) {
+        int max = get(max(lower, upper)).hashCode();
+        int min = get(min(lower, upper)).hashCode();
+        int[] counts = new int[max - min + 1];
+        for (int i = lower; i < upper; i++) {
+            T elem = get(i);
+            counts[elem.hashCode() - min]++;
         }
+        for (int i = 1; i < counts.length; i++) {
+            counts[i] += counts[i - 1];
+        }
+        T[] temp = (T[]) new Comparable[upper - lower];
+        for (int i = lower; i < upper; i++) {
+            T elem = get(i);
+            var pos = counts[elem.hashCode() - min];
+            temp[pos - 1] = elem;
+            counts[elem.hashCode()]--;
+        }
+        System.arraycopy(temp, 0, data, lower, upper - lower);
     }
 
     /**
@@ -868,6 +856,41 @@ public sealed class Array<T extends Comparable<T>>
                 return b.append(']').toString();
             }
             b.append(", ");
+        }
+    }
+
+    /**
+     * @param lower lower bound (inclusive)
+     * @param upper upper bound (exclusive)
+     *              Radix Sort is a stable, distribution sorting algorithm
+     *              <p>
+     *              1. For each digits, perform a counting sort
+     *              <p>
+     *              - value at digit n of integer a is calculated by $$\frac{a}{10^n} \mod 10$$
+     * @worstTime O(w * n)
+     */
+    @SuppressWarnings("unchecked")
+    private void radixSort(int lower, int upper) {
+        int max = get(max()).hashCode();
+        int digits = max < 100000 ? max < 100 ? max < 10 ? 1 : 2 : max < 1000 ? 3 : max < 10000 ? 4 : 5 : max < 10000000 ? max < 1000000 ? 6 : 7 : max < 100000000 ? 8 : max < 1000000000 ? 9 : 10;
+        for (int j = 0; j < digits; j++) {
+            int exp = (int) Math.pow(10, j);
+            int[] counts = new int[10];
+            // counting sort
+            for (int i = lower; i < upper; i++) {
+                int jthDigit = (get(i).hashCode() / exp) % 10;
+                counts[jthDigit]++;
+            }
+            for (int i = 1; i < 10; i++) {
+                counts[i] += counts[i - 1];
+            }
+            T[] temp = (T[]) new Comparable[upper - lower];
+            for (int i = upper - 1; i >= lower; i--) {
+                int ithDigit = (get(i).hashCode() / exp) % 10;
+                temp[counts[ithDigit] - 1] = get(i);
+                counts[ithDigit]--;
+            }
+            System.arraycopy(temp, 0, data, lower, upper - lower);
         }
     }
 }

@@ -275,6 +275,26 @@ public sealed class BinaryTree<T>
     }
 
     @Override
+    public int max() {
+        return 0;
+    }
+
+    @Override
+    public int max(int start, int end) {
+        return 0;
+    }
+
+    @Override
+    public int min() {
+        return 0;
+    }
+
+    @Override
+    public int min(int start, int end) {
+        return 0;
+    }
+
+    @Override
     public int getHeight() {
         if (root == null) {
             throw new IndexOutOfBoundsException("Null root");

@@ -2,6 +2,7 @@ package dev.austinzhu.algo.structure.list;
 
 import dev.austinzhu.algo.interfaces.SearchingAlgorithm;
 import dev.austinzhu.algo.interfaces.SortingAlgorithm;
+import org.jetbrains.annotations.NotNull;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
@@ -88,6 +89,26 @@ public final class ArrayList<T extends Comparable<T>> implements List<T>, Queue<
     }
 
     @Override
+    public int max() {
+        return 0;
+    }
+
+    @Override
+    public int max(int start, int end) {
+        return 0;
+    }
+
+    @Override
+    public int min() {
+        return 0;
+    }
+
+    @Override
+    public int min(int start, int end) {
+        return 0;
+    }
+
+    @Override
     public void sort() {
 
     }
@@ -119,6 +140,33 @@ public final class ArrayList<T extends Comparable<T>> implements List<T>, Queue<
 
     @Override
     public T last() {
+        return null;
+    }
+
+    @Override
+    public void reverse() {
+
+    }
+
+    @Override
+    public void reverse(int start, int end) {
+
+    }
+
+    @Override
+    public void slice(int start, int end) {
+
+    }
+
+    @NotNull
+    @Override
+    public T[] toArray() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public T[] toArray(int start, int end) {
         return null;
     }
 }

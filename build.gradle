@@ -18,6 +18,7 @@ dependencies {
     implementation 'org.scala-lang:scala-library:2.13.6'
     testImplementation 'org.scalatest:scalatest_2.11:3.2.9'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1'
 }
 
 compileKotlin {
@@ -25,25 +26,29 @@ compileKotlin {
         jvmTarget = "16"
     }
 }
+
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = "16"
     }
 }
 
+compileScala {
+    enabled(false)
+    scalaCompileOptions.encoding('UTF-8')
+} // disable for now
+
 compileJava {
+    options.encoding('UTF-8')
     options.compilerArgs.add("--enable-preview")
 }
 tasks.withType(Test) {
-    jvmArgs += "--enable-preview"
+    jvmArgs.add("--enable-preview")
 }
 tasks.withType(JavaExec) {
-    jvmArgs += '--enable-preview'
+    jvmArgs.add("--enable-preview")
 }
+
 test {
     useJUnitPlatform()
 }
-
-compileScala {
-    enabled(false)
-} // disable for now
